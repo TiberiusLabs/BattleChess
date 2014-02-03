@@ -37,6 +37,9 @@ public class Main {
                             else
                                 ab.printHex("# #", loc, '#', q + boardSize, r + boardSize);
                             break;
+                        case NUETRAL:
+                            break;
+
                     }
                 }
             }

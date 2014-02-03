@@ -129,6 +129,33 @@ class Rules {
             }
         }
     });
+    private static Map<Position, Types.Color> tiles = Collections.unmodifiableMap(new HashMap<Position, Types.Color>(){
+        {
+            int color = 0;
+            for (int x = -boardSize; x <= boardSize; x++) {
+                for (int y = -boardSize; y <= boardSize; y++) {
+                    if (inBounds(x, y)) {
+                        switch (color) {
+                            case 0:
+                                put(new Position(x, y), Types.Color.BLACK);
+                                break;
+                            case 1:
+                                put(new Position(x, y), Types.Color.GREY);
+                                break;
+                            case 2:
+                                put(new Position(x, y), Types.Color.WHITE);
+                                break;
+                            default:
+                                put(new Position(x, y), Types.Color.NUETRAL);
+                                break;
+                        }
+
+                        color = (color + 1) % 3;
+                    }
+                }
+            }
+        }
+    });
 
     public static Set<GamePiece> initialSetup() {
         Set<GamePiece> pieces = new HashSet<GamePiece>();
@@ -301,18 +328,10 @@ class Rules {
     public static Types.Color tileColor(int x, int y) {
         Types.Color color = Types.Color.NUETRAL;
 
-        int dist = Math.abs(boardSize - x) + Math.abs(y);
-        switch (dist % 3) {
-            case 0:
-                color = Types.Color.WHITE;
-                break;
-            case 1:
-                color = Types.Color.GREY;
-                break;
-            case 2:
-                color = Types.Color.BLACK;
-                break;
+        if (inBounds(x, y)) {
+            color = tiles.get(new Position(x, y));
         }
+
         return color;
     }
 }
