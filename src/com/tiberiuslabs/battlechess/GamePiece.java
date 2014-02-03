@@ -16,4 +16,43 @@ public class GamePiece {
         this.startColor = startColor;
         this.hasMoved = false;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        switch (playerColor) {
+            case BLACK:
+                sb.append("B");
+                break;
+            case WHITE:
+                sb.append("W");
+                break;
+        }
+
+        switch (unitType) {
+            case PAWN:
+                sb.append("Pa");
+                break;
+            case ROOK:
+                sb.append("Rk");
+                break;
+            case KNIGHT:
+                sb.append("Kn");
+                break;
+            case BISHOP:
+                sb.append("Bi");
+                break;
+            case KING:
+                sb.append("Ki");
+                break;
+            case QUEEN:
+                sb.append("Qu");
+                break;
+            default:
+                sb.append("NA");
+                break;
+        }
+
+        return sb.toString();
+    }
 }

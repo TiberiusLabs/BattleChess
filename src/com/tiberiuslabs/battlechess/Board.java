@@ -37,6 +37,10 @@ class Board {
         return null;
     }
 
+    public Types.Color tile(int x, int y) {
+        return Rules.tileColor(x, y);
+    }
+
     public boolean move(Types.Color playerColor, int startx, int starty, int finalx, int finaly) {
         if (Rules.inBounds(startx, starty) && Rules.inBounds(finalx, finaly)) {
             GamePiece attacker = at(startx, starty); 

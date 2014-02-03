@@ -65,7 +65,7 @@ class Rules {
                     if (Rules.inBounds(q, r)) {
                         List<Integer> adjacent = new ArrayList<Integer>(24);
                         for (int i = 0; i < 24; i++)
-                            adjacent.set(i, outOfBounds);
+                            adjacent.add(i, outOfBounds);
 
                         int x = q + boardSize + 1;
                         int y = r + boardSize + 1;
