@@ -14,6 +14,6 @@ class Types {
         BLACK,
         WHITE,
         GREY,
-        NUETRAL;
+        NEUTRAL;
     }
 }

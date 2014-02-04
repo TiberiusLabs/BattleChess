@@ -1,5 +1,7 @@
 package com.tiberiuslabs.battlechess;
 
+import com.sun.accessibility.internal.resources.accessibility_it;
+
 import java.util.*;
 
 class Board {
@@ -102,5 +104,17 @@ class Board {
         }
 
         return graveyard;
+    }
+
+    public Types.Color winner() {
+        if (Rules.playerSubset(activePieces, Types.Color.WHITE).size() == 0) {
+            return Types.Color.BLACK;
+        }
+
+        if (Rules.playerSubset(activePieces, Types.Color.BLACK).size() == 0) {
+            return Types.Color.WHITE;
+        }
+
+        return Rules.holdsCapitols(citiesHeld);
     }
 }

@@ -8,51 +8,51 @@ class Rules {
     private static int outOfBounds = (2 * boardSize + 1) * (101);
     private static Set<GamePiece> cities = Collections.unmodifiableSet(new HashSet<GamePiece>() {
         {
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -boardSize, 0, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 0, -boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, boardSize, -boardSize, Types.Color.NUETRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -boardSize, 0, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 0, -boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, boardSize, -boardSize, Types.Color.NEUTRAL));
 
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -boardSize, boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 0, boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, boardSize, 0, Types.Color.NUETRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -boardSize, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 0, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, boardSize, 0, Types.Color.NEUTRAL));
         }
     });
     private static Set<GamePiece> defaultPositions = Collections.unmodifiableSet(new HashSet<GamePiece>() {
         {
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -4, 4 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -3, 4 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -2, 4 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -1, 4 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 0, 4 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 1, 3 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 2, 2 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 3, 1 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 4, -boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.BLACK, -3, 3 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.BLACK, 3, -boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.BLACK, -2, 2 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.BLACK, 2, -boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KING, Types.Color.BLACK, -1, 1 - boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.QUEEN, Types.Color.BLACK, 1, -boardSize, Types.Color.NUETRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -4, 4 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -3, 4 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -2, 4 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, -1, 4 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 0, 4 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 1, 3 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 2, 2 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 3, 1 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.BLACK, 4, -boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.BLACK, -3, 3 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.BLACK, 3, -boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.BLACK, -2, 2 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.BLACK, 2, -boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KING, Types.Color.BLACK, -1, 1 - boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.QUEEN, Types.Color.BLACK, 1, -boardSize, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.BLACK, 0, -boardSize, Types.Color.BLACK));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.BLACK, 0, 1 - boardSize, Types.Color.WHITE));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.BLACK, 0, 2 - boardSize, Types.Color.GREY));
 
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 4, boardSize - 4, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 3, boardSize - 4, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 2, boardSize - 4, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 1, boardSize - 4, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 0, boardSize - 4, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -1, boardSize - 3, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -2, boardSize - 2, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -3, boardSize - 1, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -4, boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, -3, boardSize - 3, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, -3, boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, 2, boardSize - 2, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, -2, boardSize, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.KING, Types.Color.WHITE, 1, boardSize - 1, Types.Color.NUETRAL));
-            add(new GamePiece(Types.UnitType.QUEEN, Types.Color.WHITE, -1, boardSize, Types.Color.NUETRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 4, boardSize - 4, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 3, boardSize - 4, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 2, boardSize - 4, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 1, boardSize - 4, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, 0, boardSize - 4, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -1, boardSize - 3, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -2, boardSize - 2, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -3, boardSize - 1, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -4, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, -3, boardSize - 3, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, 3, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, 2, boardSize - 2, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, -2, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.KING, Types.Color.WHITE, 1, boardSize - 1, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.QUEEN, Types.Color.WHITE, -1, boardSize, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.WHITE, 0, boardSize, Types.Color.WHITE));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.WHITE, 0, boardSize - 1, Types.Color.BLACK));
             add(new GamePiece(Types.UnitType.BISHOP, Types.Color.WHITE, 0, boardSize - 2, Types.Color.GREY));
@@ -146,7 +146,7 @@ class Rules {
                                 put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.BLACK);
                                 break;
                             default:
-                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.NUETRAL);
+                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.NEUTRAL);
                                 break;
                         }
                     }
@@ -266,8 +266,14 @@ class Rules {
 
     public static boolean canRecruit(Set<GamePiece> citiesHeld, Types.Color playerColor) {
         Set<GamePiece> subset = playerSubset(citiesHeld, playerColor);
+        int x = playerColor == Types.Color.WHITE ? boardSize : -boardSize;
+
         if (subset.size() == 3 && hasKing(subset, playerColor)) {
-            return true;
+            for (GamePiece p : subset) {
+                if (p.x == x && p.y == 0) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -310,7 +316,7 @@ class Rules {
     }
 
     public static boolean validRecruitment(GamePiece p, int x, int y) {
-        if (p.startColor == Types.Color.NUETRAL || p.startColor == tileColor(x, y)) {
+        if (p.startColor == Types.Color.NEUTRAL || p.startColor == tileColor(x, y)) {
             Set<GamePiece> playerCities = playerSubset(cities, p.playerColor);
             int finalPos = x * 100 + y;
             for (GamePiece city : playerCities) {
@@ -326,12 +332,35 @@ class Rules {
     }
 
     public static Types.Color tileColor(int x, int y) {
-        Types.Color color = Types.Color.NUETRAL;
+        Types.Color color = Types.Color.NEUTRAL;
 
         if (inBounds(x, y)) {
             color = tiles.get(100 * (boardSize + 1 + x) + y + boardSize + 1);
         }
 
         return color;
+    }
+
+    public static Types.Color holdsCapitols(Set<GamePiece> citiesHeld) {
+        Types.Color blackCapitol = Types.Color.NEUTRAL;
+        Types.Color whiteCapitol = Types.Color.NEUTRAL;
+
+        for (GamePiece p : citiesHeld) {
+            if (p.x == 0) {
+                if (p.y == boardSize) {
+                    whiteCapitol = p.playerColor;
+                }
+
+                else if (p.y == -boardSize) {
+                    blackCapitol = p.playerColor;
+                }
+            }
+        }
+
+        if (blackCapitol == whiteCapitol) {
+            return blackCapitol;
+        }
+
+        return Types.Color.NEUTRAL;
     }
 }
