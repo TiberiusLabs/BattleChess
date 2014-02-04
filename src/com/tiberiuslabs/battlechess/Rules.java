@@ -156,8 +156,17 @@ class Rules {
     });
 
     private static int tileHash(int x, int y) {
-        return x * 100 + y;
+        return (x + boardSize + 1) * 100 + y + boardSize + 1;
     }
+
+    private static int tileHashX(int xy) {
+        return (xy / 100) - boardSize - 1;
+    }
+
+    private static int tileHashY(int xy) {
+        return (xy % 100) - boardSize - 1;
+    }
+
     public static Set<GamePiece> initialSetup() {
         Set<GamePiece> pieces = new HashSet<GamePiece>();
         pieces.addAll(defaultPositions);
@@ -183,7 +192,7 @@ class Rules {
 
                 for (int i = 0; i < 6; i++) {
                     int currPos = startPos;
-                    while (inBounds(currPos/100, currPos%100)) {
+                    while (inBounds(tileHashX(currPos), tileHashY(currPos))) {
                         currPos = moveAdjacencies.get(currPos).get(i);
 
                         if (currPos == finalPos) {
@@ -199,7 +208,7 @@ class Rules {
 
                 for (int i = 6; i < 12; i++) {
                     int currPos = startPos;
-                    while (inBounds(currPos/100, currPos%100)) {
+                    while (inBounds(tileHashX(currPos), tileHashY(currPos))) {
                         currPos = moveAdjacencies.get(currPos).get(i);
                         if (currPos == finalPos) {
                             return true;
@@ -225,7 +234,7 @@ class Rules {
 
                 for (int i = 0; i < 12; i++) {
                     int currPos = startPos;
-                    while (inBounds(currPos/100, currPos%100)) {
+                    while (inBounds(tileHashX(currPos), tileHashY(currPos))) {
                         currPos = moveAdjacencies.get(currPos).get(i);
                         if (currPos == finalPos) {
                             return true;
