@@ -12,6 +12,9 @@ public class BattleChess {
     private static int boardSize;
     private static Board board;
     private static Types.Color winner;
+    private static char white = ' ';
+    private static char grey = '.';
+    private static char black = ':';
 
     public static void updateHexBoard(AsciiBoard ab, List<Position> positions) {
         for (Position pos : positions) {
@@ -23,21 +26,21 @@ public class BattleChess {
             switch(board.tileColor(pos.x, pos.y)) {
                 case WHITE:
                     if (p != null)
-                        ab.printHex(p.toString(), loc, ' ', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex(p.toString(), loc, white, pos.x + boardSize, pos.y + boardSize);
                     else
-                        ab.printHex("", loc, ' ', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex("", loc, white, pos.x + boardSize, pos.y + boardSize);
                     break;
                 case GREY:
                     if (p != null)
-                        ab.printHex(p.toString(), loc, '-', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex(p.toString(), loc, grey, pos.x + boardSize, pos.y + boardSize);
                     else
-                        ab.printHex("- -", loc, '-', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex("", loc, grey, pos.x + boardSize, pos.y + boardSize);
                     break;
-                case BLACK:
+                default:
                     if (p != null)
-                        ab.printHex(p.toString(), loc, '#', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex(p.toString(), loc, black, pos.x + boardSize, pos.y + boardSize);
                     else
-                        ab.printHex("# #", loc, '#', pos.x + boardSize, pos.y + boardSize);
+                        ab.printHex("", loc, black, pos.x + boardSize, pos.y + boardSize);
                     break;
             }
         }
@@ -144,7 +147,7 @@ public class BattleChess {
     }
 
     public static Position convertPosition(char x, int y) {
-        return new Position((int)x - (int)'A' - boardSize - 1, y - boardSize - 1);
+        return new Position((int)x - (int)'A' - boardSize, y - boardSize - 1);
     }
 
     public static Types.UnitType convertUnit(String unitName) {

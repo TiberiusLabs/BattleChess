@@ -1,7 +1,5 @@
 package com.tiberiuslabs.battlechess;
 
-import com.sun.accessibility.internal.resources.accessibility_it;
-
 import java.util.*;
 
 class Board {

@@ -47,8 +47,8 @@ class Rules {
             add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -2, boardSize - 2, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -3, boardSize - 1, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.PAWN, Types.Color.WHITE, -4, boardSize, Types.Color.NEUTRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, -3, boardSize - 3, Types.Color.NEUTRAL));
-            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, 3, boardSize, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, 3, boardSize - 3, Types.Color.NEUTRAL));
+            add(new GamePiece(Types.UnitType.ROOK, Types.Color.WHITE, -3, boardSize, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, 2, boardSize - 2, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.KNIGHT, Types.Color.WHITE, -2, boardSize, Types.Color.NEUTRAL));
             add(new GamePiece(Types.UnitType.KING, Types.Color.WHITE, 1, boardSize - 1, Types.Color.NEUTRAL));
@@ -281,12 +281,12 @@ class Rules {
 
     public static boolean inCity(GamePiece p) {
         for (GamePiece city : cities) {
-            if (p.playerColor == city.playerColor && p.x == city.x && p.y == city.y) {
+            if (p.x == city.x && p.y == city.y) {
                 return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     public static boolean hasKing(Set<GamePiece> units, Types.Color playerColor) {
