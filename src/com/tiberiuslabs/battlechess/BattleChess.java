@@ -5,6 +5,7 @@ import dk.ilios.asciihexgrid.printers.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.Math;
+import java.text.ParseException;
 import java.util.*;
 
 public class BattleChess {
@@ -98,7 +99,7 @@ public class BattleChess {
                                 if (board.move(playerColor, pos1.x, pos1.y, pos2.x, pos2.y)) {
                                     updatePos.add(pos1);
                                     updatePos.add(pos2);
-                                    break;
+                                    return updatePos;
                                 }
                                 else {
                                     System.out.println("Invalid Move");
@@ -121,7 +122,7 @@ public class BattleChess {
 
                                 if (board.recruit(unitType, playerColor, pos.x, pos.y)) {
                                     updatePos.add(pos);
-                                    break;
+                                    return updatePos;
                                 }
                                 else {
                                     System.out.println("Invalid Recruitment");
@@ -132,18 +133,14 @@ public class BattleChess {
                             System.out.println("Unknown Input");
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(-1);
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Invalid Move");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
-
         }
-
-        return updatePos;
     }
 
     public static Position convertPosition(char x, int y) {
@@ -203,7 +200,7 @@ public class BattleChess {
     }
 
     public static void main(String[] args) {
-        AsciiBoard ab = new AsciiBoard(0, 11, 0, 11, new SmallFlatAsciiHexPrinter());
+        // AsciiBoard ab = new AsciiBoard(0, 11, 0, 11, new SmallFlatAsciiHexPrinter());
         board = new Board();
         boardSize = 5;
         winner = Types.Color.NEUTRAL;
@@ -220,14 +217,16 @@ public class BattleChess {
 
         boolean whiteTurn = true;
         while (winner == Types.Color.NEUTRAL) {
+            AsciiBoard ab = new AsciiBoard(0, 11, 0, 11, new SmallFlatAsciiHexPrinter());
             board.update();
             updateHexBoard(ab, positions);
             System.out.println(ab.prettyPrint(true));
-            positions.clear();
+            // positions.clear();
 
             Types.Color playerColor = whiteTurn ? Types.Color.WHITE : Types.Color.BLACK;
             showInfo(playerColor);
-            positions = useTurn(playerColor);
+            // positions.addAll(
+            useTurn(playerColor);
 
             if (winner == Types.Color.NEUTRAL) {
                 winner = board.winner();

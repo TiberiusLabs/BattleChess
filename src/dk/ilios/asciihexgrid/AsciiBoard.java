@@ -60,7 +60,7 @@ public class AsciiBoard {
     }
 
     private CharGrid createGrid() {
-        // This potentially creates the grid ½ a hexagon to heigh or wide, as we do not now given the max coordinates
+        // This potentially creates the grid ½ a hexagon to height or wide, as we do not now given the max coordinates
         // (0,0,1,1) if both (0,1) or (1,1) is filled. This is OK, as we can fix it when outputting the grid.
         int[] gridSize = printer.getMapSizeInChars(width, height);
         return new CharGrid(gridSize[0], gridSize[1]);

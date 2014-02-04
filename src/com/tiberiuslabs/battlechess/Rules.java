@@ -67,61 +67,59 @@ class Rules {
                         for (int i = 0; i < 24; i++)
                             adjacent.add(i, outOfBounds);
 
-                        int x = q + boardSize + 1;
-                        int y = r + boardSize + 1;
-                        int xy = x * 100 + y;
+                        int xy = tileHash(q, r);
 
                         // first level ROOK adjacencies
                         if (Rules.inBounds(q, r - 1))
-                            adjacent.set(0, xy - 1);
+                            adjacent.set(0, tileHash(q, r - 1));
                         if (Rules.inBounds(q + 1, r - 1))
-                            adjacent.set(1, xy + 99);
+                            adjacent.set(1, tileHash(q + 1, r - 1));
                         if (Rules.inBounds(q + 1, r))
-                            adjacent.set(2, xy + 100);
+                            adjacent.set(2, tileHash(q + 1, r));
                         if (Rules.inBounds(q, r + 1))
-                            adjacent.set(3, xy + 1);
+                            adjacent.set(3, tileHash(q, r + 1));
                         if (Rules.inBounds(q - 1, r + 1))
-                            adjacent.set(4, xy - 99);
+                            adjacent.set(4, tileHash(q - 1, r + 1));
                         if (Rules.inBounds(q - 1, r))
-                            adjacent.set(5, xy - 100);
+                            adjacent.set(5, tileHash(q - 1, r));
                         // first level BISHOP adjacencies
                         if (Rules.inBounds(q - 1, r - 1))
-                            adjacent.set(6, xy - 101);
+                            adjacent.set(6, tileHash(q - 1, r - 1));
                         if (Rules.inBounds(q + 1, r - 2))
-                            adjacent.set(7, xy + 98);
+                            adjacent.set(7, tileHash(q + 1, r - 2));
                         if (Rules.inBounds(q + 2, r - 1))
-                            adjacent.set(8, xy + 199);
+                            adjacent.set(8, tileHash(q + 2, r - 1));
                         if (Rules.inBounds(q + 1, r + 1))
-                            adjacent.set(9, xy + 101);
+                            adjacent.set(9, tileHash(q + 1, r + 1));
                         if (Rules.inBounds(q - 1, r + 2))
-                            adjacent.set(10, xy - 98);
+                            adjacent.set(10, tileHash(q - 1, r + 2));
                         if (Rules.inBounds(q - 2, r + 1))
-                            adjacent.set(11, xy - 199);
+                            adjacent.set(11, tileHash(q - 2, r + 1));
                         // all KNIGHT adjacencies
                         if (Rules.inBounds(q - 2, r - 1))
-                            adjacent.set(12, xy - 201);
+                            adjacent.set(12, tileHash(q - 2, r - 1));
                         if (Rules.inBounds(q - 1, r - 2))
-                            adjacent.set(13, xy - 102);
+                            adjacent.set(13, tileHash(q - 1, r - 2));
                         if (Rules.inBounds(q + 1, r - 3))
-                            adjacent.set(14, xy + 97);
+                            adjacent.set(14, tileHash(q + 1, r - 3));
                         if (Rules.inBounds(q + 2, r - 3))
-                            adjacent.set(15, xy + 197);
+                            adjacent.set(15, tileHash(q + 2, r - 3));
                         if (Rules.inBounds(q + 3, r - 2))
-                            adjacent.set(16, xy + 298);
+                            adjacent.set(16, tileHash(q + 3, r - 2));
                         if (Rules.inBounds(q + 3, r - 1))
-                            adjacent.set(17, xy + 299);
+                            adjacent.set(17, tileHash(q + 3, r - 1));
                         if (Rules.inBounds(q + 2, r + 1))
-                            adjacent.set(18, xy + 201);
+                            adjacent.set(18, tileHash(q + 2, r + 1));
                         if (Rules.inBounds(q + 1, r + 2))
-                            adjacent.set(19, xy + 102);
+                            adjacent.set(19, tileHash(q + 1, r + 2));
                         if (Rules.inBounds(q - 1, r + 3))
-                            adjacent.set(20, xy - 97);
+                            adjacent.set(20, tileHash(q - 1, r + 3));
                         if (Rules.inBounds(q - 2, r + 3))
-                            adjacent.set(21, xy - 197);
+                            adjacent.set(21, tileHash(q - 2, r + 3));
                         if (Rules.inBounds(q - 3, r + 2))
-                            adjacent.set(22, xy - 298);
+                            adjacent.set(22, tileHash(q - 3, r + 2));
                         if (Rules.inBounds(q - 3, r + 1))
-                            adjacent.set(23, xy - 299);
+                            adjacent.set(23, tileHash(q - 3, r + 1));
 
                         put(xy, Collections.unmodifiableList(adjacent));
                     }
@@ -137,16 +135,16 @@ class Rules {
                     if (inBounds(x, y)) {
                         switch (color) {
                             case 0:
-                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.WHITE);
+                                put(tileHash(x, y), Types.Color.WHITE);
                                 break;
                             case 1:
-                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.GREY);
+                                put(tileHash(x, y), Types.Color.GREY);
                                 break;
                             case 2:
-                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.BLACK);
+                                put(tileHash(x, y), Types.Color.BLACK);
                                 break;
                             default:
-                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.NEUTRAL);
+                                put(tileHash(x, y), Types.Color.NEUTRAL);
                                 break;
                         }
                     }
@@ -157,6 +155,9 @@ class Rules {
         }
     });
 
+    private static int tileHash(int x, int y) {
+        return x * 100 + y;
+    }
     public static Set<GamePiece> initialSetup() {
         Set<GamePiece> pieces = new HashSet<GamePiece>();
         pieces.addAll(defaultPositions);
@@ -177,13 +178,14 @@ class Rules {
                 break;
             }
             case ROOK: {
-                int startPos = p.x * 100 + p.y;
-                int finalPos = x * 100 + y;
+                int startPos = tileHash(p.x, p.y);
+                int finalPos = tileHash(x, y);
 
                 for (int i = 0; i < 6; i++) {
                     int currPos = startPos;
                     while (inBounds(currPos/100, currPos%100)) {
                         currPos = moveAdjacencies.get(currPos).get(i);
+
                         if (currPos == finalPos) {
                             return true;
                         }
@@ -192,8 +194,8 @@ class Rules {
                 break;
             }
             case BISHOP: {
-                int startPos = p.x * 100 + p.y;
-                int finalPos = x * 100 + y;
+                int startPos = tileHash(p.x, p.y);
+                int finalPos = tileHash(x, y);
 
                 for (int i = 6; i < 12; i++) {
                     int currPos = startPos;
@@ -207,8 +209,8 @@ class Rules {
                 break;
             }
             case KNIGHT: {
-                int startPos = p.x * 100 + p.y;
-                int finalPos = x * 100 + y;
+                int startPos = tileHash(p.x, p.y);
+                int finalPos = tileHash(x, y);
 
                 for (int i = 12; i < 24; i++) {
                     if (moveAdjacencies.get(startPos).get(i) == finalPos) {
@@ -218,8 +220,8 @@ class Rules {
                 break;
             }
             case QUEEN: {
-                int startPos = p.x * 100 + p.y;
-                int finalPos = x * 100 + y;
+                int startPos = tileHash(p.x, p.y);
+                int finalPos = tileHash(x, y);
 
                 for (int i = 0; i < 12; i++) {
                     int currPos = startPos;
@@ -233,8 +235,8 @@ class Rules {
                 break;
             }
             case KING: {
-                int startPos = p.x * 100 + p.y;
-                int finalPos = x * 100 + y;
+                int startPos = tileHash(p.x, p.y);
+                int finalPos = tileHash(x, y);
 
                 for (int i = 0; i < 12; i++) {
                     if (moveAdjacencies.get(startPos).get(i) == finalPos) {
@@ -318,9 +320,9 @@ class Rules {
     public static boolean validRecruitment(GamePiece p, int x, int y) {
         if (p.startColor == Types.Color.NEUTRAL || p.startColor == tileColor(x, y)) {
             Set<GamePiece> playerCities = playerSubset(cities, p.playerColor);
-            int finalPos = x * 100 + y;
+            int finalPos = tileHash(x, y);
             for (GamePiece city : playerCities) {
-                int cityPos = city.x * 100 + city.y;
+                int cityPos = tileHash(city.x, city.y);
                 for (int i = 0; i < 6; i++) {
                     if (finalPos == moveAdjacencies.get(cityPos).get(i)) {
                         return true;
@@ -335,7 +337,7 @@ class Rules {
         Types.Color color = Types.Color.NEUTRAL;
 
         if (inBounds(x, y)) {
-            color = tiles.get(100 * (boardSize + 1 + x) + y + boardSize + 1);
+            color = tiles.get(tileHash(x, y));
         }
 
         return color;
