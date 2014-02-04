@@ -129,29 +129,29 @@ class Rules {
             }
         }
     });
-    private static Map<Position, Types.Color> tiles = Collections.unmodifiableMap(new HashMap<Position, Types.Color>(){
+    public static Map<Integer, Types.Color> tiles = Collections.unmodifiableMap(new TreeMap<Integer, Types.Color>(){
         {
-            int color = 0;
+            int color = 1;
             for (int x = -boardSize; x <= boardSize; x++) {
                 for (int y = -boardSize; y <= boardSize; y++) {
                     if (inBounds(x, y)) {
                         switch (color) {
                             case 0:
-                                put(new Position(x, y), Types.Color.BLACK);
+                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.WHITE);
                                 break;
                             case 1:
-                                put(new Position(x, y), Types.Color.GREY);
+                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.GREY);
                                 break;
                             case 2:
-                                put(new Position(x, y), Types.Color.WHITE);
+                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.BLACK);
                                 break;
                             default:
-                                put(new Position(x, y), Types.Color.NUETRAL);
+                                put(100 * (x + boardSize + 1) + y + boardSize + 1, Types.Color.NUETRAL);
                                 break;
                         }
-
-                        color = (color + 1) % 3;
                     }
+
+                    color = ++color % 3;
                 }
             }
         }
@@ -329,7 +329,7 @@ class Rules {
         Types.Color color = Types.Color.NUETRAL;
 
         if (inBounds(x, y)) {
-            color = tiles.get(new Position(x, y));
+            color = tiles.get(100 * (boardSize + 1 + x) + y + boardSize + 1);
         }
 
         return color;

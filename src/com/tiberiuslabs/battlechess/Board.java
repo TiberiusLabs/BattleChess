@@ -1,7 +1,6 @@
 package com.tiberiuslabs.battlechess;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Board {
     private final Set<GamePiece> activePieces;
@@ -37,7 +36,7 @@ class Board {
         return null;
     }
 
-    public Types.Color tile(int x, int y) {
+    public Types.Color tileColor(int x, int y) {
         return Rules.tileColor(x, y);
     }
 
@@ -86,5 +85,22 @@ class Board {
         }
 
         return false;
+    }
+
+    public int citiesHeld(Types.Color playerColor) {
+        return Rules.playerSubset(citiesHeld, playerColor).size();
+    }
+
+    public List<String> availableRecruits(Types.Color playerColor) {
+        List<String> graveyard = new ArrayList<String>();
+
+        if (Rules.canRecruit(citiesHeld, playerColor)) {
+            Set<GamePiece> subset = Rules.playerSubset(deadPieces, playerColor);
+            for (GamePiece p : subset) {
+                graveyard.add(p.toString());
+            }
+        }
+
+        return graveyard;
     }
 }

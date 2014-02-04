@@ -56,7 +56,7 @@ public class Position implements Comparable {
     public boolean equals(Object o) {
         if (o != null) {
             if (this.getClass() == o.getClass()) {
-                return this.compareTo(o) == 0;
+                return ((Position)o).x == this.x && ((Position)o).y == this.y;
             }
         }
         return false;
