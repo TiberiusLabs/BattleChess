@@ -45,7 +45,7 @@ class Board {
             GamePiece attacker = at(startx, starty); 
             GamePiece defender = at(finalx, finaly);
             if (attacker != null && attacker.playerColor == playerColor) {
-                if (defender != null && Rules.validAttack(attacker, defender)) {
+                if (defender != null && Rules.validAttack(attacker, defender, this)) {
                     attacker.x = finalx;
                     attacker.y = finaly;
                     attacker.hasMoved = true;
@@ -57,7 +57,7 @@ class Board {
                     return true;
                 }
 
-                else if (defender == null && Rules.validMove(attacker, finalx, finaly)) {
+                else if (defender == null && Rules.validMove(attacker, finalx, finaly, this)) {
                     attacker.x = finalx;
                     attacker.y = finaly;
                     attacker.hasMoved = true;

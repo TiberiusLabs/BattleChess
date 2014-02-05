@@ -3,6 +3,7 @@ package com.tiberiuslabs.battlechess;
 import dk.ilios.asciihexgrid.*;
 import dk.ilios.asciihexgrid.printers.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.Math;
 import java.text.ParseException;
@@ -85,6 +86,9 @@ public class BattleChess {
                         if (inputArray[0].charAt(0) == 'Q') {
                             winner = playerColor == Types.Color.BLACK ? Types.Color.WHITE : Types.Color.BLACK;
                             return updatePos;
+                        }
+                        else if (inputArray[0].charAt(0) == 'H') {
+                            printRules(false);
                         }
                         else if (inputArray[0].charAt(0) == 'M') {
                             if (inputArray.length == 5) {
@@ -199,7 +203,46 @@ public class BattleChess {
         return color;
     }
 
+    public static void printRules(boolean printWelcome) {
+        if (printWelcome) {
+            System.out.println("WELCOME TO BATTLE CHESS!\n");
+        }
+        System.out.println("The Goal: remove all your opponent's units from the board\n" +
+                           "      or: be the first to capture both Capitols (starting corners)\n\n" +
+                           "Basic rules: units move according to Glinsky's Hexagonal Chess rules\n" +
+                           "        * Pawns: can move one tile up (if White) or down (if Black)\n" +
+                           "                 can move two tiles if they have not already moved\n" +
+                           "                 can only attack pieces that are diagonally forward and one tile away\n" +
+                           "        * Rooks: can move and attack along any of the 6 diagonals from their current position\n" +
+                           "        * Bishop: can move and attack any of the 6 edges radiating from their current position\n" +
+                           "        * Knight: can move and attack by moving two tiles diagonally from the current position,\n" +
+                           "                 followed by a single diagonal move outward from that position\n" +
+                           "        * Queen: can move like either the Rook or the Bishop\n" +
+                           "        * King:  can move like the Queen, but only one tile away\n\n" +
+                           "        * For further explanation of the movement rules: http://en.wikipedia.org/wiki/Hexagonal_chess\n\n" +
+                           "        * Recruitment: if you control three or more Villages (any corner), then you have access to the recruits\n" +
+                           "                * you must control your Capitol in order to recruit new units\n" +
+                           "                * your King must be on one of the Villages or your Capitol\n" +
+                           "                * you may only recruit units that have been removed from your Army\n" +
+                           "                * recruits must enter the Battle adjacent to one of the Villages or Capitols under your control\n\n" +
+                           "Controls:\n" +
+                           "        * Moving a unit: [m]ove current[a] current[#] final[a] final[#]\n" +
+                           "        * Recruiting a unit: [r]ecruit [unit] final[a] final[#]\n" +
+                           "        * Print rules: [h]elp\n" +
+                           "        * Forfeit match: [q]uit\n");
+    }
+
     public static void main(String[] args) {
+        printRules(true);
+        System.out.print("[Press enter to continue]");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.exit(-1);
+        }
+
+
         // AsciiBoard ab = new AsciiBoard(0, 11, 0, 11, new SmallFlatAsciiHexPrinter());
         board = new Board();
         boardSize = 5;

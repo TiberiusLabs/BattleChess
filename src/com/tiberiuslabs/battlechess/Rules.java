@@ -174,10 +174,10 @@ class Rules {
     }
     
     public static boolean inBounds(int x, int y) {
-        return (Math.abs(x + y) <= 5);
+        return (Math.abs(x) <= boardSize && Math.abs(y) <= boardSize && Math.abs(x + y) <= boardSize);
     }
 
-    public static boolean validMove(GamePiece p, int x, int y) {
+    public static boolean validMove(GamePiece p, int x, int y, Board currentBoard) {
         switch (p.unitType) {
             case PAWN: {
                 int dir = p.playerColor == Types.Color.BLACK ? 1 : -1;
@@ -197,6 +197,10 @@ class Rules {
 
                         if (currPos == finalPos) {
                             return true;
+                        }
+
+                        else if (currentBoard.at(tileHashX(currPos), tileHashY(currPos)) != null) {
+                            break;
                         }
                     }
                 }
@@ -258,7 +262,7 @@ class Rules {
         return false;
     }
 
-    public static boolean validAttack(GamePiece attacker, GamePiece defender) {
+    public static boolean validAttack(GamePiece attacker, GamePiece defender, Board currentBoard) {
         if (attacker.playerColor != defender.playerColor) {
             if (attacker.unitType == Types.UnitType.PAWN) {
                 int dir = attacker.playerColor == Types.Color.BLACK ? 1 : -1;
@@ -268,7 +272,7 @@ class Rules {
                 }
             }
             else {
-                return validMove(attacker, defender.x, defender.y);
+                return validMove(attacker, defender.x, defender.y, currentBoard);
             }
         }
 
