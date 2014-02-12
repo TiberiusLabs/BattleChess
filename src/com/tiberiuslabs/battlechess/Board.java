@@ -14,6 +14,9 @@ class Board {
         numCities = Rules.numCities();
     }
 
+    /**
+     * Updates the cities that are being held by either player
+     */
     public void update() {
         citiesHeld.clear();
 
@@ -24,6 +27,12 @@ class Board {
         }
     }
 
+    /**
+     * Finds the GamePiece associated with the x,y coordinate
+     * @param x
+     * @param y
+     * @return      The GamePiece found at (x,y) or null if no piece was found
+     */
     public GamePiece at(int x, int y) {
         if (Rules.inBounds(x, y)) {
             for (GamePiece p : activePieces) {
@@ -36,10 +45,25 @@ class Board {
         return null;
     }
 
+    /**
+     * Returns the color of the board tile at (x,y)
+     * @param x
+     * @param y
+     * @return      BLACK, WHITE, or GREY if the coordinate is in-bounds, NEUTRAL otherwise
+     */
     public Types.Color tileColor(int x, int y) {
         return Rules.tileColor(x, y);
     }
 
+    /**
+     *
+     * @param playerColor
+     * @param startx
+     * @param starty
+     * @param finalx
+     * @param finaly
+     * @return
+     */
     public boolean move(Types.Color playerColor, int startx, int starty, int finalx, int finaly) {
         if (Rules.inBounds(startx, starty) && Rules.inBounds(finalx, finaly)) {
             GamePiece attacker = at(startx, starty); 

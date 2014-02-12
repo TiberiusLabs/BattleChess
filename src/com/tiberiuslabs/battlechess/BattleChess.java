@@ -6,18 +6,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.Math;
-import java.text.ParseException;
 import java.util.*;
 
 public class BattleChess {
 
-    private static int boardSize;
-    private static Board board;
+    private final static Board board = new Board();
+    private final static int boardSize = 5;
     private static Types.Color winner;
-    private static char white = ' ';
-    private static char grey = '.';
-    private static char black = ':';
+    private final static char white = ' ';
+    private final static char grey = '.';
+    private final static char black = ':';
 
+    /**
+     * Steps through the positions marked for update. For each position, this function looks up what unit (if any)
+     * should be displayed, what color the tile should be, and the human-friendly coordinate
+     * @param ab        The ascii hex board to update
+     * @param positions The positions that need to be updated
+     */
     public static void updateHexBoard(AsciiBoard ab, List<Position> positions) {
         for (Position pos : positions) {
             char x = (char)((int)'A' + pos.x + boardSize);
@@ -48,6 +53,10 @@ public class BattleChess {
         }
     }
 
+    /**
+     * Gets the relevant turn information for the player and display that info to the console
+     * @param playerColor   The color of the currently active player
+     */
     public static void showInfo(Types.Color playerColor) {
         List<String> availableRecruits = board.availableRecruits(playerColor);
         System.out.println("Cities you control: " + board.citiesHeld(playerColor));
@@ -68,6 +77,12 @@ public class BattleChess {
         System.out.println(sb.toString());
     }
 
+    /**
+     * Interfaces with the player via the console to allow the user to play their turn, and returns a list of board
+     * positions that the player has affected
+     * @param playerColor   The color of the currently active player
+     * @return              A list of board positions that the player has affected in their turn
+     */
     public static List<Position> useTurn(Types.Color playerColor) {
         List<Position> updatePos = new ArrayList<Position>();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -147,10 +162,21 @@ public class BattleChess {
         }
     }
 
+    /**
+     * Converts the human-friendly coordinate system to what Board expects
+     * @param x     The [A-K] coordinate corresponding to the vertical board position
+     * @param y     The [1-11] coordinate corresponding to the horizontal board position
+     * @return      The (x,y) coordinate that Board uses internally
+     */
     public static Position convertPosition(char x, int y) {
         return new Position((int)x - (int)'A' - boardSize, y - boardSize - 1);
     }
 
+    /**
+     * Converts an input string into a UnitType
+     * @param unitName  A string corresponding to a UnitType
+     * @return          The enumerated UnitType, null if the type could not be determined
+     */
     public static Types.UnitType convertUnit(String unitName) {
         int i = unitName.length() <= 2 ? 0 : 1;
         Types.UnitType unitType = null;
@@ -183,6 +209,11 @@ public class BattleChess {
         return unitType;
     }
 
+    /**
+     * Converts a Color into a string
+     * @param colorType     The enumerated color type
+     * @return              A string corresponding to the color
+     */
     public static String colorString(Types.Color colorType) {
         String color = "";
         switch (colorType) {
@@ -203,6 +234,10 @@ public class BattleChess {
         return color;
     }
 
+    /**
+     * Prints the rules and controls to the console
+     * @param printWelcome      boolean value to determine if the welcome message should be printed
+     */
     public static void printRules(boolean printWelcome) {
         if (printWelcome) {
             System.out.println("WELCOME TO BATTLE CHESS!\n");
@@ -238,14 +273,12 @@ public class BattleChess {
         try {
             System.in.read();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
             System.exit(-1);
         }
 
 
         // AsciiBoard ab = new AsciiBoard(0, 11, 0, 11, new SmallFlatAsciiHexPrinter());
-        board = new Board();
-        boardSize = 5;
         winner = Types.Color.NEUTRAL;
 
         List<Position> positions = new ArrayList<Position>();
