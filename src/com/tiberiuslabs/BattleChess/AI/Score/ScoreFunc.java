@@ -6,4 +6,5 @@ package com.tiberiuslabs.BattleChess.AI.Score;
  * interface for defining the score function callbacks
  */
 public interface ScoreFunc {
+    public int score();
 }

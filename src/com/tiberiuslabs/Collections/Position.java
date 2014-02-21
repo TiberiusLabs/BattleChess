@@ -8,12 +8,16 @@ package com.tiberiuslabs.Collections;
 public class Position {
     private Pair<Integer, Integer> xy;
 
-    Position() {
-        xy = new Pair<Integer, Integer>(0, 0);
+    public Position() {
+        xy = new Pair<>(0, 0);
     }
 
-    Position(int x, int y) {
-        xy = new Pair<Integer, Integer>(x, y);
+    public Position(int x, int y) {
+        xy = new Pair<>(x, y);
+    }
+
+    public Position(Position other) {
+        xy = new Pair<>(other.x(), other.y());
     }
 
     public Integer x() {
@@ -22,6 +26,10 @@ public class Position {
 
     public Integer y() {
         return xy.snd;
+    }
+
+    public Position add(Position other) {
+        return new Position(this.x() + other.x(), this.y() + other.y());
     }
 
     @Override
