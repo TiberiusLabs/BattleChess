@@ -57,6 +57,9 @@ public class Init {
         }
     });
 
+    /**
+     * An immutable mapping of current pos -> adjacent pos, used to bypass calculation of adjacencies at runtime
+     */
     public static Map<Position, List<Position>> moveAdjacencies =
         Collections.unmodifiableMap(new HashMap<Position, List<Position>>() {
         {
@@ -69,7 +72,7 @@ public class Init {
 
                         Position pos = new Position(q, r);
 
-                        // first level ROOK adjacencies
+                        // first level cardinal adjacencies
                         if (Rules.inBounds(q, r - 1))
                             adjacent.set(0, new Position(q, r-1));
                         if (Rules.inBounds(q + 1, r - 1))
@@ -82,7 +85,7 @@ public class Init {
                             adjacent.set(4, new Position(q - 1, r + 1));
                         if (Rules.inBounds(q - 1, r))
                             adjacent.set(5, new Position(q - 1, r));
-                        // first level BISHOP adjacencies
+                        // first level vertical adjacencies
                         if (Rules.inBounds(q - 1, r - 1))
                             adjacent.set(6, new Position(q - 1, r - 1));
                         if (Rules.inBounds(q + 1, r - 2))
@@ -95,7 +98,7 @@ public class Init {
                             adjacent.set(10, new Position(q - 1, r + 2));
                         if (Rules.inBounds(q - 2, r + 1))
                             adjacent.set(11, new Position(q - 2, r + 1));
-                        // all KNIGHT adjacencies
+                        // all jump adjacencies
                         if (Rules.inBounds(q - 2, r - 1))
                             adjacent.set(12, new Position(q - 2, r - 1));
                         if (Rules.inBounds(q - 1, r - 2))
@@ -128,6 +131,10 @@ public class Init {
         }
     });
 
+    /**
+     * An immutable mapping of pos -> tile color, used to verify that players do not have more than one Assassin
+     * on each of the tile colors
+     */
     public static Map<Position, Color> tileColors = Collections.unmodifiableMap(new TreeMap<Position, Color>(){
         {
             int color = 1;
