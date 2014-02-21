@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.AI;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Interface between the AI engine and the game state
  */

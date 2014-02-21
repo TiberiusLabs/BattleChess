@@ -6,11 +6,14 @@ import com.tiberiuslabs.Collections.*;
 import java.util.*;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Responsible for generating the initial game information
  */
 public class Init {
+    /**
+     * An immutable mapping from pos -> unit, used to setup the initial board state
+     */
     public static Map<Position, Pair<Unit, Color>> defaultPositions =
         Collections.unmodifiableMap(new HashMap<Position, Pair<Unit, Color>>() {
         {
@@ -153,17 +156,17 @@ public class Init {
         }
     });
 
+    /**
+     * Constructs a 2D array of units representing the initial game state
+     * @return a 2D array with null representing empty tiles
+     */
     public static Pair<Unit, Color>[][] initBoard() {
         Pair<Unit, Color>[][] board = new Pair[11][11];
 
         for (int x = 0; x <= 10; x++) {
             for (int y = 0; y <= 10; y++) {
-                board[x][y] = null;
+                board[x][y] = defaultPositions.get(new Position(x,y));
             }
-        }
-
-        for (Position pos : defaultPositions.keySet()) {
-            board[pos.x()][pos.y()] = defaultPositions.get(pos);
         }
 
         return board;

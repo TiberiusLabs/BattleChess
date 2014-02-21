@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Types;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * holds what type of highlight the gui should display
  *  - NONE: no highlighting

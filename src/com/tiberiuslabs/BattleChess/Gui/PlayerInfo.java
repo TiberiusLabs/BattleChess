@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Displays the game state information relevant to the player
  *  - player/AI score

@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.GameState;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Interfaces with the player to make changes to the game state
  *  - makes and verifies moves/recruitment

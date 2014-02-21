@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Holds interface state of the tile
  *  - what color tile it should be

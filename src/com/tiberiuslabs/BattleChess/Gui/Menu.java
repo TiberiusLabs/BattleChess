@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Holds the interface for the program menu
  */

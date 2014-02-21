@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * popup windows to display the rules and play info
  */

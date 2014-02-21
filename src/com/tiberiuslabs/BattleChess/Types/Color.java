@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Types;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * used for the player/tile colors
  */

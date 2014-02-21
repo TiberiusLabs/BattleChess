@@ -1,7 +1,7 @@
 package com.tiberiuslabs.Collections;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Simple pair (tuple) class
  */

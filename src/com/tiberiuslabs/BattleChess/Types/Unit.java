@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.Types;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * defines the types of units that are available
  */

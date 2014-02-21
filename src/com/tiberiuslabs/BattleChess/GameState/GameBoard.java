@@ -5,7 +5,7 @@ import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Pair;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * Holds the current state of the game
  *  - which units are where on the board

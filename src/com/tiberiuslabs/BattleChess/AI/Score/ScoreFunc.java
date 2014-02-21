@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.AI.Score;
 
 /**
- * Created by Amandeep Gill
+ * @author Amandeep Gill
  *
  * interface for defining the score function callbacks
  */
