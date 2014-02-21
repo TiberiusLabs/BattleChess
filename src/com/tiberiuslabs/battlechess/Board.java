@@ -6,12 +6,20 @@ class Board {
     private final Set<GamePiece> activePieces;
     private final Set<GamePiece> deadPieces;
     private final Set<GamePiece> citiesHeld = new HashSet<GamePiece>();
-    private final int numCities;
+    private final GamePiece[][] gameBoard = new GamePiece[11][11];
 
     public Board() {
+        for (int x = 0; x < 11; x++) {
+            for (int y = 0; y < 11; y++) {
+                gameBoard[x][y] = null;
+            }
+        }
         activePieces = Rules.initialSetup();
         deadPieces = new HashSet<GamePiece>();
-        numCities = Rules.numCities();
+
+        for (GamePiece piece : activePieces) {
+            gameBoard[piece.y][piece.y] = piece;
+        }
     }
 
     /**
@@ -35,14 +43,14 @@ class Board {
      */
     public GamePiece at(int x, int y) {
         if (Rules.inBounds(x, y)) {
-            for (GamePiece p : activePieces) {
-                if (p.x == x && p.y == y) {
-                    return p;
-                }
-            }
+            return gameBoard[x][y];
         }
 
         return null;
+    }
+
+    public GamePiece at(Position pos) {
+        return at(pos.x, pos.y);
     }
 
     /**
@@ -70,6 +78,8 @@ class Board {
             GamePiece defender = at(finalx, finaly);
             if (attacker != null && attacker.playerColor == playerColor) {
                 if (defender != null && Rules.validAttack(attacker, defender, this)) {
+                    gameBoard[attacker.x][attacker.y] = null;
+                    gameBoard[finalx][finaly] = attacker;
                     attacker.x = finalx;
                     attacker.y = finaly;
                     attacker.hasMoved = true;
@@ -82,6 +92,8 @@ class Board {
                 }
 
                 else if (defender == null && Rules.validMove(attacker, finalx, finaly, this)) {
+                    gameBoard[attacker.x][attacker.y] = null;
+                    gameBoard[finalx][finaly] = attacker;
                     attacker.x = finalx;
                     attacker.y = finaly;
                     attacker.hasMoved = true;
@@ -102,6 +114,7 @@ class Board {
                     activePieces.add(p);
                     p.x = x;
                     p.y = y;
+                    gameBoard[x][y] = p;
 
                     return true;
                 }

@@ -11,6 +11,11 @@ public class Position implements Comparable {
     }
 
     @Override
+    public int hashCode() {
+        return 100 * x + y;
+    }
+
+    @Override
     public int compareTo(Object o) {
         if (o != null) {
             if (o.getClass() == this.getClass()) {
