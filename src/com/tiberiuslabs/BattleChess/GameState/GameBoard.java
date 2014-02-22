@@ -1,8 +1,9 @@
 package com.tiberiuslabs.BattleChess.GameState;
 
-import com.tiberiuslabs.BattleChess.Types.Color;
-import com.tiberiuslabs.BattleChess.Types.Unit;
-import com.tiberiuslabs.Collections.Pair;
+import com.tiberiuslabs.BattleChess.Types.*;
+import com.tiberiuslabs.Collections.*;
+
+import java.util.*;
 
 /**
  * @author Amandeep Gill
@@ -13,5 +14,4 @@ import com.tiberiuslabs.Collections.Pair;
  *  - which player's turn it is currently
  */
 public class GameBoard {
-    private Pair<Unit, Color>[][] board;
 }

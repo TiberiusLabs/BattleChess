@@ -14,46 +14,46 @@ public class Init {
     /**
      * An immutable mapping from pos -> unit, used to setup the initial board state
      */
-    public static Map<Position, Pair<Unit, Color>> defaultPositions =
-        Collections.unmodifiableMap(new HashMap<Position, Pair<Unit, Color>>() {
+    public static Map<Position, Unit> defaultPositions =
+        Collections.unmodifiableMap(new HashMap<Position, Unit>() {
         {
-            put(new Position(1, 9), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(2, 9), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(3, 9), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(4, 9), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(5, 9), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(6, 8), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(7, 7), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(8, 6), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(9, 5), new Pair<>(Unit.Footman,  Color.BLACK));
-            put(new Position(2, 8), new Pair<>(Unit.Charger,  Color.BLACK));
-            put(new Position(8, 0), new Pair<>(Unit.Charger,  Color.BLACK));
-            put(new Position(3, 3), new Pair<>(Unit.Calvary,  Color.BLACK));
-            put(new Position(7, 0), new Pair<>(Unit.Calvary,  Color.BLACK));
-            put(new Position(4, 1), new Pair<>(Unit.Monarch,  Color.BLACK));
-            put(new Position(1, 0), new Pair<>(Unit.Champion, Color.BLACK));
-            put(new Position(5, 0), new Pair<>(Unit.Assassin, Color.BLACK));
-            put(new Position(5, 1), new Pair<>(Unit.Assassin, Color.BLACK));
-            put(new Position(5, 2), new Pair<>(Unit.Assassin, Color.BLACK));
+            put(new Position(1, 9), new Unit(UnitType.Footman,  Color.BLACK, 1));
+            put(new Position(2, 9), new Unit(UnitType.Footman,  Color.BLACK, 2));
+            put(new Position(3, 9), new Unit(UnitType.Footman,  Color.BLACK, 3));
+            put(new Position(4, 9), new Unit(UnitType.Footman,  Color.BLACK, 4));
+            put(new Position(5, 9), new Unit(UnitType.Footman,  Color.BLACK, 5));
+            put(new Position(6, 8), new Unit(UnitType.Footman,  Color.BLACK, 6));
+            put(new Position(7, 7), new Unit(UnitType.Footman,  Color.BLACK, 7));
+            put(new Position(8, 6), new Unit(UnitType.Footman,  Color.BLACK, 8));
+            put(new Position(9, 5), new Unit(UnitType.Footman,  Color.BLACK, 9));
+            put(new Position(2, 8), new Unit(UnitType.Charger,  Color.BLACK, 1));
+            put(new Position(8, 0), new Unit(UnitType.Charger,  Color.BLACK, 2));
+            put(new Position(3, 3), new Unit(UnitType.Calvary,  Color.BLACK, 1));
+            put(new Position(7, 0), new Unit(UnitType.Calvary,  Color.BLACK, 2));
+            put(new Position(4, 1), new Unit(UnitType.Monarch,  Color.BLACK, 1));
+            put(new Position(1, 0), new Unit(UnitType.Champion, Color.BLACK, 0));
+            put(new Position(5, 0), new Unit(UnitType.Assassin, Color.BLACK, 1));
+            put(new Position(5, 1), new Unit(UnitType.Assassin, Color.BLACK, 2));
+            put(new Position(5, 2), new Unit(UnitType.Assassin, Color.BLACK, 3));
 
-            put(new Position(9, 9), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(8, 9), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(7, 9), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(6, 9), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(5, 9), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(4, 8), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(3, 7), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(2, 6), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(1, 5), new Pair<>(Unit.Footman,  Color.WHITE));
-            put(new Position(8, 7), new Pair<>(Unit.Charger,  Color.WHITE));
-            put(new Position(2,10), new Pair<>(Unit.Charger,  Color.WHITE));
-            put(new Position(7, 8), new Pair<>(Unit.Calvary,  Color.WHITE));
-            put(new Position(3,10), new Pair<>(Unit.Calvary,  Color.WHITE));
-            put(new Position(6, 9), new Pair<>(Unit.Monarch,  Color.WHITE));
-            put(new Position(4,10), new Pair<>(Unit.Champion, Color.WHITE));
-            put(new Position(5,10), new Pair<>(Unit.Assassin, Color.WHITE));
-            put(new Position(5, 9), new Pair<>(Unit.Assassin, Color.WHITE));
-            put(new Position(5, 8), new Pair<>(Unit.Assassin, Color.WHITE));
+            put(new Position(9, 9), new Unit(UnitType.Footman,  Color.WHITE, 1));
+            put(new Position(8, 9), new Unit(UnitType.Footman,  Color.WHITE, 2));
+            put(new Position(7, 9), new Unit(UnitType.Footman,  Color.WHITE, 3));
+            put(new Position(6, 9), new Unit(UnitType.Footman,  Color.WHITE, 4));
+            put(new Position(5, 9), new Unit(UnitType.Footman,  Color.WHITE, 5));
+            put(new Position(4, 8), new Unit(UnitType.Footman,  Color.WHITE, 6));
+            put(new Position(3, 7), new Unit(UnitType.Footman,  Color.WHITE, 7));
+            put(new Position(2, 6), new Unit(UnitType.Footman,  Color.WHITE, 8));
+            put(new Position(1, 5), new Unit(UnitType.Footman,  Color.WHITE, 9));
+            put(new Position(8, 7), new Unit(UnitType.Charger,  Color.WHITE, 1));
+            put(new Position(2,10), new Unit(UnitType.Charger,  Color.WHITE, 2));
+            put(new Position(7, 8), new Unit(UnitType.Calvary,  Color.WHITE, 1));
+            put(new Position(3,10), new Unit(UnitType.Calvary,  Color.WHITE, 2));
+            put(new Position(6, 9), new Unit(UnitType.Monarch,  Color.WHITE, 1));
+            put(new Position(4,10), new Unit(UnitType.Champion, Color.WHITE, 0));
+            put(new Position(5,10), new Unit(UnitType.Assassin, Color.WHITE, 1));
+            put(new Position(5, 9), new Unit(UnitType.Assassin, Color.WHITE, 2));
+            put(new Position(5, 8), new Unit(UnitType.Assassin, Color.WHITE, 3));
         }
     });
 
@@ -135,7 +135,7 @@ public class Init {
      * An immutable mapping of pos -> tile color, used to verify that players do not have more than one Assassin
      * on each of the tile colors
      */
-    public static Map<Position, Color> tileColors = Collections.unmodifiableMap(new TreeMap<Position, Color>(){
+    public static Map<Position, Color> tileColors = Collections.unmodifiableMap(new HashMap<Position, Color>(){
         {
             int color = 1;
             for (int x = 0; x <= 10; x++) {
@@ -167,12 +167,15 @@ public class Init {
      * Constructs a 2D array of units representing the initial game state
      * @return a 2D array with null representing empty tiles
      */
-    public static Pair<Unit, Color>[][] initBoard() {
-        Pair<Unit, Color>[][] board = new Pair[11][11];
+    public static Map<Position, Unit> initBoard() {
+        Map<Position, Unit> board = new HashMap<>();
 
         for (int x = 0; x <= 10; x++) {
             for (int y = 0; y <= 10; y++) {
-                board[x][y] = defaultPositions.get(new Position(x,y));
+                Position pos = new Position(x,y);
+                if (Rules.inBounds(pos)) {
+                    board.put(pos, defaultPositions.get(pos));
+                }
             }
         }
 

@@ -28,22 +28,23 @@ public class Rules {
      * @return true if the location is valid, false otherwise
      */
     public static boolean inBounds(Position pos) {
-        return pos == null || inBounds(pos.x(), pos.y());
+        return pos != null && inBounds(pos.x(), pos.y());
     }
 
     /**
-     * Checks that the attempted move is legal on a per-unit basis.
+     * Checks that the attempted move is legal on a per-unit basis. If called externally, check that the final
+     * position is empty.
      * @param unit      the unit that the player is attempting to move, must not be null
      * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
      * @param finalPos  the desired final position of the unit, must be a valid location (use inBounds to verify)
-     * @param board     the current state of the game board, must be a 11x11 array of units (Unit/Color Pairs)
+     * @param board     the current state of the game board, must be a 11x11 array of units (UnitType/Color Pairs)
      * @return          true if the move is valid, false otherwise
      */
-    public static boolean validMove(Pair<Unit, Color> unit, Position startPos, Position finalPos, Pair<Unit, Color> board[][]) {
-        switch (unit.fst) {
+    public static boolean validMove(Unit unit, Position startPos, Position finalPos, Map<Position, Unit> board) {
+        switch (unit.unitType) {
             case Footman: {
                 // black may only move in the positive y direction, white in the negative direction
-                int dir = unit.snd == Color.BLACK ? 1 : -1;
+                int dir = unit.color == Color.BLACK ? 1 : -1;
 
                 // check if the final position is 'in front' of the footman
                 if (startPos.x().equals(finalPos.x()) && ((Integer) (startPos.y() + dir)).equals(finalPos.y())) {
@@ -53,7 +54,7 @@ public class Rules {
                 // that the final position is not blocked by another unit
                 // and check if the final position is two moves 'in front' of the footman
                 else if (unit.equals(Init.defaultPositions.get(startPos)) &&
-                        board[startPos.x()][startPos.y() + dir] == null &&
+                        board.get(new Position(startPos.x(), startPos.y() + dir)) == null &&
                         startPos.x().equals(finalPos.x()) && ((Integer) (startPos.y() + 2 * dir)).equals(finalPos.y())) {
                     return true;
                 }
@@ -72,7 +73,7 @@ public class Rules {
                             return true;
                         }
                         // this direction is blocked, move to the next direction
-                        else if (board[currPos.x()][currPos.y()] != null) {
+                        else if (board.get(currPos) != null) {
                             break;
                         }
                     }
@@ -92,7 +93,7 @@ public class Rules {
                             return true;
                         }
                         // this direction is blocked, move to the next direction
-                        else if (board[currPos.x()][currPos.y()] != null) {
+                        else if (board.get(currPos) != null) {
                             break;
                         }
                     }
@@ -122,7 +123,7 @@ public class Rules {
                             return true;
                         }
                         // this direction is blocked, move to the next direction
-                        else if (board[currPos.x()][currPos.y()] != null) {
+                        else if (board.get(currPos) != null) {
                             break;
                         }
                     }
@@ -150,14 +151,14 @@ public class Rules {
      * @param attackerPos   the position of the attacking unit, must be a valid location (use inBounds to verify)
      * @param defender      the unit that the player is attempting to capture, must not be null
      * @param defenderPos   the position of the defending unit, must be a valid location (use inBounds to verify)
-     * @param board         the current state of the game board, must be a 11x11 array of units (Unit/Color Pairs)
+     * @param board         the current state of the game board, must be a 11x11 array of units (UnitType/Color Pairs)
      * @return              returns true if the attack is valid, false otherwise
      */
-    public static boolean validAttack(Pair<Unit, Color> attacker, Position attackerPos, Pair<Unit, Color> defender, Position defenderPos, Pair<Unit, Color> board[][]) {
-        if (attacker.snd != defender.snd) {
+    public static boolean validAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, Map<Position, Unit> board) {
+        if (attacker.color != defender.color) {
             // a player may not attack their own units
-            if (attacker.fst == Unit.Footman) {
-                int dir = attacker.snd == Color.BLACK ? 1 : -1;
+            if (attacker.unitType == UnitType.Footman) {
+                int dir = attacker.color == Color.BLACK ? 1 : -1;
                 // special check for the Footman since they do not attack along their move paths
                 if (((Integer) (attackerPos.x() + dir)).equals(defenderPos.x()) &&
                         attackerPos.y().equals(defenderPos.y())) {
