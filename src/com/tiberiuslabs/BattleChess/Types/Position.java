@@ -1,4 +1,6 @@
-package com.tiberiuslabs.Collections;
+package com.tiberiuslabs.BattleChess.Types;
+
+import com.tiberiuslabs.Collections.Pair;
 
 /**
  * @author Amandeep Gill

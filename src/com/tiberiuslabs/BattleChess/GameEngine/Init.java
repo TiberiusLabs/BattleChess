@@ -1,7 +1,6 @@
 package com.tiberiuslabs.BattleChess.GameEngine;
 
 import com.tiberiuslabs.BattleChess.Types.*;
-import com.tiberiuslabs.Collections.*;
 
 import java.util.*;
 
@@ -132,6 +131,20 @@ public class Init {
     });
 
     /**
+     * An immutable set of pos describing the location of all six cities
+     */
+    public static List<Position> cities = Collections.unmodifiableList(new ArrayList<Position>() {
+        {
+            add(new Position(5, 0));
+            add(new Position(5, 10));
+            add(new Position(0, 5));
+            add(new Position(10, 0));
+            add(new Position(0, 10));
+            add(new Position(10, 5));
+        }
+    });
+
+    /**
      * An immutable mapping of pos -> tile color, used to verify that players do not have more than one Assassin
      * on each of the tile colors
      */
@@ -181,4 +194,5 @@ public class Init {
 
         return board;
     }
+
 }

@@ -1,7 +1,8 @@
 package com.tiberiuslabs.BattleChess.GameEngine;
 
+import com.tiberiuslabs.BattleChess.GameState.GameBoard;
 import com.tiberiuslabs.BattleChess.Types.*;
-import com.tiberiuslabs.Collections.*;
+import com.tiberiuslabs.Collections.Pair;
 
 import java.util.*;
 /**
@@ -37,10 +38,10 @@ public class Rules {
      * @param unit      the unit that the player is attempting to move, must not be null
      * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
      * @param finalPos  the desired final position of the unit, must be a valid location (use inBounds to verify)
-     * @param board     the current state of the game board, must be a 11x11 array of units (UnitType/Color Pairs)
+     * @param board     the current state of the game board, must not be null
      * @return          true if the move is valid, false otherwise
      */
-    public static boolean validMove(Unit unit, Position startPos, Position finalPos, Map<Position, Unit> board) {
+    public static boolean validMove(Unit unit, Position startPos, Position finalPos, GameBoard board) {
         switch (unit.unitType) {
             case Footman: {
                 // black may only move in the positive y direction, white in the negative direction
@@ -151,10 +152,10 @@ public class Rules {
      * @param attackerPos   the position of the attacking unit, must be a valid location (use inBounds to verify)
      * @param defender      the unit that the player is attempting to capture, must not be null
      * @param defenderPos   the position of the defending unit, must be a valid location (use inBounds to verify)
-     * @param board         the current state of the game board, must be a 11x11 array of units (UnitType/Color Pairs)
+     * @param board         the current state of the game board, must not be null
      * @return              returns true if the attack is valid, false otherwise
      */
-    public static boolean validAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, Map<Position, Unit> board) {
+    public static boolean validAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, GameBoard board) {
         if (attacker.color != defender.color) {
             // a player may not attack their own units
             if (attacker.unitType == UnitType.Footman) {
@@ -176,4 +177,26 @@ public class Rules {
 
         return false;
     }
+
+    /**
+     * Checks to see if either player has reached a win condition
+     * @param board the current state of the game board, must not be null
+     * @return      the color of the winning player, NEUTRAL if neither player has won
+     */
+    public Color winner(GameBoard board) {
+        Pair<Unit, Unit> capitols = new Pair<>(board.get(Init.cities.get(0)), board.get(Init.cities.get(1)));
+        if (capitols.fst != null && capitols.snd != null) {
+            if (capitols.fst.color == capitols.snd.color) {
+                return capitols.fst.color;
+            }
+        }
+        if (board.numActiveUnits(Color.BLACK) == 0) {
+            return Color.WHITE;
+        }
+        if (board.numActiveUnits(Color.WHITE) == 0) {
+            return Color.BLACK;
+        }
+        return Color.NEUTRAL;
+    }
 }
+

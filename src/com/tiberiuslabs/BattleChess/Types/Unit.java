@@ -1,7 +1,4 @@
-package com.tiberiuslabs.Collections;
-
-import com.tiberiuslabs.BattleChess.Types.Color;
-import com.tiberiuslabs.BattleChess.Types.UnitType;
+package com.tiberiuslabs.BattleChess.Types;
 
 /**
  * @author Amandeep Gill
