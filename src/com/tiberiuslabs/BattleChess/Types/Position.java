@@ -8,7 +8,7 @@ import com.tiberiuslabs.Collections.Pair;
  * Specialized Pair wrapper specifically for integer cartesian coordinate
  */
 public class Position {
-    private Pair<Integer, Integer> xy;
+    private final Pair<Integer, Integer> xy;
 
     /**
      * Initializes the Position to (0,0)
@@ -19,8 +19,8 @@ public class Position {
 
     /**
      * Initializes the Position to (x,y)
-     * @param x
-     * @param y
+     * @param x the x coordinate
+     * @param y the y coordinate
      */
     public Position(int x, int y) {
         xy = new Pair<>(x, y);
@@ -28,7 +28,7 @@ public class Position {
 
     /**
      * Initializes the Position with a copy of the (x,y) of the other Position
-     * @param other
+     * @param other the position to copy the data from
      */
     public Position(Position other) {
         xy = new Pair<>(other.x(), other.y());

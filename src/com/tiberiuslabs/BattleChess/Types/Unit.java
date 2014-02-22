@@ -9,11 +9,11 @@ package com.tiberiuslabs.BattleChess.Types;
  *  - an id to distinguish between two units of the same type
  */
 public class Unit {
-    private transient int hash;
+    private final transient int hash;
 
-    public UnitType unitType;
-    public Color color;
-    public int id;
+    public final UnitType unitType;
+    public final Color color;
+    public final int id;
 
     public Unit(UnitType unitType, Color color, int id) {
         this.unitType = unitType;

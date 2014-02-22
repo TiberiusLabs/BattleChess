@@ -15,8 +15,8 @@ public class Rules {
 
     /**
      * Checks if (x,y) is a valid tile location.
-     * @param x
-     * @param y
+     * @param x the column coordinate
+     * @param y the row coordinate
      * @return true if the location is valid, false otherwise
      */
     public static boolean inBounds(int x, int y) {
@@ -135,7 +135,7 @@ public class Rules {
                 // check each of the single-move cardinal and vertical adjacencies for the final position
                 List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
                 for (int i = 0; i < 12; i++) {
-                    if (finalPos.equals(Init.moveAdjacencies.get(startPos).get(i))) {
+                    if (finalPos.equals(adjacencies.get(i))) {
                         return true;
                     }
                 }

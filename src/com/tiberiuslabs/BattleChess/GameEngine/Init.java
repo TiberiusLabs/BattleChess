@@ -13,7 +13,7 @@ public class Init {
     /**
      * An immutable mapping from pos -> unit, used to setup the initial board state
      */
-    public static Map<Position, Unit> defaultPositions =
+    public static final Map<Position, Unit> defaultPositions =
         Collections.unmodifiableMap(new HashMap<Position, Unit>() {
         {
             put(new Position(1, 9), new Unit(UnitType.Footman,  Color.BLACK, 1));
@@ -59,7 +59,7 @@ public class Init {
     /**
      * An immutable mapping of current pos -> adjacent pos, used to bypass calculation of adjacencies at runtime
      */
-    public static Map<Position, List<Position>> moveAdjacencies =
+    public static final Map<Position, List<Position>> moveAdjacencies =
         Collections.unmodifiableMap(new HashMap<Position, List<Position>>() {
         {
             for (int q = 0; q <= 10; q++) {
@@ -133,7 +133,7 @@ public class Init {
     /**
      * An immutable set of pos describing the location of all six cities
      */
-    public static List<Position> cities = Collections.unmodifiableList(new ArrayList<Position>() {
+    public static final List<Position> cities = Collections.unmodifiableList(new ArrayList<Position>() {
         {
             add(new Position(5, 0));
             add(new Position(5, 10));

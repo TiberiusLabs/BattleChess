@@ -29,7 +29,7 @@ public class Pair<Fst, Snd> {
         if (other == null || !(getClass().isInstance(other))) {
             return false;
         }
-        Pair<Fst, Snd> otherPair = getClass().cast(other);
+        @SuppressWarnings("unchecked") Pair<Fst, Snd> otherPair = getClass().cast(other);
         return (fst == null ? otherPair.fst == null : fst.equals(otherPair.fst))
                 && (snd == null ? otherPair.snd == null : snd.equals(otherPair.snd));
     }
