@@ -33,8 +33,7 @@ public class Rules {
     }
 
     /**
-     * Checks that the attempted move is legal on a per-unit basis. If called externally, check that the final
-     * position is empty.
+     * Checks that the attempted move is legal on a per-unit basis. Includes both attacking and normal moves
      * @param unit      the unit that the player is attempting to move, must not be null
      * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
      * @param finalPos  the desired final position of the unit, must be a valid location (use inBounds to verify)
@@ -42,45 +41,11 @@ public class Rules {
      * @return          true if the move is valid, false otherwise
      */
     public static boolean isValidMove(Unit unit, Position startPos, Position finalPos, GameBoard board) {
-        return board.get(finalPos) == null && getValidMoves(unit, startPos, board).contains(finalPos);
+        return getValidMoves(unit, startPos, board).contains(finalPos);
     }
 
     /**
-     * Checks that the attack is valid. This is calculated directly for the Footman, while attacks for other units are
-     * valid if the defender's position is a valid move.
-     * @param attacker      the unit that the player is using to capture the defending unit, must not be null
-     * @param attackerPos   the position of the attacking unit, must be a valid location (use inBounds to verify)
-     * @param defender      the unit that the player is attempting to capture, must not be null
-     * @param defenderPos   the position of the defending unit, must be a valid location (use inBounds to verify)
-     * @param board         the current state of the game board, must not be null
-     * @return              returns true if the attack is valid, false otherwise
-     */
-    public static boolean isValidAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, GameBoard board) {
-        if (attacker.color != defender.color) {
-            // a player may not attack their own units
-            if (attacker.unitType == UnitType.Footman) {
-                int dir = attacker.color == Color.BLACK ? 1 : -1;
-                // special check for the Footman since they do not attack along their move paths
-                if (((Integer) (attackerPos.x() + dir)).equals(defenderPos.x()) &&
-                        attackerPos.y().equals(defenderPos.y())) {
-                    return true;
-                } else if (((Integer) (attackerPos.x() - dir)).equals(defenderPos.x()) &&
-                        ((Integer) (attackerPos.y() + dir)).equals(defenderPos.y())) {
-                    return true;
-                }
-            }
-            else {
-                // for all other units, the attack is valid if the move is valid
-                Set<Position> validMoves = getValidMoves(attacker, attackerPos, board);
-                return validMoves.contains(defenderPos);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the set of all valid moves for the unit from the startPos
+     * Get the set of all valid moves and attacks for the unit from the startPos
      * @param unit      the unit that the player is attempting to move, must not be null
      * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
      * @param board     the current state of the game board, must not be null
@@ -104,6 +69,20 @@ public class Rules {
                 Position jump = new Position(front.x(), front.y() + dir);
                 if (unit.equals(Init.defaultPositions.get(startPos)) && board.get(front) == null && board.get(jump) == null) {
                     moves.add(jump);
+                }
+                // special check for the Footman since they do not attack along their move paths
+                if (unit.unitType == UnitType.Footman) {
+                    Position attack1 = new Position(startPos.x() + dir, startPos.y());
+                    Unit defender = board.get(attack1);
+                    if (inBounds(attack1) && defender != null && defender.color != unit.color) {
+                        moves.add(attack1);
+                    }
+
+                    Position attack2 = new Position(startPos.x() - dir, startPos.y() + dir);
+                    defender = board.get(attack2);
+                    if (inBounds(attack2) && defender != null && defender.color != unit.color) {
+                        moves.add(attack2);
+                    }
                 }
                 break;
             }
