@@ -4,6 +4,7 @@ import com.tiberiuslabs.BattleChess.GameEngine.Init;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import com.tiberiuslabs.BattleChess.Types.UnitType;
 
 import java.util.*;
 
@@ -18,23 +19,36 @@ import java.util.*;
 public class GameBoard {
     private static List<Position> cities = Init.cities;
     private final Map<Position, Unit> board = Init.initBoard();
-    private final Set<Unit> blackGraveyard = new HashSet<>();
-    private final Set<Unit> whiteGraveyard = new HashSet<>();
 
+    private final Set<Unit> blackUnits = new HashSet<>();
+    private final Set<Unit> blackGraveyard = new HashSet<>();
     private boolean blackMonarch;
-    private boolean whiteMonarch;
     private int numBlackUnits;
+
+    private final Set<Unit> whiteUnits = new HashSet<>();
+    private final Set<Unit> whiteGraveyard = new HashSet<>();
+    private boolean whiteMonarch;
     private int numWhiteUnits;
 
     /**
      * Default constructor
      */
     public GameBoard() {
+        numWhiteUnits = 0;
+        numBlackUnits = 0;
+        for (Unit unit : board.values()) {
+            if (unit != null) {
+                if (unit.color == Color.BLACK) {
+                    blackUnits.add(unit);
+                    numBlackUnits++;
+                } else {
+                    whiteUnits.add(unit);
+                    numWhiteUnits++;
+                }
+            }
+        }
         blackMonarch = true;
         whiteMonarch = true;
-
-        numBlackUnits = 18;
-        numWhiteUnits = 18;
     }
 
     /**
@@ -69,21 +83,28 @@ public class GameBoard {
      * added to the graveyard. Performs no validity or sanity checks.
      * @param startPos  the starting position of the unit that is moving
      * @param finalPos  the final position to move the unit to
+     * @return          the unit that was removed from play, null otherwise
      */
-    public void move(Position startPos, Position finalPos) {
+    public Unit move(Position startPos, Position finalPos) {
         Unit unit = board.get(finalPos);
         if (unit != null) {
             if (unit.color == Color.BLACK) {
                 blackGraveyard.add(unit);
+                blackUnits.remove(unit);
                 numBlackUnits--;
+                blackMonarch = !(unit.unitType == UnitType.Monarch);
             } else {
                 whiteGraveyard.add(unit);
+                whiteUnits.remove(unit);
                 numWhiteUnits--;
+                whiteMonarch = !(unit.unitType == UnitType.Monarch);
             }
         }
 
         board.put(finalPos, board.get(startPos));
         board.put(startPos, null);
+
+        return unit;
     }
 
     /**
@@ -93,6 +114,15 @@ public class GameBoard {
      */
     public int numActiveUnits(Color player) {
         return player == Color.BLACK ? numBlackUnits : numWhiteUnits;
+    }
+
+    /**
+     * Gets the set of the players active units
+     * @param player    the player's color
+     * @return          the set of all the units that the player has on the board
+     */
+    public Set<Unit> getActiveUnits(Color player) {
+        return player == Color.BLACK ? blackUnits : whiteUnits;
     }
 
     /**

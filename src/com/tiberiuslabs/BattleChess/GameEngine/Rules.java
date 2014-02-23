@@ -41,108 +41,8 @@ public class Rules {
      * @param board     the current state of the game board, must not be null
      * @return          true if the move is valid, false otherwise
      */
-    public static boolean validMove(Unit unit, Position startPos, Position finalPos, GameBoard board) {
-        switch (unit.unitType) {
-            case Footman: {
-                // black may only move in the positive y direction, white in the negative direction
-                int dir = unit.color == Color.BLACK ? 1 : -1;
-
-                // check if the final position is 'in front' of the footman
-                if (startPos.x().equals(finalPos.x()) && ((Integer) (startPos.y() + dir)).equals(finalPos.y())) {
-                    return true;
-                }
-                // check if the footman is at a default position (and is allowed a double move)
-                // that the final position is not blocked by another unit
-                // and check if the final position is two moves 'in front' of the footman
-                else if (unit.equals(Init.defaultPositions.get(startPos)) &&
-                        board.get(new Position(startPos.x(), startPos.y() + dir)) == null &&
-                        startPos.x().equals(finalPos.x()) && ((Integer) (startPos.y() + 2 * dir)).equals(finalPos.y())) {
-                    return true;
-                }
-                break;
-            }
-            case Charger: {
-                // depth-first search each of the six cardinal directions for the final position
-                for (int i = 0; i < 6; i++) {
-                    Position currPos = new Position(startPos);
-
-                    // only check until the edge of the board has been reached
-                    while (inBounds(currPos)) {
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
-
-                        if (finalPos.equals(currPos)) {
-                            return true;
-                        }
-                        // this direction is blocked, move to the next direction
-                        else if (board.get(currPos) != null) {
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-            case Assassin: {
-                // depth-first search each of the six vertical directions for the final position
-                for (int i = 6; i < 12; i++) {
-                    Position currPos = new Position(startPos);
-
-                    // only check unit the edge of the board has been reached
-                    while (inBounds(currPos)) {
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
-
-                        if (finalPos.equals(currPos)) {
-                            return true;
-                        }
-                        // this direction is blocked, move to the next direction
-                        else if (board.get(currPos) != null) {
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-            case Calvary: {
-                // check each of the single-move 'jump' adjacencies for the final position
-                List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
-                for (int i = 12; i < 24; i++) {
-                    if (finalPos.equals(adjacencies.get(i))) {
-                        return true;
-                    }
-                }
-                break;
-            }
-            case Champion: {
-                // depth-first search on the six cardinal and vertical directions for the final position
-                for (int i = 0; i < 12; i++) {
-                    Position currPos = new Position(startPos);
-
-                    // only check until the edge of the board has been reached
-                    while (inBounds(currPos)) {
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
-
-                        if (finalPos.equals(currPos)) {
-                            return true;
-                        }
-                        // this direction is blocked, move to the next direction
-                        else if (board.get(currPos) != null) {
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-            case Monarch: {
-                // check each of the single-move cardinal and vertical adjacencies for the final position
-                List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
-                for (int i = 0; i < 12; i++) {
-                    if (finalPos.equals(adjacencies.get(i))) {
-                        return true;
-                    }
-                }
-                break;
-            }
-        }
-        return false;
+    public static boolean isValidMove(Unit unit, Position startPos, Position finalPos, GameBoard board) {
+        return board.get(finalPos) == null && getValidMoves(unit, startPos, board).contains(finalPos);
     }
 
     /**
@@ -155,7 +55,7 @@ public class Rules {
      * @param board         the current state of the game board, must not be null
      * @return              returns true if the attack is valid, false otherwise
      */
-    public static boolean validAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, GameBoard board) {
+    public static boolean isValidAttack(Unit attacker, Position attackerPos, Unit defender, Position defenderPos, GameBoard board) {
         if (attacker.color != defender.color) {
             // a player may not attack their own units
             if (attacker.unitType == UnitType.Footman) {
@@ -171,11 +71,155 @@ public class Rules {
             }
             else {
                 // for all other units, the attack is valid if the move is valid
-                return validMove(attacker, attackerPos, defenderPos, board);
+                Set<Position> validMoves = getValidMoves(attacker, attackerPos, board);
+                return validMoves.contains(defenderPos);
             }
         }
 
         return false;
+    }
+
+    /**
+     * Get the set of all valid moves for the unit from the startPos
+     * @param unit      the unit that the player is attempting to move, must not be null
+     * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
+     * @param board     the current state of the game board, must not be null
+     * @return          the set containing all valid moves and attacks for the given unit at the given startPos
+     */
+    public static Set<Position> getValidMoves(Unit unit, Position startPos, GameBoard board) {
+        Set<Position> moves = new HashSet<>();
+
+        switch (unit.unitType) {
+            case Footman: {
+                // black may only move in the positive y direction, white in the negative direction
+                int dir = unit.color == Color.BLACK ? 1 : -1;
+
+                // check if the position in front of the footman is inBounds and empty
+                Position front = new Position(startPos.x(), startPos.y() + dir);
+                if (inBounds(front) && board.get(front) == null) {
+                    moves.add(front);
+                }
+                // check if the footman is at a default position (and is allowed a double move)
+                // and that both the front and jump positions are not blocked
+                Position jump = new Position(front.x(), front.y() + dir);
+                if (unit.equals(Init.defaultPositions.get(startPos)) && board.get(front) == null && board.get(jump) == null) {
+                    moves.add(jump);
+                }
+                break;
+            }
+            case Charger: {
+                // depth-first search each of the six cardinal directions for open positions or enemy units
+                for (int i = 0; i < 6; i++) {
+                    Position currPos = Init.moveAdjacencies.get(startPos).get(i);
+
+                    // only check until the edge of the board has been reached
+                    while (inBounds(currPos)) {
+                        Unit other = board.get(currPos);
+                        if (other == null) {
+                            // this tile is empty
+                            moves.add(new Position(currPos));
+                        } else if (unit.color != other.color) {
+                            // this tile is occupied by an enemy unit. add the pos and move to the next direction
+                            moves.add(new Position(currPos));
+                            break;
+                        } else {
+                            // a friendly unit is blocking this tile, move to the next direction
+                            break;
+                        }
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                    }
+                }
+                break;
+            }
+            case Assassin: {
+                // depth-first search each of the six vertical directions for open positions or enemy units
+                for (int i = 6; i < 12; i++) {
+                    Position currPos = Init.moveAdjacencies.get(startPos).get(i);
+
+                    // only check until the edge of the board has been reached
+                    while (inBounds(currPos)) {
+                        Unit other = board.get(currPos);
+                        if (other == null) {
+                            // this tile is empty and inBounds
+                            moves.add(new Position(currPos));
+                        } else if (other.color != unit.color) {
+                            // this tile is occupied by an enemy unit, add the pos and move to the next direction
+                            moves.add(new Position(currPos));
+                            break;
+                        } else {
+                            // this tile is blocked by a friendly unit, move to the next direction
+                            break;
+                        }
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                    }
+                }
+                break;
+            }
+            case Calvary: {
+                // check each of the single-move 'jump' adjacencies for the final position
+                List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
+                for (int i = 12; i < 24; i++) {
+                    Position pos = adjacencies.get(i);
+                    Unit other = board.get(pos);
+
+                    if (inBounds(pos)) {
+                        if (other == null) {
+                            // this tile is empty and inBounds, add pos to moves
+                            moves.add(pos);
+                        } else if (other.color != unit.color) {
+                            // this tile is inBounds and occupied by an enemy unit
+                            moves.add(pos);
+                        }
+                    }
+                }
+                break;
+            }
+            case Champion: {
+                // depth-first search on the six cardinal and vertical directions for the final position
+                for (int i = 0; i < 12; i++) {
+                    Position currPos = Init.moveAdjacencies.get(startPos).get(i);
+
+                    // only check until the edge of the board has been reached
+                    while (inBounds(currPos)) {
+                        Unit other = board.get(currPos);
+                        if (other == null) {
+                            // this tile is empty and inBounds
+                            moves.add(new Position(currPos));
+                        } else if (other.color != unit.color) {
+                            // this tile is occupied by an enemy unit, add the pos and move to the next direction
+                            moves.add(new Position(currPos));
+                            break;
+                        } else {
+                            // this tile is blocked by a friendly unit, move to the next direction
+                            break;
+                        }
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                    }
+                }
+                break;
+            }
+            case Monarch: {
+                // check each of the single-move cardinal and vertical adjacencies for the final position
+                List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
+                for (int i = 0; i < 12; i++) {
+                    Position pos = adjacencies.get(i);
+                    Unit other = board.get(pos);
+
+                    if (inBounds(pos)) {
+                        if (other == null) {
+                            // this tile is empty and inBounds, add pos to moves
+                            moves.add(pos);
+                        } else if (other.color != unit.color) {
+                            // this tile is inBounds and occupied by an enemy unit
+                            moves.add(pos);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        return moves;
     }
 
     /**
