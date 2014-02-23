@@ -9,12 +9,13 @@ import com.tiberiuslabs.BattleChess.Types.UnitType;
 import java.util.*;
 
 /**
- * @author Amandeep Gill
- *
  * Holds the current state of the game
- *  - which units are where on the board
- *  - which units are in the graveyard
- *  - which player's turn it is currently
+ * <ul>
+ * <li>which units are where on the board
+ * <li>which units are in the graveyard
+ * <li>which player's turn it is currently
+ * </ul>
+ * @author Amandeep Gill
  */
 public class GameBoard {
     private static List<Position> cities = Init.cities;
@@ -123,6 +124,15 @@ public class GameBoard {
      */
     public Set<Unit> getActiveUnits(Color player) {
         return player == Color.BLACK ? blackUnits : whiteUnits;
+    }
+
+    /**
+     * Checks whether the player has an active monarch
+     * @param player    the player's color
+     * @return          returns true if the player has an active monarch, false otherwise
+     */
+    public boolean hasMonarch(Color player) {
+        return player == Color.BLACK ? blackMonarch : whiteMonarch;
     }
 
     /**

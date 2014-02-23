@@ -1,15 +1,25 @@
 package com.tiberiuslabs.Collections;
 
 /**
+ * Simple pair (tuple) class with immutable references to the first and second object
  * @author Amandeep Gill
- *
- * Simple pair (tuple) class
  */
 public class Pair<Fst, Snd> {
+    /**
+     * the first object of the Pair
+     */
     public final Fst fst;
+    /**
+     * the second object of the Pair
+     */
     public final Snd snd;
     private transient final int hash;
 
+    /**
+     * Initialize the Pair with the given first and second objects
+     * @param fst   the first object of the Pair, the reference to first can't be changed once set
+     * @param snd   the second object of the Pair, the reference to second can't be changed once set
+     */
     public Pair(Fst fst, Snd snd) {
         this.fst = fst;
         this.snd = snd;

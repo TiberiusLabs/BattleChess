@@ -6,12 +6,11 @@ import com.tiberiuslabs.Collections.Pair;
 
 import java.util.*;
 /**
- * @author Amandeep Gill
- * <p/>
  * Responsible for verifying the legality of moves and recruitment, as well as determining whether a final state has
  * been reached
+ * @author Amandeep Gill
  */
-public class Rules {
+public final class Rules {
 
     /**
      * Checks if (x,y) is a valid tile location.
@@ -202,11 +201,53 @@ public class Rules {
     }
 
     /**
+     * Checks whether the player can recruit the given unit to the given position. <p/>
+     * Requirements for recruitment:
+     * <ul>
+     * <li>the recruit must be in the player's graveyard<p/>
+     * <li>the player must have an active monarch on one of the cities<p/>
+     * <li>the player must control their own capitol<p/>
+     * <li>the player must control at least 2 other cities
+     * </ul>
+     * @param player    the player requesting recruitment
+     * @param recruit   the unit that the player wishes to recruit, must not be null
+     * @param position  the position to place the unit on
+     * @param board     the current state of the game board, must not be null
+     * @return          true if the player can recruit the unit, false otherwise
+     */
+    public static boolean canRecruit(Color player, Unit recruit, Position position, GameBoard board) {
+        if (board.hasMonarch(player) && board.getGraveyard(player).contains(recruit) && board.get(position) == null) {
+            Unit capitol = board.get(Init.cities.get(player == Color.BLACK ? 0 : 1));
+            if (capitol != null && capitol.color == player) {
+                int citiesHeld = 0;
+                boolean adjacent = false;
+                boolean monarch = false;
+                for (Position city : Init.cities) {
+                    Unit cityHolder = board.get(city);
+                    if (cityHolder != null && cityHolder.color == player && cityHolder.unitType != UnitType.Footman) {
+                        citiesHeld++;
+                    }
+                    if (!monarch && cityHolder != null) {
+                        monarch = cityHolder.color == player && cityHolder.unitType == UnitType.Monarch;
+                    }
+                    if (!adjacent && isValidMove(new Unit(UnitType.Charger, player, 1), city, position, board)) {
+                        adjacent = true;
+                    }
+                }
+                if (adjacent && citiesHeld >= 3) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks to see if either player has reached a win condition
      * @param board the current state of the game board, must not be null
      * @return      the color of the winning player, NEUTRAL if neither player has won
      */
-    public Color winner(GameBoard board) {
+    public static Color winner(GameBoard board) {
         Pair<Unit, Unit> capitols = new Pair<>(board.get(Init.cities.get(0)), board.get(Init.cities.get(1)));
         if (capitols.fst != null && capitols.snd != null) {
             if (capitols.fst.color == capitols.snd.color) {

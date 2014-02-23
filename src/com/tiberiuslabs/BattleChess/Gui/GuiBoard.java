@@ -1,9 +1,8 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * @author Amandeep Gill
- *
  * Holds the individual tiles
+ * @author Amandeep Gill
  */
 public class GuiBoard {
 }

@@ -1,14 +1,24 @@
 package com.tiberiuslabs.BattleChess.Types;
 
 /**
+ * holds what type of highlight the gui should display<p/>
  * @author Amandeep Gill
- *
- * holds what type of highlight the gui should display
- *  - NONE: no highlighting
- *  - MOVE: empty spot to move to
- *  - THRT: tile is threatened
- *  - SELD: currently selected
  */
 public enum Highlight {
-    NONE, MOVE, THRT, SELD
+    /**
+     * do not highlight this tile/unit
+     */
+    NONE,
+    /**
+     * this tile is empty and the selected unit can move here
+     */
+    MOVE,
+    /**
+     * this tile has a unit on it that is threatened by the selected unit
+     */
+    THRT,
+    /**
+     * this tile/unit is selected
+     */
+    SELD
 }

@@ -1,9 +1,8 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
- * @author Amandeep Gill
- *
  * popup windows to display the rules and play info
+ * @author Amandeep Gill
  */
 public class HelpWindow {
 }

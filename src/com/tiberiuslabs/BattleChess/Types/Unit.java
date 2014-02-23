@@ -1,20 +1,31 @@
 package com.tiberiuslabs.BattleChess.Types;
 
 /**
- * @author Amandeep Gill
- *
  * Container for the Unit class
- *  - the unit type
- *  - the player color
- *  - an id to distinguish between two units of the same type
+ * @author Amandeep Gill
  */
 public class Unit {
     private final transient int hash;
 
+    /**
+     * the unit's enumerated type
+     */
     public final UnitType unitType;
+    /**
+     * the color of the controlling player
+     */
     public final Color color;
+    /**
+     * an ID to distinguish between similar units
+     */
     public final int id;
 
+    /**
+     * Initialize the Unit.
+     * @param unitType  the type of unit that this is
+     * @param color     the color of the this unit's controlling player
+     * @param id        an ID to distinguish this from the other units of the same type and color
+     */
     public Unit(UnitType unitType, Color color, int id) {
         this.unitType = unitType;
         this.color = color;

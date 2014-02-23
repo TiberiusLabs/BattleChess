@@ -1,12 +1,13 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 /**
+ * Displays the game state information relevant to the player<p/>
+ * <ul>
+ * <li>player/AI score
+ * <li>player/AI units in the graveyard
+ * <li>misc things that may come up
+ * </ul>
  * @author Amandeep Gill
- *
- * Displays the game state information relevant to the player
- *  - player/AI score
- *  - player/AI units in the graveyard
- *  - misc things that may come up
  */
 public class PlayerInfo {
 }

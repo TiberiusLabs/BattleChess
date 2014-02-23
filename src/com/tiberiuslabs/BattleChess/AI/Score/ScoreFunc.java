@@ -1,9 +1,8 @@
 package com.tiberiuslabs.BattleChess.AI.Score;
 
 /**
- * @author Amandeep Gill
- *
  * interface for defining the score function callbacks
+ * @author Amandeep Gill<
  */
 public interface ScoreFunc {
     public int score();

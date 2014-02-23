@@ -5,9 +5,8 @@ import com.tiberiuslabs.BattleChess.Types.*;
 import java.util.*;
 
 /**
- * @author Amandeep Gill
- *
  * Responsible for generating the initial game information
+ * @author Amandeep Gill
  */
 public class Init {
     /**

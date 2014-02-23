@@ -3,9 +3,8 @@ package com.tiberiuslabs.BattleChess.Types;
 import com.tiberiuslabs.Collections.Pair;
 
 /**
- * @author Amandeep Gill
- *
  * Specialized Pair wrapper specifically for integer cartesian coordinate
+ * @author Amandeep Gill
  */
 public class Position {
     private final Pair<Integer, Integer> xy;
@@ -53,7 +52,7 @@ public class Position {
     /**
      * Construct a new Position through addition of this and other, performs check for null safety
      * @param other the Position to add to this Position
-     * @return  a new Position with (x,y) == (this.x + other.x, this.y + other.y), returns this if other == null
+     * @return  a new Position with (x,y) == (this.x + other.x, this.y + other.y), returns a copy of this if other == null
      */
     public Position add(Position other) {
         return other == null ? new Position(this) : new Position(this.x() + other.x(), this.y() + other.y());
