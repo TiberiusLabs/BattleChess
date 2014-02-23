@@ -176,11 +176,11 @@ public class Init {
     });
 
     /**
-     * Constructs a 2D array of units representing the initial game state
-     * @return a 2D array with null representing empty tiles
+     * Constructs a map that has all 91 tile positions mapped to the unit that is at that tile or null if the tile is empty
+     * @return a pos -> unit map with unit == null representing empty tiles
      */
     public static Map<Position, Unit> initBoard() {
-        Map<Position, Unit> board = new HashMap<>();
+        Map<Position, Unit> board = new HashMap<>(91);
 
         for (int x = 0; x <= 10; x++) {
             for (int y = 0; y <= 10; y++) {

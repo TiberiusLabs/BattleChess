@@ -80,6 +80,32 @@ public class GameBoard {
     }
 
     /**
+     * Sets the new recruit to the position given if the position is available and the recruit has come from the graveyard
+     * @param unit      the unit to recruit
+     * @param position  the position to put the recruit at
+     * @return          true if the unit was successfully recruited, false otherwise
+     */
+    public boolean set(Unit unit, Position position) {
+        boolean isBlack = unit.color == Color.BLACK;
+        if (isBlack ? whiteGraveyard.contains(unit) : blackGraveyard.contains(unit) &&
+                board.get(position) == null) {
+            board.put(position, unit);
+            if (isBlack) {
+                blackGraveyard.remove(unit);
+                blackUnits.add(unit);
+                blackMonarch = blackMonarch || unit.unitType == UnitType.Monarch;
+                numBlackUnits++;
+            } else {
+                whiteGraveyard.remove(unit);
+                whiteUnits.add(unit);
+                whiteMonarch = whiteMonarch || unit.unitType == UnitType.Monarch;
+                numWhiteUnits++;
+            }
+            return true;
+        }
+        return false;
+    }
+    /**
      * Moves the Unit at startPos to finalPos, if a unit is already at finalPos it gets removed from the board and
      * added to the graveyard. Performs no validity or sanity checks.
      * @param startPos  the starting position of the unit that is moving
