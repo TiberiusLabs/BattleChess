@@ -58,6 +58,10 @@ public class Position {
         return other == null ? new Position(this) : new Position(this.x() + other.x(), this.y() + other.y());
     }
 
+    public Position add(int x, int y) {
+        return new Position(xy.fst + x, xy.snd + y);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

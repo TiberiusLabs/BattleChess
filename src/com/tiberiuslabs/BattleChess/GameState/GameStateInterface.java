@@ -1,12 +1,15 @@
 package com.tiberiuslabs.BattleChess.GameState;
 
 import com.tiberiuslabs.BattleChess.AI.*;
+import com.tiberiuslabs.BattleChess.GameEngine.Init;
 import com.tiberiuslabs.BattleChess.GameEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Triple;
+
+import java.util.Map;
 
 /**
  * Interfaces with the player to make changes to the game state
@@ -87,5 +90,12 @@ public class GameStateInterface {
             return true;
         }
         return false;
+    }
+
+    public Color tileColor(Position position) {
+        return Init.tileColors.get(position);
+    }
+    public Map<Position, Unit> getBoard() {
+        return board.getBoard();
     }
 }

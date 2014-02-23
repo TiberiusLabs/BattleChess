@@ -18,7 +18,6 @@ import java.util.*;
  * @author Amandeep Gill
  */
 public class GameBoard {
-    private static List<Position> cities = Init.cities;
     private final Map<Position, Unit> board = Init.initBoard();
 
     private final Set<Unit> blackUnits = new HashSet<>();
@@ -77,6 +76,14 @@ public class GameBoard {
      */
     public Unit get(Position pos) {
         return board.get(pos);
+    }
+
+    /**
+     * Gets the pos -> unit mapping that represents the board
+     * @return  a mapping of Positions to Units
+     */
+    public Map<Position, Unit> getBoard() {
+        return board;
     }
 
     /**
