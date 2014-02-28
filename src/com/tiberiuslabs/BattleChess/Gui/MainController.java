@@ -1,11 +1,10 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
-import com.tiberiuslabs.BattleChess.Gui.GuiBoard;
 
-public class Controller {
+public class MainController {
     private GuiBoard board;
 
-    public Controller() {
+    public MainController() {
         board = new GuiBoard();
     }
 }
