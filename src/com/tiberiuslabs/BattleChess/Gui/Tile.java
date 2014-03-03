@@ -5,6 +5,7 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Polygon;
+import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Holds interface state of the tile
@@ -17,8 +18,8 @@ import javafx.scene.shape.Polygon;
  * @author Amandeep Gill
  */
 public class Tile {
-    private final Position location;
-    private final Polygon hexTile;
+    private final Vector2f location;
+    private final Vector2f[] hexTile;
     private final Image backgroundImage;
     private Image unitPortrait;
     private Highlight highlight;
@@ -29,17 +30,19 @@ public class Tile {
      * @param size              the length of the hexagon's edges
      * @param backgroundImage   the background image of the tile
      */
-    public Tile(Position location, int size, Image backgroundImage) {
+    public Tile(Vector2f location, int size, Image backgroundImage) {
         this.location = location;
         this.backgroundImage = backgroundImage;
         this.unitPortrait = null;
-        double theta = Math.sin(Math.PI/6);
-        double points[] = new double[6];
+
+        hexTile = new Vector2f[6];
+        double theta = Math.PI/6;
+
         for (int i = 0; i < 10; i += 2) {
-            points[i] = size * Math.cos((i/2)*theta) + location.x();
-            points[i+1] = size * Math.sin((i/2)*theta) + location.y();
+            float x = (float)(size * Math.cos((i/2)*theta) + location.getX());
+            float y = (float)(size * Math.sin((i/2)*theta) + location.getY());
+            hexTile[i] = new Vector2f(x,y);
         }
-        hexTile = new Polygon(points);
     }
 
     /**
@@ -71,15 +74,15 @@ public class Tile {
      * Gets the list of points that make up the six corners of the polygon
      * @return  an Observable List of the points of the hexagon
      */
-    public ObservableList<Double> getPoints() {
-        return hexTile.getPoints();
+    public Vector2f[] getPoints() {
+        return hexTile;
     }
 
     /**
      * Gets the location on the center of the tile
      * @return  a Position object holding the (x,y) center of the Tile
      */
-    public Position getLocation() {
+    public Vector2f getLocation() {
         return location;
     }
 

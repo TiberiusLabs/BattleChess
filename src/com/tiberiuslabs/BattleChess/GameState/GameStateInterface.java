@@ -1,8 +1,8 @@
 package com.tiberiuslabs.BattleChess.GameState;
 
 import com.tiberiuslabs.BattleChess.AI.*;
-import com.tiberiuslabs.BattleChess.GameEngine.Init;
-import com.tiberiuslabs.BattleChess.GameEngine.Rules;
+import com.tiberiuslabs.BattleChess.ChessEngine.Init;
+import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
