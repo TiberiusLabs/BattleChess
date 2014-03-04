@@ -1,7 +1,8 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 import com.sun.javafx.collections.ObservableMapWrapper;
-import com.tiberiuslabs.BattleChess.GameState.GameStateInterface;
+import com.sun.javafx.geom.Vec2f;
+import com.tiberiuslabs.BattleChess.GameState.BoardState;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
@@ -10,6 +11,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,12 +21,13 @@ import java.util.Map;
 public class GuiBoard {
     private int size = 10;
     private ObservableMap<Position, Unit>  board;
-    private GameStateInterface gameState;
+    private BoardState gameState;
 
     public Map<Position, Tile> tiles;
 
     public GuiBoard() {
-        gameState = new GameStateInterface(Color.BLACK, AIDifficulty.EXPERT);
+        tiles = new HashMap<>();
+        gameState = new BoardState(Color.BLACK, AIDifficulty.EXPERT);
         board = new ObservableMapWrapper<>(gameState.getBoard());
 
         for (Map.Entry<Position, Unit> entry : board.entrySet()) {
@@ -32,18 +35,18 @@ public class GuiBoard {
             switch (gameState.tileColor(entry.getKey())) {
                 case BLACK:
                     tile = new Tile(
-                            new Position((int)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
-                            size, new Image("@res/art/board/black.png"));
+                            new Vec2f((float)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
+                            size, new Image("file:res/art/board/black.png"));
                     break;
                 case WHITE:
                     tile = new Tile(
-                            new Position((int)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
-                            size, new Image("@res/art/board/white.png"));
+                            new Vec2f((float)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
+                            size, new Image("file:res/art/board/white.png"));
                     break;
                 case GREY:
                     tile = new Tile(
-                            new Position((int)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
-                            size, new Image("@res/art/board/grey.png"));
+                            new Vec2f((float)(entry.getKey().x() * size * 1.5), entry.getKey().y() * size * 2 + entry.getKey().x() * size),
+                            size, new Image("file:res/art/board/grey.png"));
                     break;
                 default:
                     continue;
