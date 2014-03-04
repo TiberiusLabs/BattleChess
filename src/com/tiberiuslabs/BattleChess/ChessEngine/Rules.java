@@ -19,7 +19,7 @@ public final class Rules {
      * @return true if the location is valid, false otherwise
      */
     public static boolean inBounds(int x, int y) {
-        return Math.abs(x) + Math.abs(y) <= 5;
+        return Math.abs(x + y) <= 5;
     }
 
     /**
