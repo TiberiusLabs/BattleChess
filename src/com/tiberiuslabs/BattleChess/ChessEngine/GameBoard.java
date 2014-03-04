@@ -1,6 +1,5 @@
-package com.tiberiuslabs.BattleChess.GameState;
+package com.tiberiuslabs.BattleChess.ChessEngine;
 
-import com.tiberiuslabs.BattleChess.ChessEngine.Init;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;

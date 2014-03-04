@@ -1,6 +1,6 @@
 package com.tiberiuslabs.BattleChess.AI.Score;
 
-import com.tiberiuslabs.BattleChess.GameState.GameBoard;
+import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 

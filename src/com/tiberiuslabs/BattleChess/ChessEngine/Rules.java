@@ -1,6 +1,5 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
-import com.tiberiuslabs.BattleChess.GameState.GameBoard;
 import com.tiberiuslabs.BattleChess.Types.*;
 import com.tiberiuslabs.Collections.Pair;
 

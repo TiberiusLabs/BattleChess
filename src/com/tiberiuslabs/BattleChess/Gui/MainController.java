@@ -1,6 +1,5 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
-
 public class MainController {
     private GuiBoard board;
 

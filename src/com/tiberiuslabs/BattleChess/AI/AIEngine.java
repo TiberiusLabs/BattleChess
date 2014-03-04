@@ -1,7 +1,7 @@
 package com.tiberiuslabs.BattleChess.AI;
 
 import com.tiberiuslabs.BattleChess.AI.Score.ScoreFunc;
-import com.tiberiuslabs.BattleChess.GameState.GameBoard;
+import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
