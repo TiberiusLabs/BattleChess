@@ -15,43 +15,43 @@ public class Init {
     public static final Map<Position, Unit> defaultPositions =
         Collections.unmodifiableMap(new HashMap<Position, Unit>() {
         {
-            put(new Position(1, 9), new Unit(UnitType.Footman,  Color.BLACK, 1));
-            put(new Position(2, 9), new Unit(UnitType.Footman,  Color.BLACK, 2));
-            put(new Position(3, 9), new Unit(UnitType.Footman,  Color.BLACK, 3));
-            put(new Position(4, 9), new Unit(UnitType.Footman,  Color.BLACK, 4));
-            put(new Position(5, 9), new Unit(UnitType.Footman,  Color.BLACK, 5));
-            put(new Position(6, 8), new Unit(UnitType.Footman,  Color.BLACK, 6));
-            put(new Position(7, 7), new Unit(UnitType.Footman,  Color.BLACK, 7));
-            put(new Position(8, 6), new Unit(UnitType.Footman,  Color.BLACK, 8));
-            put(new Position(9, 5), new Unit(UnitType.Footman,  Color.BLACK, 9));
-            put(new Position(2, 8), new Unit(UnitType.Charger,  Color.BLACK, 1));
-            put(new Position(8, 0), new Unit(UnitType.Charger,  Color.BLACK, 2));
-            put(new Position(3, 3), new Unit(UnitType.Calvary,  Color.BLACK, 1));
-            put(new Position(7, 0), new Unit(UnitType.Calvary,  Color.BLACK, 2));
-            put(new Position(4, 1), new Unit(UnitType.Monarch,  Color.BLACK, 1));
-            put(new Position(1, 0), new Unit(UnitType.Champion, Color.BLACK, 0));
-            put(new Position(5, 0), new Unit(UnitType.Assassin, Color.BLACK, 1));
-            put(new Position(5, 1), new Unit(UnitType.Assassin, Color.BLACK, 2));
-            put(new Position(5, 2), new Unit(UnitType.Assassin, Color.BLACK, 3));
+            put(new Position(-4,-1), new Unit(UnitType.Footman,  Color.BLACK, 1));
+            put(new Position(-3,-1), new Unit(UnitType.Footman,  Color.BLACK, 2));
+            put(new Position(-2,-1), new Unit(UnitType.Footman,  Color.BLACK, 3));
+            put(new Position(-1,-1), new Unit(UnitType.Footman,  Color.BLACK, 4));
+            put(new Position( 0,-1), new Unit(UnitType.Footman,  Color.BLACK, 5));
+            put(new Position( 1,-2), new Unit(UnitType.Footman,  Color.BLACK, 6));
+            put(new Position( 2,-3), new Unit(UnitType.Footman,  Color.BLACK, 7));
+            put(new Position( 3,-4), new Unit(UnitType.Footman,  Color.BLACK, 8));
+            put(new Position( 4,-5), new Unit(UnitType.Footman,  Color.BLACK, 9));
+            put(new Position(-3,-2), new Unit(UnitType.Charger,  Color.BLACK, 1));
+            put(new Position( 3,-5), new Unit(UnitType.Charger,  Color.BLACK, 2));
+            put(new Position(-2,-3), new Unit(UnitType.Calvary,  Color.BLACK, 1));
+            put(new Position( 2,-5), new Unit(UnitType.Calvary,  Color.BLACK, 2));
+            put(new Position(-1,-4), new Unit(UnitType.Monarch,  Color.BLACK, 1));
+            put(new Position( 1,-5), new Unit(UnitType.Champion, Color.BLACK, 0));
+            put(new Position( 0,-5), new Unit(UnitType.Assassin, Color.BLACK, 1));
+            put(new Position( 0,-4), new Unit(UnitType.Assassin, Color.BLACK, 2));
+            put(new Position( 0,-3), new Unit(UnitType.Assassin, Color.BLACK, 3));
 
-            put(new Position(9, 9), new Unit(UnitType.Footman,  Color.WHITE, 1));
-            put(new Position(8, 9), new Unit(UnitType.Footman,  Color.WHITE, 2));
-            put(new Position(7, 9), new Unit(UnitType.Footman,  Color.WHITE, 3));
-            put(new Position(6, 9), new Unit(UnitType.Footman,  Color.WHITE, 4));
-            put(new Position(5, 9), new Unit(UnitType.Footman,  Color.WHITE, 5));
-            put(new Position(4, 8), new Unit(UnitType.Footman,  Color.WHITE, 6));
-            put(new Position(3, 7), new Unit(UnitType.Footman,  Color.WHITE, 7));
-            put(new Position(2, 6), new Unit(UnitType.Footman,  Color.WHITE, 8));
-            put(new Position(1, 5), new Unit(UnitType.Footman,  Color.WHITE, 9));
-            put(new Position(8, 7), new Unit(UnitType.Charger,  Color.WHITE, 1));
-            put(new Position(2,10), new Unit(UnitType.Charger,  Color.WHITE, 2));
-            put(new Position(7, 8), new Unit(UnitType.Calvary,  Color.WHITE, 1));
-            put(new Position(3,10), new Unit(UnitType.Calvary,  Color.WHITE, 2));
-            put(new Position(6, 9), new Unit(UnitType.Monarch,  Color.WHITE, 1));
-            put(new Position(4,10), new Unit(UnitType.Champion, Color.WHITE, 0));
-            put(new Position(5,10), new Unit(UnitType.Assassin, Color.WHITE, 1));
-            put(new Position(5, 9), new Unit(UnitType.Assassin, Color.WHITE, 2));
-            put(new Position(5, 8), new Unit(UnitType.Assassin, Color.WHITE, 3));
+            put(new Position( 4, 1), new Unit(UnitType.Footman,  Color.WHITE, 1));
+            put(new Position( 3, 1), new Unit(UnitType.Footman,  Color.WHITE, 2));
+            put(new Position( 2, 1), new Unit(UnitType.Footman,  Color.WHITE, 3));
+            put(new Position( 1, 1), new Unit(UnitType.Footman,  Color.WHITE, 4));
+            put(new Position( 0, 1), new Unit(UnitType.Footman,  Color.WHITE, 5));
+            put(new Position(-1, 2), new Unit(UnitType.Footman,  Color.WHITE, 6));
+            put(new Position(-2, 3), new Unit(UnitType.Footman,  Color.WHITE, 7));
+            put(new Position(-3, 4), new Unit(UnitType.Footman,  Color.WHITE, 8));
+            put(new Position(-4, 5), new Unit(UnitType.Footman,  Color.WHITE, 9));
+            put(new Position( 3, 2), new Unit(UnitType.Charger,  Color.WHITE, 1));
+            put(new Position(-3, 5), new Unit(UnitType.Charger,  Color.WHITE, 2));
+            put(new Position( 2, 3), new Unit(UnitType.Calvary,  Color.WHITE, 1));
+            put(new Position(-2, 5), new Unit(UnitType.Calvary,  Color.WHITE, 2));
+            put(new Position( 1, 4), new Unit(UnitType.Monarch,  Color.WHITE, 1));
+            put(new Position(-1, 5), new Unit(UnitType.Champion, Color.WHITE, 0));
+            put(new Position( 0, 5), new Unit(UnitType.Assassin, Color.WHITE, 1));
+            put(new Position( 0, 4), new Unit(UnitType.Assassin, Color.WHITE, 2));
+            put(new Position( 0, 3), new Unit(UnitType.Assassin, Color.WHITE, 3));
         }
     });
 
@@ -61,8 +61,8 @@ public class Init {
     public static final Map<Position, List<Position>> moveAdjacencies =
         Collections.unmodifiableMap(new HashMap<Position, List<Position>>() {
         {
-            for (int q = 0; q <= 10; q++) {
-                for (int r = 0; r <= 10; r++) {
+            for (int q = -5; q <= 5; q++) {
+                for (int r = -5; r <= 5; r++) {
                     if (Rules.inBounds(q, r)) {
                         List<Position> adjacent = new ArrayList<>(24);
                         for (int i = 0; i < 24; i++)
@@ -134,12 +134,12 @@ public class Init {
      */
     public static final List<Position> cities = Collections.unmodifiableList(new ArrayList<Position>() {
         {
-            add(new Position(5, 0));
-            add(new Position(5, 10));
-            add(new Position(0, 5));
-            add(new Position(10, 0));
-            add(new Position(0, 10));
-            add(new Position(10, 5));
+            add(new Position( 0,-5));
+            add(new Position(-5, 0));
+            add(new Position( 5,-5));
+            add(new Position( 5, 0));
+            add(new Position( 0, 5));
+            add(new Position(-5, 5));
         }
     });
 
@@ -150,8 +150,8 @@ public class Init {
     public static Map<Position, Color> tileColors = Collections.unmodifiableMap(new HashMap<Position, Color>(){
         {
             int color = 1;
-            for (int x = 0; x <= 10; x++) {
-                for (int y = 0; y <= 10; y++) {
+            for (int x = -5; x <= 5; x++) {
+                for (int y = -5; y <= 5; y++) {
                     if (Rules.inBounds(x, y)) {
                         switch (color) {
                             case 0:
@@ -182,8 +182,8 @@ public class Init {
     public static Map<Position, Unit> initBoard() {
         Map<Position, Unit> board = new HashMap<>(91);
 
-        for (int x = 0; x <= 10; x++) {
-            for (int y = 0; y <= 10; y++) {
+        for (int x = -5; x <= 5; x++) {
+            for (int y = -5; y <= 5; y++) {
                 Position pos = new Position(x,y);
                 if (Rules.inBounds(pos)) {
                     board.put(pos, defaultPositions.get(pos));
