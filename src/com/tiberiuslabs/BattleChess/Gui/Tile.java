@@ -2,7 +2,12 @@ package com.tiberiuslabs.BattleChess.Gui;
 
 import com.sun.javafx.geom.Vec2f;
 import com.tiberiuslabs.BattleChess.Types.Highlight;
+import com.tiberiuslabs.BattleChess.Types.Position;
+import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 
 /**
  * Holds interface state of the tile
@@ -11,48 +16,79 @@ import javafx.scene.image.Image;
  * <li>which unit portrait should be displayed, if any
  * <li>whether/how it is highlighted
  * </ul>
- *  Also is the origin of the mouse click events
+ * Also is the origin of the mouse click events
+ *
  * @author Amandeep Gill
  */
 public class Tile {
-    private final Vec2f location;
-    private final Vec2f[] hexTile;
-    private final Image backgroundImage;
+    private final Position position;
+    private final Color backgroundColor;
+    private final Polygon polygon;
     private Image unitPortrait;
     private Highlight highlight;
 
     /**
-     * Instantiate the Tile with the given size and location
-     * @param location          the x,y location to draw the tile on the screen
-     * @param size              the length of the hexagon's edges
-     * @param backgroundImage   the background image of the tile
+     * Instantiate the Tile with the given size and position
+     *
+     * @param position        the x,y position to draw the tile on the screen
+     * @param size            the length of the hexagon's edges
+     * @param backgroundColor the background image of the tile
+     * @param canvas          the canvas that the tile is drawn on
      */
-    public Tile(Vec2f location, int size, Image backgroundImage) {
-        this.location = location;
-        this.backgroundImage = backgroundImage;
+    public Tile(Position position, int size, Color backgroundColor, Canvas canvas) {
+        this.position = position;
+        this.backgroundColor = backgroundColor;
         this.unitPortrait = null;
+        Vec2f location = new Vec2f((float) (position.x() * size * 1.5 + 300), position.y() * size * 2 + position.x() * size + 300);
 
-        hexTile = new Vec2f[6];
-        double theta = Math.PI/6;
+        double[] vertices = new double[12];
+        double theta = Math.PI / 6;
 
-        for (int i = 0; i < 6; i += 1) {
-            float x = (float)(size * Math.cos((i/2)*theta) + location.x);
-            float y = (float)(size * Math.sin((i/2)*theta) + location.y);
-            hexTile[i] = new Vec2f(x,y);
+        for (int i = 0; i < 12; i += 2) {
+            vertices[i] = size * Math.cos((i / 2) * theta) + location.x;
+            vertices[i+1] = size * Math.sin((i / 2) * theta) + location.y;
+        }
+
+        polygon = new Polygon(vertices);
+    }
+
+    /**
+     * Sets the listener callback for when selections are registered
+     *
+     * @param selectionListener the listener callback for when this Tile is selected
+     */
+    public void addSelectionListener(SelectionListener selectionListener) {
+        polygon.setOnMouseClicked(mouseEvent -> {
+            selectionListener.select(position);
+        });
+    }
+
+    public void repaint() {
+        polygon.setFill(backgroundColor);
+        switch (highlight) {
+            case SELD:
+                polygon.setStrokeWidth(5);
+                polygon.setStroke(Color.BLUE);
+                break;
+            case THRT:
+                polygon.setStrokeWidth(5);
+                polygon.setStroke(Color.RED);
+                break;
+            case MOVE:
+                polygon.setStrokeWidth(5);
+                polygon.setStroke(Color.GREEN);
+                break;
+            case NONE:
+                polygon.setStrokeWidth(1);
+                polygon.setStroke(Color.BLACK);
+                break;
         }
     }
 
     /**
-     * Get the background image for this tile
-     * @return  an Image containing the background picture
-     */
-    public Image getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    /**
      * Set the image that represents the unit that is on this tile
-     * @param unitPortrait  the unit's portrait image
+     *
+     * @param unitPortrait the unit's portrait image
      */
     public void setUnitPortrait(Image unitPortrait) {
         this.unitPortrait = unitPortrait;
@@ -60,32 +96,27 @@ public class Tile {
 
     /**
      * Set the highlighting for the Tile
-     * @see com.tiberiuslabs.BattleChess.Types.Highlight
+     *
      * @param highlight the enumerated highlight type
+     * @see com.tiberiuslabs.BattleChess.Types.Highlight
      */
     public void setHighlight(Highlight highlight) {
         this.highlight = highlight;
     }
 
     /**
-     * Gets the list of points that make up the six corners of the polygon
-     * @return  an Observable List of the points of the hexagon
+     * Gets the position of the tile
+     *
+     * @return a Position object holding the (x,y) board coordinate of the Tile
      */
-    public Vec2f[] getPoints() {
-        return hexTile;
-    }
-
-    /**
-     * Gets the location on the center of the tile
-     * @return  a Position object holding the (x,y) center of the Tile
-     */
-    public Vec2f getLocation() {
-        return location;
+    public Position getPosition() {
+        return position;
     }
 
     /**
      * Get the image to display on the Tile
-     * @return  an Image object referencing either the unit that is on the tile, or the default image
+     *
+     * @return an Image object referencing either the unit that is on the tile, or the default image
      */
     public Image getUnitPortrait() {
         return unitPortrait;
@@ -93,10 +124,18 @@ public class Tile {
 
     /**
      * Gets the current highlighting on the Tile
+     *
+     * @return the enumerated highlight type
      * @see com.tiberiuslabs.BattleChess.Types.Highlight
-     * @return  the enumerated highlight type
      */
     public Highlight getHighlight() {
         return highlight;
+    }
+
+    /**
+     * Interface for the SelectionListener callback
+     */
+    interface SelectionListener {
+        void select(Position position);
     }
 }

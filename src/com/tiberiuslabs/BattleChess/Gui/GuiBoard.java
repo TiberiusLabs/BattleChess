@@ -1,72 +1,66 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
-import com.sun.javafx.collections.ObservableMapWrapper;
-import com.sun.javafx.geom.Vec2f;
-
-import com.tiberiuslabs.BattleChess.GameEngine.GameEngine;
-import com.tiberiuslabs.BattleChess.Types.*;
-
-import com.tiberiuslabs.Collections.Pair;
+import com.tiberiuslabs.BattleChess.Types.Color;
+import com.tiberiuslabs.BattleChess.Types.Highlight;
+import com.tiberiuslabs.BattleChess.Types.Position;
+import com.tiberiuslabs.BattleChess.Types.Unit;
+import com.tiberiuslabs.Collections.Triple;
 import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
-import javafx.scene.image.Image;
+import javafx.scene.canvas.Canvas;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Holds the individual tiles
+ *
  * @author Amandeep Gill
  */
 public class GuiBoard {
-    private Vec2f center = new Vec2f(400,300);
-    private int size = 10;
-    private ObservableMap<Position, Unit>  board;
-    private GameEngine gameEngine;
 
-    public Map<Position, Tile> tiles;
+    private Map<Position, Tile> tiles;
 
-    public GuiBoard() {
+    public GuiBoard(BoardCallback boardCallback, Canvas canvas) {
         tiles = new HashMap<>();
-        gameEngine = new GameEngine(Color.BLACK, AIDifficulty.EXPERT);
-        board = new ObservableMapWrapper<>(gameEngine.getBoard());
 
-        for (Map.Entry<Position, Unit> entry : board.entrySet()) {
+        for (Position position : boardCallback.getTilePositions()) {
             Tile tile;
-            switch (gameEngine.tileColor(entry.getKey())) {
+            Triple<Highlight, Unit, Color> tileInfo = boardCallback.getTileInfo(position);
+            int size = 10;
+            switch (tileInfo.thd) {
                 case BLACK:
-                    tile = new Tile(
-                            new Vec2f((float)(entry.getKey().x() * size * 1.5 + center.x), entry.getKey().y() * size * 2 + entry.getKey().x() * size + center.y),
-                            size, new Image("file:res/art/board/black.png"));
+                    tile = new Tile(position, size, javafx.scene.paint.Color.BLACK, canvas);
                     break;
                 case WHITE:
-                    tile = new Tile(
-                            new Vec2f((float)(entry.getKey().x() * size * 1.5 + center.x), entry.getKey().y() * size * 2 + entry.getKey().x() * size + center.y),
-                            size, new Image("file:res/art/board/white.png"));
+                    tile = new Tile(position, size, javafx.scene.paint.Color.WHITE, canvas);
                     break;
                 case GREY:
-                    tile = new Tile(
-                            new Vec2f((float)(entry.getKey().x() * size * 1.5 + center.y), entry.getKey().y() * size * 2 + entry.getKey().x() * size + center.y),
-                            size, new Image("file:res/art/board/grey.png"));
+                    tile = new Tile(position, size, javafx.scene.paint.Color.GRAY, canvas);
                     break;
                 default:
                     continue;
             }
-            tiles.put(entry.getKey(), tile);
+            tile.addSelectionListener(boardCallback::makeSelection);
+            tiles.put(position, tile);
         }
 
-        board.addListener((MapChangeListener<Position, Unit>) change -> {
-            tiles.get(change.getKey()).setUnitPortrait(null);
+        boardCallback.addBoardListener(change -> {
+            Position position = change.getKey();
+            Tile tile = tiles.get(position);
+            tile.setHighlight(change.getValueAdded().fst);
+            tile.repaint();
         });
-    }
 
-    public boolean makeMove(Position startPos, Position finalPos, Color player) {
-        Unit unit = board.get(startPos);
-        return unit != null && unit.color == player && gameEngine.makeMove(unit, startPos, finalPos);
     }
 
     public interface BoardCallback {
-        public void setBoardListener(MapChangeListener<Position, Pair<Highlight, Unit>> listener);
+        public void addBoardListener(MapChangeListener<Position, Triple<Highlight, Unit, Color>> listener);
+
         public void makeSelection(Position position);
+
+        public Set<Position> getTilePositions();
+
+        public Triple<Highlight, Unit, Color> getTileInfo(Position position);
     }
 }

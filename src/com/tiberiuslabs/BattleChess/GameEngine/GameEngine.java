@@ -177,4 +177,8 @@ public class GameEngine {
     public Map<Position, Unit> getBoard() {
         return board.getBoard();
     }
+
+    public Unit get(Position position) {
+        return board.get(position);
+    }
 }

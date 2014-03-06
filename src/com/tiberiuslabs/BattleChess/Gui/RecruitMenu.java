@@ -1,6 +1,7 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import javafx.collections.SetChangeListener;
 
 import java.util.*;
 
@@ -11,6 +12,6 @@ import java.util.*;
 public class RecruitMenu {
 
     public interface RecruitCallback {
-        public void setRecruitListener(EventListener recruitListener);
+        public void setRecruitListener(SetChangeListener<Unit> recruitListener);
     }
 }
