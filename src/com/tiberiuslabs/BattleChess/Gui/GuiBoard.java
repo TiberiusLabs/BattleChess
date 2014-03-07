@@ -6,11 +6,12 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Triple;
 import javafx.collections.MapChangeListener;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Holds the individual tiles
@@ -22,12 +23,13 @@ public class GuiBoard {
     private Map<Position, Tile> tiles;
 
     public GuiBoard(BoardCallback boardCallback, Canvas canvas) {
+        canvas.getGraphicsContext2D().
         tiles = new HashMap<>();
 
         for (Position position : boardCallback.getTilePositions()) {
             Tile tile;
             Triple<Highlight, Unit, Color> tileInfo = boardCallback.getTileInfo(position);
-            int size = 10;
+            int size = 25;
             switch (tileInfo.thd) {
                 case BLACK:
                     tile = new Tile(position, size, javafx.scene.paint.Color.BLACK, canvas);
@@ -42,6 +44,7 @@ public class GuiBoard {
                     continue;
             }
             tile.addSelectionListener(boardCallback::makeSelection);
+            tile.repaint();
             tiles.put(position, tile);
         }
 

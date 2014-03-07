@@ -10,6 +10,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
+import javafx.scene.Node;
 
 import java.util.HashMap;
 import java.util.Map;

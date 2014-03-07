@@ -1,13 +1,14 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
-import com.sun.javafx.geom.Vec2f;
+import com.sun.javafx.geom.Vec2d;
 import com.tiberiuslabs.BattleChess.Types.Highlight;
 import com.tiberiuslabs.BattleChess.Types.Position;
-import javafx.scene.canvas.*;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
+
+import static java.lang.Math.*;
 
 /**
  * Holds interface state of the tile
@@ -23,7 +24,12 @@ import javafx.scene.shape.Polygon;
 public class Tile {
     private final Position position;
     private final Color backgroundColor;
-    private final Polygon polygon;
+    private final Canvas canvas;
+    private final Vec2d location;
+    private int size;
+    private final double[] xVertices;
+    private final double[] yVertices;
+    private SelectionListener selectionListener;
     private Image unitPortrait;
     private Highlight highlight;
 
@@ -39,17 +45,27 @@ public class Tile {
         this.position = position;
         this.backgroundColor = backgroundColor;
         this.unitPortrait = null;
-        Vec2f location = new Vec2f((float) (position.x() * size * 1.5 + 300), position.y() * size * 2 + position.x() * size + 300);
+        this.size = size;
+        location = new Vec2d(position.x() * size * 1.5 + 300, position.y() * size * 2 + position.x() * size + 300);
 
-        double[] vertices = new double[12];
-        double theta = Math.PI / 6;
+        highlight = Highlight.NONE;
 
-        for (int i = 0; i < 12; i += 2) {
-            vertices[i] = size * Math.cos((i / 2) * theta) + location.x;
-            vertices[i+1] = size * Math.sin((i / 2) * theta) + location.y;
+        xVertices = new double[6];
+        yVertices = new double[6];
+        double theta = PI / 3;
+
+        for (int i = 0; i < 6; i += 1) {
+            xVertices[i] = size * cos(i * theta) + location.x;
+            yVertices[i] = size * sin(i * theta) + location.y;
         }
 
-        polygon = new Polygon(vertices);
+        this.canvas = canvas;
+        this.canvas.setOnMouseClicked(event -> {
+            if (this.contains(event.getX(), event.getY())) {
+                selectionListener.select(position);
+                event.consume();
+            }
+        });
     }
 
     /**
@@ -58,40 +74,38 @@ public class Tile {
      * @param selectionListener the listener callback for when this Tile is selected
      */
     public void addSelectionListener(SelectionListener selectionListener) {
-        polygon.setOnMouseClicked(mouseEvent -> {
-            selectionListener.select(position);
-        });
-    }
-
-    public void repaint() {
-        polygon.setFill(backgroundColor);
-        switch (highlight) {
-            case SELD:
-                polygon.setStrokeWidth(5);
-                polygon.setStroke(Color.BLUE);
-                break;
-            case THRT:
-                polygon.setStrokeWidth(5);
-                polygon.setStroke(Color.RED);
-                break;
-            case MOVE:
-                polygon.setStrokeWidth(5);
-                polygon.setStroke(Color.GREEN);
-                break;
-            case NONE:
-                polygon.setStrokeWidth(1);
-                polygon.setStroke(Color.BLACK);
-                break;
-        }
+        this.selectionListener = selectionListener;
     }
 
     /**
-     * Set the image that represents the unit that is on this tile
-     *
-     * @param unitPortrait the unit's portrait image
+     * Repaint the tile onto the screen, highlights the tile as necessary and displays the unit on the tile
      */
-    public void setUnitPortrait(Image unitPortrait) {
-        this.unitPortrait = unitPortrait;
+    public void repaint() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(backgroundColor);
+        switch (highlight) {
+            case SELD:
+                gc.setLineWidth(5);
+                gc.setStroke(Color.BLUE);
+                break;
+            case THRT:
+                gc.setLineWidth(5);
+                gc.setStroke(Color.RED);
+                break;
+            case MOVE:
+                gc.setLineWidth(5);
+                gc.setStroke(Color.GREEN);
+                break;
+            case NONE:
+                gc.setLineWidth(1);
+                gc.setStroke(Color.BLACK);
+                break;
+        }
+
+        gc.fillPolygon(xVertices, yVertices, 6);
+        // TODO: display the unit portrait if it isn't null
+
+        gc.save();
     }
 
     /**
@@ -114,6 +128,22 @@ public class Tile {
     }
 
     /**
+     * Checks that the given x,y coordinate is inside the polygon
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return true if the x,y is no more than 2*size from any vertex, false otherwise
+     */
+    public boolean contains(double x, double y) {
+        for (int i = 0; i < 6; i += 1) {
+            if (location.distance(x, y) > 2 * size) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Get the image to display on the Tile
      *
      * @return an Image object referencing either the unit that is on the tile, or the default image
@@ -130,6 +160,15 @@ public class Tile {
      */
     public Highlight getHighlight() {
         return highlight;
+    }
+
+    /**
+     * Set the image that represents the unit that is on this tile
+     *
+     * @param unitPortrait the unit's portrait image
+     */
+    public void setUnitPortrait(Image unitPortrait) {
+        this.unitPortrait = unitPortrait;
     }
 
     /**

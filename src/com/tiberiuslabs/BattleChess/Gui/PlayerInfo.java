@@ -7,6 +7,7 @@ package com.tiberiuslabs.BattleChess.Gui;
  * <li>player/AI units in the graveyard
  * <li>misc things that may come up
  * </ul>
+ *
  * @author Amandeep Gill
  */
 public class PlayerInfo {
