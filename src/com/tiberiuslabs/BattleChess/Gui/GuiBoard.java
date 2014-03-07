@@ -23,7 +23,6 @@ public class GuiBoard {
     private Map<Position, Tile> tiles;
 
     public GuiBoard(BoardCallback boardCallback, Canvas canvas) {
-        canvas.getGraphicsContext2D().
         tiles = new HashMap<>();
 
         for (Position position : boardCallback.getTilePositions()) {
