@@ -33,7 +33,7 @@ public class AIEngine {
     }
 
     /**
-     * Get's the AI's move.
+     * Gets the AI's move.
      * @param board the current game state, must not be null. Makes a copy to ensure that the game state is not
      *              changed while the AI calculates the best move to make
      * @return      a Triple with the Unit/from/to representing the AI's move

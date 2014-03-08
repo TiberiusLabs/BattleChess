@@ -25,6 +25,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     private Position selectedTile;
     private Unit recruit;
     private Color playerColor;
+    private Set<Position> validMoves;
 
     public GameEngineCallbacks(AddNodeCallback addNodeCallback) {
         this.addNodeCallback = addNodeCallback;
@@ -47,7 +48,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     private void setHighlights() {
         if (selectedTile != null) {
             listenerBoard.put(selectedTile, new Triple<>(Highlight.SELD, gameEngine.get(selectedTile), gameEngine.tileColor(selectedTile)));
-            Set<Position> validMoves = gameEngine.getValidMoves(selectedTile);
+            validMoves = gameEngine.getValidMoves(selectedTile);
             for (Position pos : validMoves) {
                 Unit unit = gameEngine.get(pos);
                 if (unit == null) {
@@ -101,7 +102,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
             if (selectedTile.equals(position)) {
                 selectedTile = null;
                 resetHighlights();
-            } else if (position != null && Rules.inBounds(position)) {
+            } else if (position != null && validMoves.contains(position)) {
                 if (move(selectedTile, position)) {
                     selectedTile = null;
                     resetHighlights();

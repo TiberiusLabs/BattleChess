@@ -42,12 +42,7 @@ public class AI {
      * @return  a Unit/from/to Triple reflecting the AI's move
      */
     public Triple<Unit, Position, Position> getMove(GameBoard board) {
-        SortedSet<Pair<Triple<Unit, Position, Position>, Integer>> moves = new TreeSet<>(new Comparator<Pair<Triple<Unit, Position, Position>, Integer>>() {
-            @Override
-            public int compare(Pair<Triple<Unit, Position, Position>, Integer> o1, Pair<Triple<Unit, Position, Position>, Integer> o2) {
-                return o2.snd.compareTo(o1.snd);
-            }
-        });
+        SortedSet<Pair<Triple<Unit, Position, Position>, Integer>> moves = new TreeSet<>((o1, o2) -> o2.snd.compareTo(o1.snd));
 
 
         return moves.first().fst;
