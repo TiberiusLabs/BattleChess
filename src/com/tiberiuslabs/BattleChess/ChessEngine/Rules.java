@@ -103,7 +103,11 @@ public final class Rules {
                             // a friendly unit is blocking this tile, move to the next direction
                             break;
                         }
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
+                        if (nextMoves != null) {
+                            currPos = nextMoves.get(i);
+                        }
+
                     }
                 }
                 break;
@@ -127,7 +131,10 @@ public final class Rules {
                             // this tile is blocked by a friendly unit, move to the next direction
                             break;
                         }
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
+                        if (nextMoves != null) {
+                            currPos = nextMoves.get(i);
+                        }
                     }
                 }
                 break;
@@ -170,7 +177,11 @@ public final class Rules {
                             // this tile is blocked by a friendly unit, move to the next direction
                             break;
                         }
-                        currPos = Init.moveAdjacencies.get(currPos).get(i);
+                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
+                        if (nextMoves != null) {
+                            currPos = nextMoves.get(i);
+                        }
+
                     }
                 }
                 break;

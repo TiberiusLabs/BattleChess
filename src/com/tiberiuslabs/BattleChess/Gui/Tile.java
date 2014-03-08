@@ -3,10 +3,11 @@ package com.tiberiuslabs.BattleChess.Gui;
 import com.sun.javafx.geom.Vec2d;
 import com.tiberiuslabs.BattleChess.Types.Highlight;
 import com.tiberiuslabs.BattleChess.Types.Position;
+import com.tiberiuslabs.BattleChess.Types.Unit;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import static java.lang.Math.*;
 
@@ -30,21 +31,22 @@ public class Tile {
     private final double[] xVertices;
     private final double[] yVertices;
     private SelectionListener selectionListener;
-    private Image unitPortrait;
     private Highlight highlight;
+    private Unit unit;
 
     /**
      * Instantiate the Tile with the given size and position
      *
      * @param position        the x,y position to draw the tile on the screen
+     * @param unit            the unit at this position, can be null
      * @param size            the length of the hexagon's edges
      * @param backgroundColor the background image of the tile
      * @param canvas          the canvas that the tile is drawn on
      */
-    public Tile(Position position, int size, Color backgroundColor, Canvas canvas) {
+    public Tile(Position position, Unit unit, int size, Color backgroundColor, Canvas canvas) {
         this.position = position;
         this.backgroundColor = backgroundColor;
-        this.unitPortrait = null;
+        this.unit = unit;
         this.size = size;
         location = new Vec2d(position.x() * size * 1.5 + 300, position.y() * size * 2 + position.x() * size + 300);
 
@@ -60,12 +62,7 @@ public class Tile {
         }
 
         this.canvas = canvas;
-        this.canvas.setOnMouseClicked(event -> {
-            if (this.contains(event.getX(), event.getY())) {
-                selectionListener.select(position);
-                event.consume();
-            }
-        });
+
     }
 
     /**
@@ -103,7 +100,31 @@ public class Tile {
         }
 
         gc.fillPolygon(xVertices, yVertices, 6);
+        gc.strokePolygon(xVertices, yVertices, 6);
         // TODO: display the unit portrait if it isn't null
+        if (unit != null) {
+            gc.setFill(unit.color == com.tiberiuslabs.BattleChess.Types.Color.BLACK ? Color.CHOCOLATE : Color.LIGHTGRAY);
+            switch (unit.unitType) {
+                case Footman:
+                    gc.fillText("Fm", location.x, location.y);
+                    break;
+                case Calvary:
+                    gc.fillText("Cv", location.x, location.y);
+                    break;
+                case Charger:
+                    gc.fillText("Cr", location.x, location.y);
+                    break;
+                case Assassin:
+                    gc.fillText("As", location.x, location.y);
+                    break;
+                case Champion:
+                    gc.fillText("Cm", location.x, location.y);
+                    break;
+                case Monarch:
+                    gc.fillText("Mo", location.x, location.y);
+                    break;
+            }
+        }
 
         gc.save();
     }
@@ -134,41 +155,32 @@ public class Tile {
      * @param y the y coordinate
      * @return true if the x,y is no more than 2*size from any vertex, false otherwise
      */
-    public boolean contains(double x, double y) {
+    public boolean selectIfContains(double x, double y) {
         for (int i = 0; i < 6; i += 1) {
             if (location.distance(x, y) > 2 * size) {
                 return false;
             }
         }
+        selectionListener.select(position);
         return true;
     }
 
     /**
-     * Get the image to display on the Tile
+     * Get the Unit on this tile (may be null)
      *
-     * @return an Image object referencing either the unit that is on the tile, or the default image
+     * @return the Unit currently on this tile (may be null)
      */
-    public Image getUnitPortrait() {
-        return unitPortrait;
+    public Unit getUnit() {
+        return unit;
     }
 
     /**
-     * Gets the current highlighting on the Tile
+     * Set the Unit that is currently one this tile
      *
-     * @return the enumerated highlight type
-     * @see com.tiberiuslabs.BattleChess.Types.Highlight
+     * @param unit the unit at this position, can be null
      */
-    public Highlight getHighlight() {
-        return highlight;
-    }
-
-    /**
-     * Set the image that represents the unit that is on this tile
-     *
-     * @param unitPortrait the unit's portrait image
-     */
-    public void setUnitPortrait(Image unitPortrait) {
-        this.unitPortrait = unitPortrait;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     /**

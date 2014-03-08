@@ -29,7 +29,7 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         root = FXMLLoader.load(getClass().getResource("main_window.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Welcome to BattleChess");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setMinWidth(800);
         primaryStage.setMaxWidth(800);

@@ -6,11 +6,8 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Triple;
 import javafx.collections.MapChangeListener;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -31,13 +28,13 @@ public class GuiBoard {
             int size = 25;
             switch (tileInfo.thd) {
                 case BLACK:
-                    tile = new Tile(position, size, javafx.scene.paint.Color.BLACK, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.BLACK, canvas);
                     break;
                 case WHITE:
-                    tile = new Tile(position, size, javafx.scene.paint.Color.WHITE, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.WHITE, canvas);
                     break;
                 case GREY:
-                    tile = new Tile(position, size, javafx.scene.paint.Color.GRAY, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.GRAY, canvas);
                     break;
                 default:
                     continue;
@@ -49,11 +46,21 @@ public class GuiBoard {
 
         boardCallback.addBoardListener(change -> {
             Position position = change.getKey();
+            Triple<Highlight, Unit, Color> newTileInfo = change.getValueAdded();
             Tile tile = tiles.get(position);
-            tile.setHighlight(change.getValueAdded().fst);
+            tile.setHighlight(newTileInfo.fst);
+            tile.setUnit(newTileInfo.snd);
             tile.repaint();
         });
 
+        canvas.setOnMouseClicked(event -> {
+            for (Tile tile : tiles.values()) {
+                if (tile.selectIfContains(event.getX(), event.getY())) {
+                    event.consume();
+                    break;
+                }
+            }
+        });
     }
 
     public interface BoardCallback {

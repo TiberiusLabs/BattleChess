@@ -31,8 +31,9 @@
                 </AnchorPane>
                 <AnchorPane minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0">
                     <children>
-                        <Canvas fx:id="boardCanvas" height="600.0" width="600.0" AnchorPane.bottomAnchor="0.0"
-                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                        <Canvas id="boardCanvas" fx:id="boardCanvas" height="600.0" width="600.0"
+                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0"/>
                     </children>
                 </AnchorPane>
             </items>
