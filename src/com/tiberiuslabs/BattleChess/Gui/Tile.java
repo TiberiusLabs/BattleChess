@@ -1,13 +1,13 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
-import com.sun.javafx.geom.Vec2d;
 import com.tiberiuslabs.BattleChess.Types.Highlight;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
 
 import static java.lang.Math.*;
 
@@ -25,12 +25,9 @@ import static java.lang.Math.*;
 public class Tile {
     private final Position position;
     private final Color backgroundColor;
-    private final Canvas canvas;
-    private final Vec2d location;
-    private int size;
-    private final double[] xVertices;
-    private final double[] yVertices;
-    private SelectionListener selectionListener;
+    private final Polygon polygon;
+    private final Text text;
+    private final Group group;
     private Highlight highlight;
     private Unit unit;
 
@@ -41,28 +38,29 @@ public class Tile {
      * @param unit            the unit at this position, can be null
      * @param size            the length of the hexagon's edges
      * @param backgroundColor the background image of the tile
-     * @param canvas          the canvas that the tile is drawn on
      */
-    public Tile(Position position, Unit unit, int size, Color backgroundColor, Canvas canvas) {
+    public Tile(Position position, Unit unit, int size, Color backgroundColor) {
         this.position = position;
         this.backgroundColor = backgroundColor;
         this.unit = unit;
-        this.size = size;
-        location = new Vec2d(position.x() * size * 1.5 + 300, position.y() * size * 2 + position.x() * size + 300);
+        double x = position.x() * size * 1.5 + 300;
+        double y = position.y() * size * sqrt(3) + position.x() * size * .9 + 300;
 
         highlight = Highlight.NONE;
 
-        xVertices = new double[6];
-        yVertices = new double[6];
-        double theta = PI / 3;
+        double[] verts = new double[12];
+        double theta = PI / 6;
 
-        for (int i = 0; i < 6; i += 1) {
-            xVertices[i] = size * cos(i * theta) + location.x;
-            yVertices[i] = size * sin(i * theta) + location.y;
+        for (int i = 0; i < 12; i += 2) {
+            verts[i] = size * cos(i * theta) + x;
+            verts[i + 1] = size * sin(i * theta) + y;
         }
 
-        this.canvas = canvas;
-
+        this.polygon = new Polygon(verts);
+        this.text = new Text();
+        text.setLayoutX(x);
+        text.setLayoutY(y);
+        group = new Group(polygon, text);
     }
 
     /**
@@ -71,62 +69,56 @@ public class Tile {
      * @param selectionListener the listener callback for when this Tile is selected
      */
     public void addSelectionListener(SelectionListener selectionListener) {
-        this.selectionListener = selectionListener;
+        group.setOnMouseClicked(event -> selectionListener.select(position));
     }
 
     /**
      * Repaint the tile onto the screen, highlights the tile as necessary and displays the unit on the tile
      */
     public void repaint() {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(backgroundColor);
+        polygon.setStrokeWidth(2);
+        polygon.setStroke(Color.BLACK);
         switch (highlight) {
             case SELD:
-                gc.setLineWidth(5);
-                gc.setStroke(Color.BLUE);
+                polygon.setFill(Color.BLUE);
                 break;
             case THRT:
-                gc.setLineWidth(5);
-                gc.setStroke(Color.RED);
+                polygon.setFill(Color.RED);
                 break;
             case MOVE:
-                gc.setLineWidth(5);
-                gc.setStroke(Color.GREEN);
+                polygon.setFill(Color.GREEN);
                 break;
             case NONE:
-                gc.setLineWidth(1);
-                gc.setStroke(Color.BLACK);
+                polygon.setFill(backgroundColor);
                 break;
         }
 
-        gc.fillPolygon(xVertices, yVertices, 6);
-        gc.strokePolygon(xVertices, yVertices, 6);
         // TODO: display the unit portrait if it isn't null
         if (unit != null) {
-            gc.setFill(unit.color == com.tiberiuslabs.BattleChess.Types.Color.BLACK ? Color.CHOCOLATE : Color.LIGHTGRAY);
+            text.setFill(unit.color == com.tiberiuslabs.BattleChess.Types.Color.BLACK ? Color.CHOCOLATE : Color.LIGHTGRAY);
             switch (unit.unitType) {
-                case Footman:
-                    gc.fillText("Fm", location.x, location.y);
+                case PAWN:
+                    text.setText("Pa");
                     break;
-                case Calvary:
-                    gc.fillText("Cv", location.x, location.y);
+                case KNIGHT:
+                    text.setText("Kn");
                     break;
-                case Charger:
-                    gc.fillText("Cr", location.x, location.y);
+                case ROOK:
+                    text.setText("Ro");
                     break;
-                case Assassin:
-                    gc.fillText("As", location.x, location.y);
+                case BISHOP:
+                    text.setText("Bi");
                     break;
-                case Champion:
-                    gc.fillText("Cm", location.x, location.y);
+                case QUEEN:
+                    text.setText("Qu");
                     break;
-                case Monarch:
-                    gc.fillText("Mo", location.x, location.y);
+                case KING:
+                    text.setText("Ki");
                     break;
             }
+        } else {
+            text.setText("");
         }
-
-        gc.save();
     }
 
     /**
@@ -149,23 +141,6 @@ public class Tile {
     }
 
     /**
-     * Checks that the given x,y coordinate is inside the polygon
-     *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @return true if the x,y is no more than 2*size from any vertex, false otherwise
-     */
-    public boolean selectIfContains(double x, double y) {
-        for (int i = 0; i < 6; i += 1) {
-            if (location.distance(x, y) > 2 * size) {
-                return false;
-            }
-        }
-        selectionListener.select(position);
-        return true;
-    }
-
-    /**
      * Get the Unit on this tile (may be null)
      *
      * @return the Unit currently on this tile (may be null)
@@ -181,6 +156,10 @@ public class Tile {
      */
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    public Node getGroup() {
+        return group;
     }
 
     /**

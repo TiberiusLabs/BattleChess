@@ -6,6 +6,7 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Triple;
 import javafx.collections.MapChangeListener;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 
 import java.util.*;
@@ -28,18 +29,19 @@ public class GuiBoard {
             int size = 25;
             switch (tileInfo.thd) {
                 case BLACK:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.BLACK, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.BLACK);
                     break;
                 case WHITE:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.WHITE, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.WHITE);
                     break;
                 case GREY:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.GRAY, canvas);
+                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.GRAY);
                     break;
                 default:
                     continue;
             }
             tile.addSelectionListener(boardCallback::makeSelection);
+            boardCallback.addNode(tile.getGroup());
             tile.repaint();
             tiles.put(position, tile);
         }
@@ -52,15 +54,6 @@ public class GuiBoard {
             tile.setUnit(newTileInfo.snd);
             tile.repaint();
         });
-
-        canvas.setOnMouseClicked(event -> {
-            for (Tile tile : tiles.values()) {
-                if (tile.selectIfContains(event.getX(), event.getY())) {
-                    event.consume();
-                    break;
-                }
-            }
-        });
     }
 
     public interface BoardCallback {
@@ -71,5 +64,7 @@ public class GuiBoard {
         public Set<Position> getTilePositions();
 
         public Triple<Highlight, Unit, Color> getTileInfo(Position position);
+
+        void addNode(Node node);
     }
 }

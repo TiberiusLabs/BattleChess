@@ -2,6 +2,7 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0"
             prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
@@ -31,9 +32,14 @@
                 </AnchorPane>
                 <AnchorPane minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0">
                     <children>
-                        <Canvas id="boardCanvas" fx:id="boardCanvas" height="600.0" width="600.0"
-                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                AnchorPane.topAnchor="0.0"/>
+                        <Group fx:id="boardPane">
+                            <children>
+                                <Canvas id="boardCanvas" fx:id="boardCanvas" height="600.0" width="600.0"
+                                        AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                <Pane prefHeight="600.0" prefWidth="600.0"/>
+                            </children>
+                        </Group>
                     </children>
                 </AnchorPane>
             </items>

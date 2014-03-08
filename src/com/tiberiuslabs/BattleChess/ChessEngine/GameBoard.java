@@ -5,7 +5,9 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Holds the current state of the game
@@ -14,6 +16,7 @@ import java.util.*;
  * <li>which units are in the graveyard
  * <li>which player's turn it is currently
  * </ul>
+ *
  * @author Amandeep Gill
  */
 public class GameBoard {
@@ -52,6 +55,7 @@ public class GameBoard {
 
     /**
      * Copies the contents of the other GameBoard into this GameBoard
+     *
      * @param other the GameBoard to get the game state information from, must not be null
      */
     public GameBoard(GameBoard other) {
@@ -69,9 +73,10 @@ public class GameBoard {
 
     /**
      * Gets the Unit at the given position
-     * @param pos   the board position to get the Unit from
-     * @return      the Unit at the given position if one exists, return null if there is no Unit at the position
-     *              or the position is not inBounds
+     *
+     * @param pos the board position to get the Unit from
+     * @return the Unit at the given position if one exists, return null if there is no Unit at the position
+     * or the position is not inBounds
      */
     public Unit get(Position pos) {
         return board.get(pos);
@@ -79,7 +84,8 @@ public class GameBoard {
 
     /**
      * Gets the pos -> unit mapping that represents the board
-     * @return  a mapping of Positions to Units
+     *
+     * @return a mapping of Positions to Units
      */
     public Map<Position, Unit> getBoard() {
         return board;
@@ -87,9 +93,10 @@ public class GameBoard {
 
     /**
      * Sets the new recruit to the position given if the position is available and the recruit has come from the graveyard
-     * @param unit      the unit to recruit
-     * @param position  the position to put the recruit at
-     * @return          true if the unit was successfully recruited, false otherwise
+     *
+     * @param unit     the unit to recruit
+     * @param position the position to put the recruit at
+     * @return true if the unit was successfully recruited, false otherwise
      */
     public boolean set(Unit unit, Position position) {
         boolean isBlack = unit.color == Color.BLACK;
@@ -99,24 +106,26 @@ public class GameBoard {
             if (isBlack) {
                 blackGraveyard.remove(unit);
                 blackUnits.add(unit);
-                blackMonarch = blackMonarch || unit.unitType == UnitType.Monarch;
+                blackMonarch = blackMonarch || unit.unitType == UnitType.KING;
                 numBlackUnits++;
             } else {
                 whiteGraveyard.remove(unit);
                 whiteUnits.add(unit);
-                whiteMonarch = whiteMonarch || unit.unitType == UnitType.Monarch;
+                whiteMonarch = whiteMonarch || unit.unitType == UnitType.KING;
                 numWhiteUnits++;
             }
             return true;
         }
         return false;
     }
+
     /**
      * Moves the Unit at startPos to finalPos, if a unit is already at finalPos it gets removed from the board and
      * added to the graveyard. Performs no validity or sanity checks.
-     * @param startPos  the starting position of the unit that is moving
-     * @param finalPos  the final position to move the unit to
-     * @return          the unit that was removed from play, null otherwise
+     *
+     * @param startPos the starting position of the unit that is moving
+     * @param finalPos the final position to move the unit to
+     * @return the unit that was removed from play, null otherwise
      */
     public Unit move(Position startPos, Position finalPos) {
         Unit unit = board.get(finalPos);
@@ -125,12 +134,12 @@ public class GameBoard {
                 blackGraveyard.add(unit);
                 blackUnits.remove(unit);
                 numBlackUnits--;
-                blackMonarch = !(unit.unitType == UnitType.Monarch);
+                blackMonarch = !(unit.unitType == UnitType.KING);
             } else {
                 whiteGraveyard.add(unit);
                 whiteUnits.remove(unit);
                 numWhiteUnits--;
-                whiteMonarch = !(unit.unitType == UnitType.Monarch);
+                whiteMonarch = !(unit.unitType == UnitType.KING);
             }
         }
 
@@ -142,8 +151,9 @@ public class GameBoard {
 
     /**
      * Gets the number of units that the player has on the board
-     * @param player    the player's color
-     * @return          a head count of all the player's units still alive
+     *
+     * @param player the player's color
+     * @return a head count of all the player's units still alive
      */
     public int numActiveUnits(Color player) {
         return player == Color.BLACK ? numBlackUnits : numWhiteUnits;
@@ -151,8 +161,9 @@ public class GameBoard {
 
     /**
      * Gets the set of the players active units
-     * @param player    the player's color
-     * @return          the set of all the units that the player has on the board
+     *
+     * @param player the player's color
+     * @return the set of all the units that the player has on the board
      */
     public Set<Unit> getActiveUnits(Color player) {
         return player == Color.BLACK ? blackUnits : whiteUnits;
@@ -160,8 +171,9 @@ public class GameBoard {
 
     /**
      * Checks whether the player has an active monarch
-     * @param player    the player's color
-     * @return          returns true if the player has an active monarch, false otherwise
+     *
+     * @param player the player's color
+     * @return returns true if the player has an active monarch, false otherwise
      */
     public boolean hasMonarch(Color player) {
         return player == Color.BLACK ? blackMonarch : whiteMonarch;
@@ -169,9 +181,10 @@ public class GameBoard {
 
     /**
      * Gets a copy of the player's current graveyard
-     * @param player    the player's color
-     * @return          the copy of the player's graveyard, returns the white player's graveyard if the player color
-     *                  is not black
+     *
+     * @param player the player's color
+     * @return the copy of the player's graveyard, returns the white player's graveyard if the player color
+     * is not black
      */
     public Set<Unit> getGraveyard(Color player) {
         return new HashSet<>(player == Color.BLACK ? blackGraveyard : whiteGraveyard);

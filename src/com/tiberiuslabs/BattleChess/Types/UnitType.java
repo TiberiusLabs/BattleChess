@@ -5,5 +5,5 @@ package com.tiberiuslabs.BattleChess.Types;
  * @author Amandeep Gill
  */
 public enum UnitType {
-    Footman, Calvary, Charger, Assassin, Champion, Monarch
+    PAWN, KNIGHT, ROOK, BISHOP, QUEEN, KING
 }

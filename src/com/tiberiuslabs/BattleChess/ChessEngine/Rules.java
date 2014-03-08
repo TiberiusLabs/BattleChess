@@ -1,29 +1,40 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
-import com.tiberiuslabs.BattleChess.Types.*;
+import com.tiberiuslabs.BattleChess.Types.Color;
+import com.tiberiuslabs.BattleChess.Types.Position;
+import com.tiberiuslabs.BattleChess.Types.Unit;
+import com.tiberiuslabs.BattleChess.Types.UnitType;
 import com.tiberiuslabs.Collections.Pair;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.lang.Math.*;
+
 /**
  * Responsible for verifying the legality of moves and recruitment, as well as determining whether a final state has
  * been reached
+ *
  * @author Amandeep Gill
  */
 public final class Rules {
 
     /**
      * Checks if (x,y) is a valid tile location.
+     *
      * @param x the column coordinate
      * @param y the row coordinate
      * @return true if the location is valid, false otherwise
      */
     public static boolean inBounds(int x, int y) {
-        return Math.abs(x + y) <= 5;
+        return abs(x) <= 5 && abs(y) <= 5 && abs(x + y) <= 5;
     }
 
     /**
      * Checks that pos(x,y) is a valid tile location. Performs null safety check
-     * @param pos   the position to check
+     *
+     * @param pos the position to check
      * @return true if the location is valid, false otherwise
      */
     public static boolean inBounds(Position pos) {
@@ -32,11 +43,12 @@ public final class Rules {
 
     /**
      * Checks that the attempted move is legal on a per-unit basis. Includes both attacking and normal moves
-     * @param unit      the unit that the player is attempting to move, must not be null
-     * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
-     * @param finalPos  the desired final position of the unit, must be a valid location (use inBounds to verify)
-     * @param board     the current state of the game board, must not be null
-     * @return          true if the move is valid, false otherwise
+     *
+     * @param unit     the unit that the player is attempting to move, must not be null
+     * @param startPos the starting position of the unit, must be a valid location (use inBounds to verify)
+     * @param finalPos the desired final position of the unit, must be a valid location (use inBounds to verify)
+     * @param board    the current state of the game board, must not be null
+     * @return true if the move is valid, false otherwise
      */
     public static boolean isValidMove(Unit unit, Position startPos, Position finalPos, GameBoard board) {
         return getValidMoves(unit, startPos, board).contains(finalPos);
@@ -44,16 +56,17 @@ public final class Rules {
 
     /**
      * Get the set of all valid moves and attacks for the unit from the startPos
-     * @param unit      the unit that the player is attempting to move, must not be null
-     * @param startPos  the starting position of the unit, must be a valid location (use inBounds to verify)
-     * @param board     the current state of the game board, must not be null
-     * @return          the set containing all valid moves and attacks for the given unit at the given startPos
+     *
+     * @param unit     the unit that the player is attempting to move, must not be null
+     * @param startPos the starting position of the unit, must be a valid location (use inBounds to verify)
+     * @param board    the current state of the game board, must not be null
+     * @return the set containing all valid moves and attacks for the given unit at the given startPos
      */
     public static Set<Position> getValidMoves(Unit unit, Position startPos, GameBoard board) {
         Set<Position> moves = new HashSet<>();
 
         switch (unit.unitType) {
-            case Footman: {
+            case PAWN: {
                 // black may only move in the positive y direction, white in the negative direction
                 int dir = unit.color == Color.BLACK ? 1 : -1;
 
@@ -68,8 +81,8 @@ public final class Rules {
                 if (unit.equals(Init.defaultPositions.get(startPos)) && board.get(front) == null && board.get(jump) == null) {
                     moves.add(jump);
                 }
-                // special check for the Footman since they do not attack along their move paths
-                if (unit.unitType == UnitType.Footman) {
+                // special check for the PAWN since they do not attack along their move paths
+                if (unit.unitType == UnitType.PAWN) {
                     Position attack1 = new Position(startPos.x() + dir, startPos.y());
                     Unit defender = board.get(attack1);
                     if (inBounds(attack1) && defender != null && defender.color != unit.color) {
@@ -84,7 +97,7 @@ public final class Rules {
                 }
                 break;
             }
-            case Charger: {
+            case ROOK: {
                 // depth-first search each of the six cardinal directions for open positions or enemy units
                 for (int i = 0; i < 6; i++) {
                     Position currPos = Init.moveAdjacencies.get(startPos).get(i);
@@ -103,16 +116,12 @@ public final class Rules {
                             // a friendly unit is blocking this tile, move to the next direction
                             break;
                         }
-                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
-                        if (nextMoves != null) {
-                            currPos = nextMoves.get(i);
-                        }
-
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
                     }
                 }
                 break;
             }
-            case Assassin: {
+            case BISHOP: {
                 // depth-first search each of the six vertical directions for open positions or enemy units
                 for (int i = 6; i < 12; i++) {
                     Position currPos = Init.moveAdjacencies.get(startPos).get(i);
@@ -131,15 +140,12 @@ public final class Rules {
                             // this tile is blocked by a friendly unit, move to the next direction
                             break;
                         }
-                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
-                        if (nextMoves != null) {
-                            currPos = nextMoves.get(i);
-                        }
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
                     }
                 }
                 break;
             }
-            case Calvary: {
+            case KNIGHT: {
                 // check each of the single-move 'jump' adjacencies for the final position
                 List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
                 for (int i = 12; i < 24; i++) {
@@ -158,7 +164,7 @@ public final class Rules {
                 }
                 break;
             }
-            case Champion: {
+            case QUEEN: {
                 // depth-first search on the six cardinal and vertical directions for the final position
                 for (int i = 0; i < 12; i++) {
                     Position currPos = Init.moveAdjacencies.get(startPos).get(i);
@@ -177,16 +183,13 @@ public final class Rules {
                             // this tile is blocked by a friendly unit, move to the next direction
                             break;
                         }
-                        List<Position> nextMoves = Init.moveAdjacencies.get(currPos);
-                        if (nextMoves != null) {
-                            currPos = nextMoves.get(i);
-                        }
+                        currPos = Init.moveAdjacencies.get(currPos).get(i);
 
                     }
                 }
                 break;
             }
-            case Monarch: {
+            case KING: {
                 // check each of the single-move cardinal and vertical adjacencies for the final position
                 List<Position> adjacencies = Init.moveAdjacencies.get(startPos);
                 for (int i = 0; i < 12; i++) {
@@ -219,11 +222,12 @@ public final class Rules {
      * <li>the player must control their own capitol<p/>
      * <li>the player must control at least 2 other cities
      * </ul>
-     * @param player    the player requesting recruitment
-     * @param recruit   the unit that the player wishes to recruit, must not be null
-     * @param position  the position to place the unit on
-     * @param board     the current state of the game board, must not be null
-     * @return          true if the player can recruit the unit, false otherwise
+     *
+     * @param player   the player requesting recruitment
+     * @param recruit  the unit that the player wishes to recruit, must not be null
+     * @param position the position to place the unit on
+     * @param board    the current state of the game board, must not be null
+     * @return true if the player can recruit the unit, false otherwise
      */
     public static boolean canRecruit(Color player, Unit recruit, Position position, GameBoard board) {
         if (board.hasMonarch(player) && board.getGraveyard(player).contains(recruit) && board.get(position) == null) {
@@ -234,13 +238,13 @@ public final class Rules {
                 boolean monarch = false;
                 for (Position city : Init.cities) {
                     Unit cityHolder = board.get(city);
-                    if (cityHolder != null && cityHolder.color == player && cityHolder.unitType != UnitType.Footman) {
+                    if (cityHolder != null && cityHolder.color == player && cityHolder.unitType != UnitType.PAWN) {
                         citiesHeld++;
                     }
                     if (!monarch && cityHolder != null) {
-                        monarch = cityHolder.color == player && cityHolder.unitType == UnitType.Monarch;
+                        monarch = cityHolder.color == player && cityHolder.unitType == UnitType.KING;
                     }
-                    if (!adjacent && isValidMove(new Unit(UnitType.Charger, player, 1), city, position, board)) {
+                    if (!adjacent && isValidMove(new Unit(UnitType.ROOK, player, 1), city, position, board)) {
                         adjacent = true;
                     }
                 }
@@ -254,8 +258,9 @@ public final class Rules {
 
     /**
      * Checks to see if either player has reached a win condition
+     *
      * @param board the current state of the game board, must not be null
-     * @return      the color of the winning player, NEUTRAL if neither player has won
+     * @return the color of the winning player, NEUTRAL if neither player has won
      */
     public static Color winner(GameBoard board) {
         Pair<Unit, Unit> capitols = new Pair<>(board.get(Init.cities.get(0)), board.get(Init.cities.get(1)));

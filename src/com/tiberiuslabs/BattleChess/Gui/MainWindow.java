@@ -5,10 +5,12 @@ import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -17,11 +19,14 @@ public class MainWindow extends Application {
 
     public Canvas boardCanvas;
     public Parent root;
+    public Group boardPane;
     private GameEngineCallbacks callbacks;
     private GuiBoard board;
 
     private void initGame() {
-        callbacks = new GameEngineCallbacks();
+        callbacks = new GameEngineCallbacks(node -> {
+            boardPane.getChildren().add(node);
+        });
         callbacks.setup(Color.BLACK, AIDifficulty.EXPERT);
         board = new GuiBoard(callbacks, boardCanvas);
     }
@@ -31,13 +36,12 @@ public class MainWindow extends Application {
         root = FXMLLoader.load(getClass().getResource("main_window.fxml"));
         primaryStage.setTitle("Welcome to BattleChess");
         primaryStage.setScene(new Scene(root, 800, 600));
-        primaryStage.setMinWidth(800);
-        primaryStage.setMaxWidth(800);
-        primaryStage.setMinHeight(600);
-        primaryStage.setMaxHeight(600);
+        primaryStage.sizeToScene();
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         boardCanvas = (Canvas) root.lookup("#boardCanvas");
+        boardPane = (Group) root.lookup("#boardPane");
         initGame();
     }
 

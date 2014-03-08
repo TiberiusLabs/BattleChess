@@ -18,15 +18,16 @@ import java.util.Set;
 
 public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.RecruitCallback {
 
-    private static GameEngine gameEngine = new GameEngine();
+    private GameEngine gameEngine = new GameEngine();
+    private GameEngineCallbacks.AddNodeCallback addNodeCallback;
     private ObservableMap<Position, Triple<Highlight, Unit, Color>> listenerBoard;
     private ObservableSet<Unit> availableRecruits;
     private Position selectedTile;
     private Unit recruit;
     private Color playerColor;
 
-    public GameEngineCallbacks() {
-        // nothing to do
+    public GameEngineCallbacks(AddNodeCallback addNodeCallback) {
+        this.addNodeCallback = addNodeCallback;
     }
 
     public void setup(Color playerColor, AIDifficulty aiDifficulty) {
@@ -45,12 +46,13 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
 
     private void setHighlights() {
         if (selectedTile != null) {
+            listenerBoard.put(selectedTile, new Triple<>(Highlight.SELD, gameEngine.get(selectedTile), gameEngine.tileColor(selectedTile)));
             Set<Position> validMoves = gameEngine.getValidMoves(selectedTile);
             for (Position pos : validMoves) {
                 Unit unit = gameEngine.get(pos);
                 if (unit == null) {
                     listenerBoard.put(pos, new Triple<>(Highlight.MOVE, null, gameEngine.tileColor(pos)));
-                } else if (unit.color != gameEngine.get(pos).color) {
+                } else if (unit.color != gameEngine.get(selectedTile).color) {
                     listenerBoard.put(pos, new Triple<>(Highlight.THRT, unit, gameEngine.tileColor(pos)));
                 }
             }
@@ -101,6 +103,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
                 resetHighlights();
             } else if (position != null && Rules.inBounds(position)) {
                 if (move(selectedTile, position)) {
+                    selectedTile = null;
                     resetHighlights();
                 } else {
                     // TODO: send 'invalid move' error message to the player
@@ -123,7 +126,16 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     }
 
     @Override
+    public void addNode(Node node) {
+        addNodeCallback.addNode(node);
+    }
+
+    @Override
     public void setRecruitListener(SetChangeListener<Unit> recruitListener) {
         availableRecruits.addListener(recruitListener);
+    }
+
+    public interface AddNodeCallback {
+        public void addNode(Node node);
     }
 }

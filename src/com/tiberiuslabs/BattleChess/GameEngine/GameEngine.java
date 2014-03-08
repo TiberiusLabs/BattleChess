@@ -92,10 +92,6 @@ public class GameEngine {
      * @return true if the move/recruitment is valid, false otherwise
      */
     public boolean testMove(Unit unit, Position startPos, Position finalPos) {
-        if (currentPlayer != playerColor) {
-            update();
-        }
-
         // return false if the player is attempting to move the AI's unit, or if the final position is not in bounds
         if (unit.color == playerColor && Rules.inBounds(finalPos)) {
             if (startPos != null) {
@@ -122,6 +118,7 @@ public class GameEngine {
             } else {
                 board.set(unit, finalPos);
             }
+            currentPlayer = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
             return true;
         }
         return false;
@@ -136,6 +133,7 @@ public class GameEngine {
                 } else {
                     board.set(unit, finalPos);
                 }
+                currentPlayer = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
                 return true;
             }
         }
