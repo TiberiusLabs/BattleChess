@@ -149,6 +149,7 @@ public class GameEngine {
                     board.set(unit, finalPos);
                 }
                 currentPlayer = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
+                update();
                 return true;
             }
         }

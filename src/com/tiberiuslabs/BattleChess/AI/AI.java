@@ -137,8 +137,8 @@ public class AI {
      */
     private int getScore(GameBoard board) {
         int score = 0;
-        for (ScoreFunc scoreFunc : scoreFuncs) {
-            score += scoreFunc.score(board);
+        for (int i = 0; i < numFuncs; i += 1) {
+            score += useFunc[i] ? scoreFuncs[i].score(board) : 0;
         }
         return score;
     }
