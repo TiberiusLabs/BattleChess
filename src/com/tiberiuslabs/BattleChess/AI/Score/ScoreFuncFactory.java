@@ -17,23 +17,21 @@ public class ScoreFuncFactory {
     /**
      * Constructs a list of ScoreFunc lambdas for the AI to use to generate the best move
      *
-     * @param player the color of the player to determine the score for
      * @return an array of 10 ScoreFunc lambdas
      */
-    public static ScoreFunc[] buildScoreFuncs(Color player) {
+    public static ScoreFunc[] buildScoreFuncs() {
         ScoreFunc[] scoreFuncs = new ScoreFunc[10];
-        Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
 
-        scoreFuncs[0] = playerActiveUnitsScore(player);
-        scoreFuncs[1] = opponentActiveUnitScore(opponent);
-        scoreFuncs[2] = playerHasKingScore(player);
-        scoreFuncs[3] = opponentHasKingScore(opponent);
-        scoreFuncs[4] = playerThreatenedUnits(player);
-        scoreFuncs[5] = opponentThreatenedUnits(opponent);
-        scoreFuncs[6] = playerMovementFreedom(player);
-        scoreFuncs[7] = opponentMovementFreedom(opponent);
-        scoreFuncs[8] = playerCitiesHeld(player);
-        scoreFuncs[9] = opponentCitiesHeld(opponent);
+        scoreFuncs[0] = playerActiveUnitsScore();
+        scoreFuncs[1] = opponentActiveUnitScore();
+        scoreFuncs[2] = playerHasKingScore();
+        scoreFuncs[3] = opponentHasKingScore();
+        scoreFuncs[4] = playerThreatenedUnits();
+        scoreFuncs[5] = opponentThreatenedUnits();
+        scoreFuncs[6] = playerMovementFreedom();
+        scoreFuncs[7] = opponentMovementFreedom();
+        scoreFuncs[8] = playerCitiesHeld();
+        scoreFuncs[9] = opponentCitiesHeld();
 
 
         return scoreFuncs;
@@ -42,11 +40,10 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc lambda to score the player on their current active units
      *
-     * @param player the color of the player to determine the score for
      * @return a score from 0 to 100 depending on the player's active units
      */
-    public static ScoreFunc playerActiveUnitsScore(Color player) {
-        return board -> {
+    public static ScoreFunc playerActiveUnitsScore() {
+        return (board, player) -> {
             int score = 0;
             for (Unit unit : board.getActiveUnits(player)) {
                 switch (unit.unitType) {
@@ -77,11 +74,11 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc lambda to penalize the player on their opponent's active units
      *
-     * @param opponent the current player's opponent
      * @return a number from -100 to 0 depending on the opponents active units
      */
-    public static ScoreFunc opponentActiveUnitScore(Color opponent) {
-        return board -> {
+    public static ScoreFunc opponentActiveUnitScore() {
+        return (board, player) -> {
+            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
             int score = 0;
             for (Unit unit : board.getActiveUnits(opponent)) {
                 switch (unit.unitType) {
@@ -112,31 +109,31 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc lambda to score the player on whether they have a king in play
      *
-     * @param player the color of the player to determine the score for
      * @return 100 if the player has a king, 0 otherwise
      */
-    public static ScoreFunc playerHasKingScore(Color player) {
-        return board -> (board.hasKing(player) ? 100 : 0);
+    public static ScoreFunc playerHasKingScore() {
+        return (board, player) -> (board.hasKing(player) ? 100 : 0);
     }
 
     /**
      * Construct a ScoreFunc lambda to penalize the player if the opponent still has their king
      *
-     * @param opponent the current player's opponent
      * @return -100 if the opponent has a king, 0 otherwise
      */
-    public static ScoreFunc opponentHasKingScore(Color opponent) {
-        return board -> (board.hasKing(opponent) ? -100 : 0);
+    public static ScoreFunc opponentHasKingScore() {
+        return (board, player) -> {
+            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
+            return (board.hasKing(opponent) ? -100 : 0);
+        };
     }
 
     /**
      * Construct a ScoreFunc lambda to score the player on how many opposing units they currently threaten
      *
-     * @param player the color of the player to determine the score for
      * @return a score from 0 to 100 depending on the number and value of the threatened unit
      */
-    public static ScoreFunc playerThreatenedUnits(Color player) {
-        return board -> {
+    public static ScoreFunc playerThreatenedUnits() {
+        return (board, player) -> {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(player)) {
@@ -175,11 +172,11 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc lambda to penalize the player for the number of their own units that are threatened
      *
-     * @param opponent the current player's opponent
      * @return a score from -100 to 0 depending on the number and value of the player's units that are threatened
      */
-    public static ScoreFunc opponentThreatenedUnits(Color opponent) {
-        return board -> {
+    public static ScoreFunc opponentThreatenedUnits() {
+        return (board, player) -> {
+            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(opponent)) {
@@ -218,11 +215,10 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc lambda to score the player on how freely their units can move
      *
-     * @param player the color of the player to determine the score for
      * @return a sum of the number of tiles each unit can move or attack to
      */
-    public static ScoreFunc playerMovementFreedom(Color player) {
-        return board -> {
+    public static ScoreFunc playerMovementFreedom() {
+        return (board, player) -> {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(player)) {
@@ -239,13 +235,13 @@ public class ScoreFuncFactory {
     }
 
     /**
-     * Construct a Scorefunc lambda to penalize the player on how freely their opponent's units can move
+     * Construct a ScoreFunc lambda to penalize the player on how freely their opponent's units can move
      *
-     * @param opponent the current player's opponent
      * @return a sum of the number of tiles each opposing unit can move or attack to
      */
-    public static ScoreFunc opponentMovementFreedom(Color opponent) {
-        return board -> {
+    public static ScoreFunc opponentMovementFreedom() {
+        return (board, player) -> {
+            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(opponent)) {
@@ -264,20 +260,21 @@ public class ScoreFuncFactory {
     /**
      * Construct a ScoreFunc to score the player on the number of cities that they hold
      *
-     * @param player the color of the player to determine the score for
      * @return a score from 0 to 100 depending on how many of the cities the player holds
      */
-    public static ScoreFunc playerCitiesHeld(Color player) {
-        return board -> (100 / 6) * board.numCitiesHeld(player);
+    public static ScoreFunc playerCitiesHeld() {
+        return (board, player) -> (100 / 6) * board.numCitiesHeld(player);
     }
 
     /**
      * Construct a ScoreFunc to penalize the player on the number of cities their opponent holds
      *
-     * @param opponent the current player's opponent
      * @return a score from -100 to 0 depending on how many of the cities the opponent holds
      */
-    public static ScoreFunc opponentCitiesHeld(Color opponent) {
-        return board -> (-100 / 6) * board.numCitiesHeld(opponent);
+    public static ScoreFunc opponentCitiesHeld() {
+        return (board, player) -> {
+            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
+            return (-100 / 6) * board.numCitiesHeld(opponent);
+        };
     }
 }

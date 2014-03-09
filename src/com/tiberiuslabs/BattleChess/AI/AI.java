@@ -6,7 +6,6 @@ import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
-import com.tiberiuslabs.Collections.Pair;
 
 import java.util.*;
 
@@ -24,7 +23,7 @@ public class AI {
     private final ScoreFunc[] scoreFuncs;
     private final boolean[] useFunc;
     private final int[] weights;
-    private final Color color;
+    private Color color;
 
     /**
      * create a random set of metrics for this AI instance
@@ -111,7 +110,7 @@ public class AI {
             } else {
                 board.move(move.startPos, move.finalPos);
             }
-            int a = max(alpha, alphabeta(board, 2, alpha, Integer.MAX_VALUE, false));
+            int a = max(alpha, alphabeta(board, 3, alpha, Integer.MAX_VALUE, false));
             if (a > alpha) {
                 alpha = a;
                 maxMove = move;
@@ -132,15 +131,24 @@ public class AI {
     }
 
     /**
+     * Set the AI's color
+     *
+     * @param color the color of the AI player
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
      * Get the total value of the AI player given the current board state
      *
      * @param board a copy of the current game state
      * @return the sum of the score determined by the score functions
      */
-    private int getScore(GameBoard board) {
+    public int getScore(GameBoard board) {
         int score = 0;
         for (int i = 0; i < numFuncs; i += 1) {
-            score += useFunc[i] ? scoreFuncs[i].score(board) : 0;
+            score += useFunc[i] ? scoreFuncs[i].score(board, this.color) : 0;
         }
         return score;
     }
@@ -243,5 +251,10 @@ public class AI {
         }
 
         return moves;
+    }
+
+    @Override
+    public String toString() {
+        return "AI{" + this.hashCode() +  ": weights=" + Arrays.toString(weights) + '}';
     }
 }
