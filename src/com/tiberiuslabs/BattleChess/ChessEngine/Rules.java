@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
 
 /**
  * Responsible for verifying the legality of moves and recruitment, as well as determining whether a final state has
@@ -229,31 +229,26 @@ public final class Rules {
      * @param board    the current state of the game board, must not be null
      * @return true if the player can recruit the unit, false otherwise
      */
-    public static boolean canRecruit(Color player, Unit recruit, Position position, GameBoard board) {
-        if (board.hasMonarch(player) && board.getGraveyard(player).contains(recruit) && board.get(position) == null) {
-            Unit capitol = board.get(Init.cities.get(player == Color.BLACK ? 0 : 1));
-            if (capitol != null && capitol.color == player) {
-                int citiesHeld = 0;
-                boolean adjacent = false;
-                boolean monarch = false;
-                for (Position city : Init.cities) {
-                    Unit cityHolder = board.get(city);
-                    if (cityHolder != null && cityHolder.color == player && cityHolder.unitType != UnitType.PAWN) {
-                        citiesHeld++;
+    public static boolean canRecruitUnit(Color player, Unit recruit, Position position, GameBoard board) {
+        return getValidRecruitments(player, recruit, board).contains(position);
+    }
+
+    public static Set<Position> getValidRecruitments(Color player, Unit recruit, GameBoard board) {
+        Set<Position> positions = new HashSet<>();
+
+        Unit capitol = board.get(Init.cities.get(player == Color.BLACK ? 0 : 1));
+        if (board.hasKing(player) && board.getGraveyard(player).contains(recruit) &&
+                capitol != null && capitol.color == player && board.numCitiesHeld(player) >= 3) {
+            for (Position city : Init.cities) {
+                for (Position adjacent : Init.moveAdjacencies.get(city).subList(0, 6)) {
+                    if (adjacent != null && board.get(adjacent) == null) {
+                        positions.add(adjacent);
                     }
-                    if (!monarch && cityHolder != null) {
-                        monarch = cityHolder.color == player && cityHolder.unitType == UnitType.KING;
-                    }
-                    if (!adjacent && isValidMove(new Unit(UnitType.ROOK, player, 1), city, position, board)) {
-                        adjacent = true;
-                    }
-                }
-                if (adjacent && citiesHeld >= 3) {
-                    return true;
                 }
             }
         }
-        return false;
+
+        return positions;
     }
 
     /**

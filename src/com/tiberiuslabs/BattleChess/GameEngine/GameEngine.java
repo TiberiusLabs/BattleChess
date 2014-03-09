@@ -8,10 +8,10 @@ import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
-import com.tiberiuslabs.Collections.Triple;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,6 +46,7 @@ public class GameEngine {
         board = new GameBoard();
         currentPlayer = Color.WHITE;
         initialized = true;
+        update();
     }
 
     /**
@@ -68,6 +69,7 @@ public class GameEngine {
         this.aiEngine = new AIEngine(difficulty, playerColor == Color.BLACK ? Color.WHITE : Color.BLACK);
         board = new GameBoard();
         currentPlayer = Color.WHITE;
+        update();
     }
 
     /**
@@ -75,11 +77,13 @@ public class GameEngine {
      */
     public void update() {
         if (currentPlayer == aiEngine.getAIColor()) {
-            Triple<Unit, Position, Position> move = aiEngine.getAIMove(new GameBoard(board));
-            if (!board.set(move.fst, move.thd)) {
-                board.move(move.snd, move.thd);
+            GameBoard.Move move = aiEngine.getAIMove(new GameBoard(board));
+            if (move != null) {
+                if (!board.set(move.attacker, move.finalPos)) {
+                    board.move(move.startPos, move.finalPos);
+                }
+                currentPlayer = playerColor;
             }
-            currentPlayer = playerColor;
         }
     }
 
@@ -92,12 +96,15 @@ public class GameEngine {
      * @return true if the move/recruitment is valid, false otherwise
      */
     public boolean testMove(Unit unit, Position startPos, Position finalPos) {
+        if (currentPlayer == aiEngine.getAIColor()) {
+            update();
+        }
         // return false if the player is attempting to move the AI's unit, or if the final position is not in bounds
         if (unit.color == playerColor && Rules.inBounds(finalPos)) {
             if (startPos != null) {
                 return Rules.inBounds(startPos) && Rules.isValidMove(unit, startPos, finalPos, board);
             } else {
-                return Rules.canRecruit(playerColor, unit, finalPos, board);
+                return Rules.canRecruitUnit(playerColor, unit, finalPos, board);
             }
         }
         return false;
@@ -119,11 +126,19 @@ public class GameEngine {
                 board.set(unit, finalPos);
             }
             currentPlayer = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
+            update();
             return true;
         }
         return false;
     }
 
+    /**
+     * Attempt to make the move that the player is requesting
+     *
+     * @param startPos the start position of the unit (must have a unit at this position)
+     * @param finalPos the final position of the unit
+     * @return true if the attempted move was successful
+     */
     public boolean makeMove(Position startPos, Position finalPos) {
         Unit unit = board.get(startPos);
         if (unit != null && unit.color == playerColor) {
@@ -172,10 +187,26 @@ public class GameEngine {
      *
      * @return the current map of pos -> unit
      */
-    public Map<Position, Unit> getBoard() {
+    public ObservableMap<Position, Unit> getBoard() {
         return board.getBoard();
     }
 
+    /**
+     * Gets the graveyard of the given player
+     *
+     * @param player the player to get the graveyard for
+     * @return the player's current graveyard
+     */
+    public ObservableSet<Unit> getGraveyard(Color player) {
+        return board.getGraveyard(player);
+    }
+
+    /**
+     * Get the unit at the given position
+     *
+     * @param position the position of the unit
+     * @return the unit at the given position or null if there is not one
+     */
     public Unit get(Position position) {
         return board.get(position);
     }

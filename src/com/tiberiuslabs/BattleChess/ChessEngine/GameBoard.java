@@ -1,13 +1,15 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
+import com.sun.javafx.collections.ObservableMapWrapper;
+import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Holds the current state of the game
@@ -20,16 +22,17 @@ import java.util.Set;
  * @author Amandeep Gill
  */
 public class GameBoard {
-    private final Map<Position, Unit> board = Init.initBoard();
+    private final ObservableMap<Position, Unit> board = new ObservableMapWrapper(new HashMap<>(Init.initBoard()));
+    private final Stack<Move> moveStack = new Stack<>();
 
     private final Set<Unit> blackUnits = new HashSet<>();
-    private final Set<Unit> blackGraveyard = new HashSet<>();
-    private boolean blackMonarch;
+    private final ObservableSet<Unit> blackGraveyard = new ObservableSetWrapper<>(new HashSet<Unit>());
+    private boolean blackKing;
     private int numBlackUnits;
 
     private final Set<Unit> whiteUnits = new HashSet<>();
-    private final Set<Unit> whiteGraveyard = new HashSet<>();
-    private boolean whiteMonarch;
+    private final ObservableSet<Unit> whiteGraveyard = new ObservableSetWrapper<>(new HashSet<Unit>());
+    private boolean whiteKing;
     private int numWhiteUnits;
 
     /**
@@ -42,15 +45,15 @@ public class GameBoard {
             if (unit != null) {
                 if (unit.color == Color.BLACK) {
                     blackUnits.add(unit);
-                    numBlackUnits++;
+                    numBlackUnits += 1;
                 } else {
                     whiteUnits.add(unit);
-                    numWhiteUnits++;
+                    numWhiteUnits += 1;
                 }
             }
         }
-        blackMonarch = true;
-        whiteMonarch = true;
+        blackKing = true;
+        whiteKing = true;
     }
 
     /**
@@ -62,10 +65,12 @@ public class GameBoard {
         board.putAll(other.board);
 
         blackGraveyard.addAll(other.blackGraveyard);
-        blackMonarch = other.blackMonarch;
+        blackUnits.addAll(other.blackUnits);
+        blackKing = other.blackKing;
 
         whiteGraveyard.addAll(other.whiteGraveyard);
-        whiteMonarch = other.whiteMonarch;
+        whiteUnits.addAll(other.whiteUnits);
+        whiteKing = other.whiteKing;
 
         numBlackUnits = other.numBlackUnits;
         numWhiteUnits = other.numWhiteUnits;
@@ -87,7 +92,7 @@ public class GameBoard {
      *
      * @return a mapping of Positions to Units
      */
-    public Map<Position, Unit> getBoard() {
+    public ObservableMap<Position, Unit> getBoard() {
         return board;
     }
 
@@ -106,14 +111,16 @@ public class GameBoard {
             if (isBlack) {
                 blackGraveyard.remove(unit);
                 blackUnits.add(unit);
-                blackMonarch = blackMonarch || unit.unitType == UnitType.KING;
-                numBlackUnits++;
+                blackKing = blackKing || unit.unitType == UnitType.KING;
+                numBlackUnits += 1;
             } else {
                 whiteGraveyard.remove(unit);
                 whiteUnits.add(unit);
-                whiteMonarch = whiteMonarch || unit.unitType == UnitType.KING;
-                numWhiteUnits++;
+                whiteKing = whiteKing || unit.unitType == UnitType.KING;
+                numWhiteUnits += 1;
             }
+
+            moveStack.add(new Move(unit, null, null, position));
             return true;
         }
         return false;
@@ -128,25 +135,64 @@ public class GameBoard {
      * @return the unit that was removed from play, null otherwise
      */
     public Unit move(Position startPos, Position finalPos) {
-        Unit unit = board.get(finalPos);
-        if (unit != null) {
-            if (unit.color == Color.BLACK) {
-                blackGraveyard.add(unit);
-                blackUnits.remove(unit);
-                numBlackUnits--;
-                blackMonarch = !(unit.unitType == UnitType.KING);
+        Unit attacker = board.get(startPos);
+        Unit defender = board.get(finalPos);
+        moveStack.push(new Move(attacker, startPos, defender, finalPos));
+
+        if (defender != null) {
+            if (defender.color == Color.BLACK) {
+                blackGraveyard.add(defender);
+                blackUnits.remove(defender);
+                numBlackUnits -= 1;
+                blackKing = !(defender.unitType == UnitType.KING);
             } else {
-                whiteGraveyard.add(unit);
-                whiteUnits.remove(unit);
-                numWhiteUnits--;
-                whiteMonarch = !(unit.unitType == UnitType.KING);
+                whiteGraveyard.add(defender);
+                whiteUnits.remove(defender);
+                numWhiteUnits -= 1;
+                whiteKing = !(defender.unitType == UnitType.KING);
             }
         }
 
-        board.put(finalPos, board.get(startPos));
         board.put(startPos, null);
+        board.put(finalPos, attacker);
 
-        return unit;
+        return defender;
+    }
+
+    public void undoMove() {
+        if (!moveStack.empty()) {
+            Move lastMove = moveStack.pop();
+            if (lastMove.startPos == null) {
+                if (lastMove.attacker.color == Color.BLACK) {
+                    blackGraveyard.add(lastMove.attacker);
+                    blackUnits.remove(lastMove.attacker);
+                    numBlackUnits -= 1;
+                    blackKing = !(lastMove.attacker.unitType == UnitType.KING);
+                } else {
+                    whiteGraveyard.add(lastMove.attacker);
+                    whiteUnits.remove(lastMove.attacker);
+                    numWhiteUnits -= 1;
+                    whiteKing = !(lastMove.attacker.unitType == UnitType.KING);
+                }
+                board.put(lastMove.finalPos, lastMove.attacker);
+                return;
+            } else if (lastMove.defender != null) {
+                if (lastMove.defender.color == Color.BLACK) {
+                    blackGraveyard.remove(lastMove.defender);
+                    blackUnits.add(lastMove.defender);
+                    numBlackUnits += 1;
+                    blackKing = lastMove.defender.unitType == UnitType.KING;
+                } else {
+                    whiteGraveyard.remove(lastMove.defender);
+                    whiteUnits.add(lastMove.defender);
+                    numWhiteUnits += 1;
+                    whiteKing = lastMove.defender.unitType == UnitType.KING;
+                }
+            }
+
+            board.put(lastMove.startPos, lastMove.attacker);
+            board.put(lastMove.finalPos, lastMove.defender);
+        }
     }
 
     /**
@@ -175,8 +221,8 @@ public class GameBoard {
      * @param player the player's color
      * @return returns true if the player has an active monarch, false otherwise
      */
-    public boolean hasMonarch(Color player) {
-        return player == Color.BLACK ? blackMonarch : whiteMonarch;
+    public boolean hasKing(Color player) {
+        return player == Color.BLACK ? blackKing : whiteKing;
     }
 
     /**
@@ -186,7 +232,46 @@ public class GameBoard {
      * @return the copy of the player's graveyard, returns the white player's graveyard if the player color
      * is not black
      */
-    public Set<Unit> getGraveyard(Color player) {
-        return new HashSet<>(player == Color.BLACK ? blackGraveyard : whiteGraveyard);
+    public ObservableSet<Unit> getGraveyard(Color player) {
+        return player == Color.BLACK ? blackGraveyard : whiteGraveyard;
+    }
+
+    public Position getPosition(Unit unit) {
+        if (unit != null) {
+            for (Map.Entry entry : board.entrySet()) {
+                if (unit.equals(entry.getValue())) {
+                    return (Position) entry.getKey();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public int numCitiesHeld(Color player) {
+        int cities = 0;
+
+        for (Position position : Init.cities) {
+            Unit city = board.get(position);
+            if (city != null && city.color == player) {
+                cities += 1;
+            }
+        }
+
+        return cities;
+    }
+
+    public static class Move {
+        public final Unit attacker;
+        public final Unit defender;
+        public final Position startPos;
+        public final Position finalPos;
+
+        public Move(Unit attacker, Position startPos, Unit defender, Position finalPos) {
+            this.attacker = attacker;
+            this.defender = defender;
+            this.startPos = startPos;
+            this.finalPos = finalPos;
+        }
     }
 }

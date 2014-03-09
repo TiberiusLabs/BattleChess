@@ -43,6 +43,12 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
         }
 
         listenerBoard = new ObservableMapWrapper<>(tempListenerMap);
+
+        gameEngine.getBoard().addListener((MapChangeListener<? super Position,? super Unit>) change -> {
+            Unit newUnit = (Unit) (change.wasAdded() ? change.getValueAdded() : change.getValueRemoved());
+            Position position = (Position) change.getKey();
+            listenerBoard.put(position, new Triple<>(Highlight.NONE, newUnit, gameEngine.tileColor(position)));
+        });
     }
 
     private void setHighlights() {
