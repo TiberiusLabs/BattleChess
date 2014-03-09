@@ -27,7 +27,7 @@ public class MainWindow extends Application {
         callbacks = new GameEngineCallbacks(node -> {
             boardPane.getChildren().add(node);
         });
-        callbacks.setup(Color.BLACK, AIDifficulty.EXPERT);
+        callbacks.setup(Color.WHITE, AIDifficulty.EXPERT);
         board = new GuiBoard(callbacks, boardCanvas);
     }
 

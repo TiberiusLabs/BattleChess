@@ -49,6 +49,8 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
             Position position = (Position) change.getKey();
             listenerBoard.put(position, new Triple<>(Highlight.NONE, newUnit, gameEngine.tileColor(position)));
         });
+
+        gameEngine.update();
     }
 
     private void setHighlights() {

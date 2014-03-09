@@ -99,11 +99,13 @@ public class AI {
      * @return a Unit/from/to Triple reflecting the AI's move
      */
     public Move getMove(GameBoard board) {
-        SortedSet<Pair<Move, Integer>> moves = new TreeSet<>((o1, o2) -> o2.snd.compareTo(o1.snd));
         Move maxMove = null;
         int alpha = Integer.MIN_VALUE;
 
         for (Move move : generateMoves(board, this.color)) {
+            if (alpha == Integer.MIN_VALUE) {
+                maxMove = move;
+            }
             if (move.startPos == null) {
                 board.set(move.attacker, move.finalPos);
             } else {
