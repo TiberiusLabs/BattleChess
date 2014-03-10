@@ -2,6 +2,7 @@ package com.tiberiuslabs.BattleChess.Types;
 
 /**
  * holds what type of highlight the gui should display<p/>
+ *
  * @author Amandeep Gill
  */
 public enum Highlight {

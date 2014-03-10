@@ -1,6 +1,7 @@
 package com.tiberiuslabs.BattleChess.GameEngine;
 
 import com.tiberiuslabs.BattleChess.AI.AIEngine;
+import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
 import com.tiberiuslabs.BattleChess.ChessEngine.Init;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
@@ -21,7 +22,7 @@ import java.util.Set;
  * @author Amandeep Gill
  */
 public class GameEngine {
-    private GameBoard board;
+    private Board board;
     private AIEngine aiEngine;
     private Color playerColor;
     private Color currentPlayer;
@@ -76,7 +77,7 @@ public class GameEngine {
      */
     public void update() {
         if (currentPlayer == aiEngine.getAIColor()) {
-            GameBoard.Move move = aiEngine.getAIMove(new GameBoard(board));
+            GameBoard.Move move = aiEngine.getAIMove(board);
             if (move != null) {
                 if (!board.set(move.attacker, move.finalPos)) {
                     board.move(move.startPos, move.finalPos);

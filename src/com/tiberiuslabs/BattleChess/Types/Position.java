@@ -4,6 +4,7 @@ import com.tiberiuslabs.Collections.Pair;
 
 /**
  * Specialized Pair wrapper specifically for integer cartesian coordinate
+ *
  * @author Amandeep Gill
  */
 public class Position {
@@ -18,6 +19,7 @@ public class Position {
 
     /**
      * Initializes the Position to (x,y)
+     *
      * @param x the x coordinate
      * @param y the y coordinate
      */
@@ -27,6 +29,7 @@ public class Position {
 
     /**
      * Initializes the Position with a copy of the (x,y) of the other Position
+     *
      * @param other the position to copy the data from
      */
     public Position(Position other) {
@@ -35,7 +38,8 @@ public class Position {
 
     /**
      * Get the x coordinate of the Position
-     * @return  a reference to the Integer of x
+     *
+     * @return a reference to the Integer of x
      */
     public Integer x() {
         return xy.fst;
@@ -43,7 +47,8 @@ public class Position {
 
     /**
      * Get the y coordinate of the Position
-     * @return  a reference to the Integer of y
+     *
+     * @return a reference to the Integer of y
      */
     public Integer y() {
         return xy.snd;
@@ -51,8 +56,9 @@ public class Position {
 
     /**
      * Construct a new Position through addition of this and other, performs check for null safety
+     *
      * @param other the Position to add to this Position
-     * @return  a new Position with (x,y) == (this.x + other.x, this.y + other.y), returns a copy of this if other == null
+     * @return a new Position with (x,y) == (this.x + other.x, this.y + other.y), returns a copy of this if other == null
      */
     public Position add(Position other) {
         return other == null ? new Position(this) : new Position(this.x() + other.x(), this.y() + other.y());

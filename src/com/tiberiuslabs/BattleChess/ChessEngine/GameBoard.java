@@ -1,5 +1,6 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
+import com.sun.istack.internal.NotNull;
 import com.sun.javafx.collections.ObservableMapWrapper;
 import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.Types.Color;
@@ -21,7 +22,7 @@ import java.util.*;
  *
  * @author Amandeep Gill
  */
-public class GameBoard {
+public class GameBoard implements Board {
     private final ObservableMap<Position, Unit> board = new ObservableMapWrapper(new HashMap<>(Init.initBoard()));
     private final Stack<Move> moveStack = new Stack<>();
 
@@ -41,8 +42,10 @@ public class GameBoard {
     public GameBoard() {
         numWhiteUnits = 0;
         numBlackUnits = 0;
-        for (Unit unit : board.values()) {
+        for (Map.Entry entry : board.entrySet()) {
+            Unit unit = (Unit) entry.getValue();
             if (unit != null) {
+                unit.position = (Position) entry.getKey();
                 if (unit.color == Color.BLACK) {
                     blackUnits.add(unit);
                     numBlackUnits += 1;
@@ -83,6 +86,7 @@ public class GameBoard {
      * @return the Unit at the given position if one exists, return null if there is no Unit at the position
      * or the position is not inBounds
      */
+    @Override
     public Unit get(Position pos) {
         return board.get(pos);
     }
@@ -92,6 +96,7 @@ public class GameBoard {
      *
      * @return a mapping of Positions to Units
      */
+    @Override
     public ObservableMap<Position, Unit> getBoard() {
         return board;
     }
@@ -103,11 +108,12 @@ public class GameBoard {
      * @param position the position to put the recruit at
      * @return true if the unit was successfully recruited, false otherwise
      */
-    public boolean set(Unit unit, Position position) {
+    @Override
+    public boolean set(@NotNull Unit unit, @NotNull Position position) {
         boolean isBlack = unit.color == Color.BLACK;
-        if (isBlack ? whiteGraveyard.contains(unit) : blackGraveyard.contains(unit) &&
-                board.get(position) == null) {
+        if (isBlack ? whiteGraveyard.contains(unit) : blackGraveyard.contains(unit) && board.get(position) == null) {
             board.put(position, unit);
+            unit.position = position;
             if (isBlack) {
                 blackGraveyard.remove(unit);
                 blackUnits.add(unit);
@@ -132,14 +138,18 @@ public class GameBoard {
      *
      * @param startPos the starting position of the unit that is moving
      * @param finalPos the final position to move the unit to
-     * @return the unit that was removed from play, null otherwise
      */
-    public Unit move(Position startPos, Position finalPos) {
+    @Override
+    public void move(@NotNull Position startPos, @NotNull Position finalPos) {
         Unit attacker = board.get(startPos);
         Unit defender = board.get(finalPos);
+        if (attacker == null) {
+            return;
+        }
         moveStack.push(new Move(attacker, startPos, defender, finalPos));
-
+        attacker.position = finalPos;
         if (defender != null) {
+            defender.position = null;
             if (defender.color == Color.BLACK) {
                 blackGraveyard.add(defender);
                 blackUnits.remove(defender);
@@ -155,10 +165,9 @@ public class GameBoard {
 
         board.put(startPos, null);
         board.put(finalPos, attacker);
-
-        return defender;
     }
 
+    @Override
     public void undoMove() {
         if (!moveStack.empty()) {
             Move lastMove = moveStack.pop();
@@ -177,6 +186,7 @@ public class GameBoard {
                 board.put(lastMove.finalPos, lastMove.attacker);
                 return;
             } else if (lastMove.defender != null) {
+                lastMove.defender.position = lastMove.finalPos;
                 if (lastMove.defender.color == Color.BLACK) {
                     blackGraveyard.remove(lastMove.defender);
                     blackUnits.add(lastMove.defender);
@@ -190,6 +200,7 @@ public class GameBoard {
                 }
             }
 
+            lastMove.attacker.position = lastMove.startPos;
             board.put(lastMove.startPos, lastMove.attacker);
             board.put(lastMove.finalPos, lastMove.defender);
         }
@@ -201,6 +212,7 @@ public class GameBoard {
      * @param player the player's color
      * @return a head count of all the player's units still alive
      */
+    @Override
     public int numActiveUnits(Color player) {
         return player == Color.BLACK ? numBlackUnits : numWhiteUnits;
     }
@@ -211,6 +223,7 @@ public class GameBoard {
      * @param player the player's color
      * @return the set of all the units that the player has on the board
      */
+    @Override
     public Set<Unit> getActiveUnits(Color player) {
         return player == Color.BLACK ? blackUnits : whiteUnits;
     }
@@ -221,6 +234,7 @@ public class GameBoard {
      * @param player the player's color
      * @return returns true if the player has an active monarch, false otherwise
      */
+    @Override
     public boolean hasKing(Color player) {
         return player == Color.BLACK ? blackKing : whiteKing;
     }
@@ -232,22 +246,12 @@ public class GameBoard {
      * @return the copy of the player's graveyard, returns the white player's graveyard if the player color
      * is not black
      */
+    @Override
     public ObservableSet<Unit> getGraveyard(Color player) {
         return player == Color.BLACK ? blackGraveyard : whiteGraveyard;
     }
 
-    public Position getPosition(Unit unit) {
-        if (unit != null) {
-            for (Map.Entry entry : board.entrySet()) {
-                if (unit.equals(entry.getValue())) {
-                    return (Position) entry.getKey();
-                }
-            }
-        }
-
-        return null;
-    }
-
+    @Override
     public int numCitiesHeld(Color player) {
         int cities = 0;
 
@@ -261,17 +265,5 @@ public class GameBoard {
         return cities;
     }
 
-    public static class Move {
-        public final Unit attacker;
-        public final Unit defender;
-        public final Position startPos;
-        public final Position finalPos;
 
-        public Move(Unit attacker, Position startPos, Unit defender, Position finalPos) {
-            this.attacker = attacker;
-            this.defender = defender;
-            this.startPos = startPos;
-            this.finalPos = finalPos;
-        }
-    }
 }

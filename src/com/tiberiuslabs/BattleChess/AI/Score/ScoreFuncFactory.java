@@ -137,7 +137,7 @@ public class ScoreFuncFactory {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(player)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, board.getPosition(unit), board);
+                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
                 for (Position position : validMoves) {
                     Unit defender = board.get(position);
                     if (defender != null) {
@@ -180,7 +180,7 @@ public class ScoreFuncFactory {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(opponent)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, board.getPosition(unit), board);
+                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
                 for (Position position : validMoves) {
                     Unit defender = board.get(position);
                     if (defender != null) {
@@ -222,7 +222,7 @@ public class ScoreFuncFactory {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(player)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, board.getPosition(unit), board);
+                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
                 for (Position position : validMoves) {
                     if (board.get(position) == null) {
                         score += 5;
@@ -245,7 +245,7 @@ public class ScoreFuncFactory {
             int score = 0;
 
             for (Unit unit : board.getActiveUnits(opponent)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, board.getPosition(unit), board);
+                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
                 for (Position position : validMoves) {
                     if (board.get(position) == null) {
                         score += 1;

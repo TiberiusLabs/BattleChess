@@ -2,11 +2,16 @@ package com.tiberiuslabs.BattleChess.Types;
 
 /**
  * Container for the Unit class
+ *
  * @author Amandeep Gill
  */
 public class Unit {
     private final transient int hash;
 
+    /**
+     * the unit's current position
+     */
+    public Position position;
     /**
      * the unit's enumerated type
      */
@@ -22,16 +27,17 @@ public class Unit {
 
     /**
      * Initialize the Unit.
-     * @param unitType  the type of unit that this is
-     * @param color     the color of the this unit's controlling player
-     * @param id        an ID to distinguish this from the other units of the same type and color
+     *
+     * @param unitType the type of unit that this is
+     * @param color    the color of the this unit's controlling player
+     * @param id       an ID to distinguish this from the other units of the same type and color
      */
     public Unit(UnitType unitType, Color color, int id) {
         this.unitType = unitType;
         this.color = color;
         this.id = id;
 
-        hash =  (unitType == null ? 0 : unitType.hashCode()) * 43 +  (color == null ? 0 : color.hashCode()) * 29 + id;
+        hash = (unitType == null ? 0 : unitType.hashCode()) * 43 + (color == null ? 0 : color.hashCode()) * 29 + id;
     }
 
     @Override

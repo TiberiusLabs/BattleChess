@@ -1,15 +1,19 @@
 package com.tiberiuslabs.BattleChess.AI;
 
 import com.tiberiuslabs.BattleChess.AI.Score.ScoreFunc;
-import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
+import com.tiberiuslabs.BattleChess.ChessEngine.Board;
+import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
-import static com.tiberiuslabs.BattleChess.ChessEngine.GameBoard.Move;
+import static com.tiberiuslabs.BattleChess.ChessEngine.Board.Move;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -94,10 +98,11 @@ public class AI {
     /**
      * Determine the best move for the AI to make
      *
+     *
      * @param board a copy of the current game state
      * @return a Unit/from/to Triple reflecting the AI's move
      */
-    public Move getMove(GameBoard board) {
+    public Move getMove(Board board) {
         Move maxMove = null;
         int alpha = Integer.MIN_VALUE;
 
@@ -145,7 +150,7 @@ public class AI {
      * @param board a copy of the current game state
      * @return the sum of the score determined by the score functions
      */
-    public int getScore(GameBoard board) {
+    public int getScore(Board board) {
         int score = 0;
         for (int i = 0; i < numFuncs; i += 1) {
             score += useFunc[i] ? scoreFuncs[i].score(board, this.color) : 0;
@@ -164,7 +169,7 @@ public class AI {
      * @return the max or min value of the children, depending on maxPlayer
      * @see <a href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">Wikipedia article on alpha/beta pruning</a>
      */
-    private int alphabeta(GameBoard board, int depth, int alpha, int beta, boolean maxPlayer) {
+    private int alphabeta(Board board, int depth, int alpha, int beta, boolean maxPlayer) {
         Color winner = Rules.winner(board);
         if (winner != Color.NEUTRAL) {
             // check if we have reached a win state
@@ -234,19 +239,23 @@ public class AI {
      * @param player the player for whom we are generating the moves
      * @return a set of all possible moves and recruitments for the player
      */
-    private Set<Move> generateMoves(GameBoard board, Color player) {
+    private Set<Move> generateMoves(Board board, Color player) {
         Set<Move> moves = new HashSet<>();
 
         for (Unit unit : board.getActiveUnits(player)) {
-            Position startPos = board.getPosition(unit);
-            for (Position finalPos : Rules.getValidMoves(unit, startPos, board)) {
-                moves.add(new Move(unit, startPos, board.get(finalPos), finalPos));
+            if (unit != null) {
+                Position startPos = unit.position;
+                for (Position finalPos : Rules.getValidMoves(unit, startPos, board)) {
+                    moves.add(new Move(unit, startPos, board.get(finalPos), finalPos));
+                }
             }
         }
 
         for (Unit recruit : board.getGraveyard(player)) {
-            for (Position finalPos : Rules.getValidRecruitments(player, recruit, board)) {
-                moves.add(new Move(recruit, null, null, finalPos));
+            if (recruit != null) {
+                for (Position finalPos : Rules.getValidRecruitments(player, recruit, board)) {
+                    moves.add(new Move(recruit, null, null, finalPos));
+                }
             }
         }
 
@@ -255,6 +264,9 @@ public class AI {
 
     @Override
     public String toString() {
-        return "AI{" + this.hashCode() +  ": weights=" + Arrays.toString(weights) + '}';
+        return "AI{" + this.hashCode() +  ": weights=" + Arrays.toString(weights) +
+               " funcs used: " + Arrays.toString(useFunc) + '}';
     }
+
+
 }

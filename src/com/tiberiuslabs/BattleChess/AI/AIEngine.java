@@ -1,6 +1,7 @@
 package com.tiberiuslabs.BattleChess.AI;
 
 import com.tiberiuslabs.BattleChess.AI.Score.ScoreFunc;
+import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
@@ -44,13 +45,14 @@ public class AIEngine {
     /**
      * Gets the AI's move.
      *
+     *
      * @param board the current game state, must not be null. Makes a copy to ensure that the game state is not
      *              changed while the AI calculates the best move to make
      * @return a Move instance representing what the AI sees as the best move for it to make
      * @see com.tiberiuslabs.BattleChess.ChessEngine.GameBoard.Move
      */
-    public Move getAIMove(GameBoard board) {
-        return ai.getMove(new GameBoard(board));
+    public Move getAIMove(Board board) {
+        return ai.getMove(board);
     }
 
     public static void main(String[] args) {
