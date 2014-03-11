@@ -9,6 +9,7 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
+import sun.net.www.content.text.plain;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -102,27 +103,34 @@ public class AI {
      * @param board a copy of the current game state
      * @return a Unit/from/to Triple reflecting the AI's move
      */
-    public Move getMove(Board board) {
-        Move maxMove = null;
+    public Move getMove(Board board) throws NoMoveException {
+        AIBoard aiBoard = new AIBoard(board);
         int alpha = Integer.MIN_VALUE;
+        Set<Move> moves = generateMoves(aiBoard, this.color);
+        if (moves.size() < 1) {
+            throw new NoMoveException();
+        }
+        Move maxMove = moves.iterator().next();
 
-        for (Move move : generateMoves(board, this.color)) {
-            if (alpha == Integer.MIN_VALUE) {
+        for (Move move : moves) {
+            assert move != null;
+            if (maxMove == null) {
                 maxMove = move;
             }
             if (move.startPos == null) {
-                board.set(move.attacker, move.finalPos);
+                aiBoard.set(move.attacker, move.finalPos);
             } else {
-                board.move(move.startPos, move.finalPos);
+                aiBoard.move(move.startPos, move.finalPos);
             }
-            int a = max(alpha, alphabeta(board, 3, alpha, Integer.MAX_VALUE, false));
+            aiBoard.undoMove();
+            int a = max(alpha, alphabeta(aiBoard, 3, alpha, Integer.MAX_VALUE, false));
             if (a > alpha) {
                 alpha = a;
                 maxMove = move;
             }
         }
 
-        if (maxMove == null) System.out.println("maxMove is null");
+        assert maxMove != null;
         return maxMove;
     }
 
@@ -268,5 +276,10 @@ public class AI {
                " funcs used: " + Arrays.toString(useFunc) + '}';
     }
 
+    public class NoMoveException extends Exception {
+        public NoMoveException() {
+            super("No moves available");
+        }
+    }
 
 }

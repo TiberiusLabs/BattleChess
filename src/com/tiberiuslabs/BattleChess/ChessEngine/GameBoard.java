@@ -3,10 +3,12 @@ package com.tiberiuslabs.BattleChess.ChessEngine;
 import com.sun.istack.internal.NotNull;
 import com.sun.javafx.collections.ObservableMapWrapper;
 import com.sun.javafx.collections.ObservableSetWrapper;
+import com.tiberiuslabs.BattleChess.AI.AIEngine;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
@@ -99,6 +101,11 @@ public class GameBoard implements Board {
     @Override
     public ObservableMap<Position, Unit> getBoard() {
         return board;
+    }
+
+    @Override
+    public Unit[][] getArrayBoard() {
+        return null;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.tiberiuslabs.BattleChess.GameEngine;
 
+import com.tiberiuslabs.BattleChess.AI.AI;
 import com.tiberiuslabs.BattleChess.AI.AIEngine;
 import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
@@ -77,7 +78,12 @@ public class GameEngine {
      */
     public void update() {
         if (currentPlayer == aiEngine.getAIColor()) {
-            GameBoard.Move move = aiEngine.getAIMove(board);
+            GameBoard.Move move = null;
+            try {
+                move = aiEngine.getAIMove(board);
+            } catch (AI.NoMoveException e) {
+                // call winner function
+            }
             if (move != null) {
                 if (!board.set(move.attacker, move.finalPos)) {
                     board.move(move.startPos, move.finalPos);

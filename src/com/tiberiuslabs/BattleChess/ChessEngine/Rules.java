@@ -114,15 +114,19 @@ public final class Rules {
         // special check for the PAWN since they do not attack along their move paths
         if (unit.unitType == UnitType.PAWN) {
             Position attack1 = new Position(startPos.x() + dir, startPos.y());
-            Unit defender = board.get(attack1);
-            if (inBounds(attack1) && defender != null && defender.color != unit.color) {
-                moves.add(attack1);
+            if (inBounds(attack1)) {
+                Unit defender = board.get(attack1);
+                if (defender != null && defender.color != unit.color) {
+                    moves.add(attack1);
+                }
             }
 
             Position attack2 = new Position(startPos.x() - dir, startPos.y() + dir);
-            defender = board.get(attack2);
-            if (inBounds(attack2) && defender != null && defender.color != unit.color) {
-                moves.add(attack2);
+            if (inBounds(attack2)) {
+                Unit defender = board.get(attack2);
+                if (defender != null && defender.color != unit.color) {
+                    moves.add(attack2);
+                }
             }
         }
 

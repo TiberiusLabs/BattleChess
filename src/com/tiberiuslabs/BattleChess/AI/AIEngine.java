@@ -51,7 +51,7 @@ public class AIEngine {
      * @return a Move instance representing what the AI sees as the best move for it to make
      * @see com.tiberiuslabs.BattleChess.ChessEngine.GameBoard.Move
      */
-    public Move getAIMove(Board board) {
+    public Move getAIMove(Board board) throws AI.NoMoveException {
         return ai.getMove(board);
     }
 
@@ -108,7 +108,12 @@ public class AIEngine {
         black.setColor(Color.BLACK);
 
         for (int moves = 0; moves < 100; moves += 1) {
-            Move wMove = white.getMove(new GameBoard(board));
+            Move wMove;
+            try {
+                wMove = white.getMove(new GameBoard(board));
+            } catch (AI.NoMoveException e) {
+                return false;
+            }
             if (wMove != null) {
                 if (wMove.startPos == null) {
                     board.set(wMove.attacker, wMove.finalPos);
@@ -123,7 +128,12 @@ public class AIEngine {
                 return false;
             }
 
-            Move bMove = black.getMove(new GameBoard(board));
+            Move bMove;
+            try {
+                bMove = black.getMove(new GameBoard(board));
+            } catch (AI.NoMoveException e) {
+                return true;
+            }
             if (bMove != null) {
                 if (bMove.startPos == null) {
                     board.set(bMove.attacker, bMove.finalPos);
@@ -139,6 +149,7 @@ public class AIEngine {
             }
         }
 
+        System.out.println("max moves exceeded");
         return false;
     }
 }

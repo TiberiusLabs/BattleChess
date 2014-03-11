@@ -1,6 +1,7 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
 import com.sun.istack.internal.NotNull;
+import com.tiberiuslabs.BattleChess.AI.AIEngine;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
@@ -35,6 +36,8 @@ public interface Board {
     public int numCitiesHeld(Color player);
 
     public ObservableMap<Position, Unit> getBoard();
+
+    public Unit[][] getArrayBoard();
 
     public static class Move {
         @NotNull
