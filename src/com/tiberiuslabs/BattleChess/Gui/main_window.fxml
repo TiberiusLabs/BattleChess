@@ -18,12 +18,12 @@
                         <VBox minHeight="0.0" prefHeight="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <ListView prefHeight="600.0" prefWidth="200.0"/>
+                                <ListView prefHeight="600.0" prefWidth="200.0" fx:id="recruitList"/>
                                 <Separator prefWidth="200.0"/>
                                 <ToolBar prefHeight="40.0" prefWidth="200.0">
                                     <items>
                                         <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="185.0"
-                                                text="Button"/>
+                                                text="Recruit" fx:id="recruitButton"/>
                                     </items>
                                 </ToolBar>
                             </children>

@@ -37,16 +37,15 @@ public class AI {
      * @param color      the color of the AI player
      */
     public AI(ScoreFunc[] scoreFuncs, Color color) {
+        // temp hardcode for AI
         this.numFuncs = scoreFuncs.length;
         this.scoreFuncs = scoreFuncs;
         this.color = color;
         this.useFunc = new boolean[numFuncs];
-        this.weights = new int[numFuncs];
+        this.weights = new int[]{25, 50, 10, 40, 60, 20, 5, 20, 30, 10, 100, 50};
 
-        Random random = new Random();
         for (int i = 0; i < numFuncs; i += 1) {
-            useFunc[i] = random.nextBoolean();
-            weights[i] = random.nextInt(100) + 1;
+            useFunc[i] = !(4 <= i && i <= 7);
         }
     }
 

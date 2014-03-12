@@ -10,6 +10,7 @@ import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
@@ -204,7 +205,7 @@ public class GameEngine {
      * @param player the player to get the graveyard for
      * @return the player's current graveyard
      */
-    public ObservableSet<Unit> getGraveyard(Color player) {
+    public ObservableList<Unit> getGraveyard(Color player) {
         return board.getGraveyard(player);
     }
 

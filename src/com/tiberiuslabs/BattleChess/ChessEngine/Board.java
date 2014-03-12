@@ -5,6 +5,7 @@ import com.tiberiuslabs.BattleChess.AI.AIEngine;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
@@ -31,7 +32,7 @@ public interface Board {
 
     public boolean hasKing(Color player);
 
-    public ObservableSet<Unit> getGraveyard(Color player);
+    public ObservableList<Unit> getGraveyard(Color player);
 
     public int numCitiesHeld(Color player);
 

@@ -20,7 +20,7 @@ public class GuiBoard {
 
     private Map<Position, Tile> tiles;
 
-    public GuiBoard(BoardCallback boardCallback, Canvas canvas) {
+    public GuiBoard(BoardCallback boardCallback) {
         tiles = new HashMap<>();
 
         for (Position position : boardCallback.getTilePositions()) {

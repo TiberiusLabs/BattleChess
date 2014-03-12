@@ -6,22 +6,28 @@ import com.tiberiuslabs.BattleChess.Gui.GuiBoard;
 import com.tiberiuslabs.BattleChess.Gui.RecruitMenu;
 import com.tiberiuslabs.BattleChess.Types.*;
 import com.tiberiuslabs.Collections.Triple;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
-import javafx.collections.SetChangeListener;
 import javafx.scene.Node;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class manages the interface between the UI and the GameEngine class, it implements callbacks for the GuiBoard
+ * and the RecruitMenu
+ *
+ * @author Amandeep Gill
+ */
 public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.RecruitCallback {
 
     private GameEngine gameEngine = new GameEngine();
     private GameEngineCallbacks.AddNodeCallback addNodeCallback;
     private ObservableMap<Position, Triple<Highlight, Unit, Color>> listenerBoard;
-    private ObservableSet<Unit> availableRecruits;
+    private ObservableList<Unit> availableRecruits;
     private Position selectedTile;
     private Unit recruit;
     private Color playerColor;
@@ -44,7 +50,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
 
         listenerBoard = new ObservableMapWrapper<>(tempListenerMap);
 
-        gameEngine.getBoard().addListener((MapChangeListener<? super Position,? super Unit>) change -> {
+        gameEngine.getBoard().addListener((MapChangeListener<? super Position, ? super Unit>) change -> {
             Unit newUnit = (Unit) (change.wasAdded() ? change.getValueAdded() : change.getValueRemoved());
             Position position = (Position) change.getKey();
             listenerBoard.put(position, new Triple<>(Highlight.NONE, newUnit, gameEngine.tileColor(position)));
@@ -140,8 +146,18 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     }
 
     @Override
-    public void setRecruitListener(SetChangeListener<Unit> recruitListener) {
-        availableRecruits.addListener(recruitListener);
+    public void setRecruitListener(ListChangeListener<Unit> recruitListener) {
+        gameEngine.getGraveyard(playerColor).addListener(recruitListener);
+    }
+
+    @Override
+    public void selectRecruit(Unit recruit) {
+        this.recruit = recruit;
+    }
+
+    @Override
+    public ObservableList<Unit> getAvailableRecruits() {
+        return gameEngine.getGraveyard(playerColor);
     }
 
     public interface AddNodeCallback {

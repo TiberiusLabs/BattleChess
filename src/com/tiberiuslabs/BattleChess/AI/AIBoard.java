@@ -1,6 +1,7 @@
 package com.tiberiuslabs.BattleChess.AI;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.Init;
@@ -9,6 +10,7 @@ import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
@@ -21,7 +23,7 @@ public class AIBoard implements Board {
 
     private final Unit[][] board = new Unit[11][11];
     private final Map<Color, Set<Unit>> activeUnits = new HashMap<>();
-    private final Map<Color, Set<Unit>> deadUnits = new HashMap<>();
+    private final Map<Color, List<Unit>> deadUnits = new HashMap<>();
     private final Map<Color, Boolean> kingAlive = new HashMap<>();
     private final Stack<Move> moves = new Stack<>();
 
@@ -33,8 +35,8 @@ public class AIBoard implements Board {
         }
         activeUnits.put(Color.BLACK, new HashSet<>((board.getActiveUnits(Color.BLACK))));
         activeUnits.put(Color.WHITE, new HashSet<>((board.getActiveUnits(Color.WHITE))));
-        deadUnits.put(Color.BLACK, new HashSet<>(board.getGraveyard(Color.BLACK)));
-        deadUnits.put(Color.WHITE, new HashSet<>(board.getGraveyard(Color.WHITE)));
+        deadUnits.put(Color.BLACK, new ArrayList<>(board.getGraveyard(Color.BLACK)));
+        deadUnits.put(Color.WHITE, new ArrayList<>(board.getGraveyard(Color.WHITE)));
         kingAlive.put(Color.BLACK, board.hasKing(Color.BLACK));
         kingAlive.put(Color.WHITE, board.hasKing(Color.WHITE));
     }
@@ -116,8 +118,8 @@ public class AIBoard implements Board {
     }
 
     @Override
-    public ObservableSet<Unit> getGraveyard(Color player) {
-        return new ObservableSetWrapper<>(deadUnits.get(player));
+    public ObservableList<Unit> getGraveyard(Color player) {
+        return new ObservableListWrapper<>(deadUnits.get(player));
     }
 
     @Override

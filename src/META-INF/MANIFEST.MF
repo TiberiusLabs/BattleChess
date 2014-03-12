@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: com.tiberiuslabs.BattleChess.AI.Score com.tiberiuslabs.Bat
+ tleChess.AI com.tiberiuslabs.BattleChess.ChessEngine com.tiberiuslabs
+ .BattleChess.GameEngine com.tiberiuslabs.BattleChess.Gui com.tiberius
+ labs.BattleChess.Types com.tiberiuslabs.Collections
+Main-Class: com.tiberiuslabs.BattleChess.Gui.MainWindow
+

@@ -7,6 +7,7 @@ package com.tiberiuslabs.BattleChess.Types;
  */
 public class Unit {
     private final transient int hash;
+    private final String stringID;
 
     /**
      * the unit's current position
@@ -37,6 +38,29 @@ public class Unit {
         this.color = color;
         this.id = id;
 
+        switch (unitType) {
+            case PAWN:
+                stringID = "Pawn #" + id;
+                break;
+            case KNIGHT:
+                stringID = "Knight #" + id;
+                break;
+            case ROOK:
+                stringID = "Rook #" + id;
+                break;
+            case BISHOP:
+                stringID = "Bishop #" + id;
+                break;
+            case QUEEN:
+                stringID = "Queen #" + id;
+                break;
+            case KING:
+                stringID = "King #" + id;
+                break;
+            default:
+                stringID = "Unknown";
+        }
+
         hash = (unitType == null ? 0 : unitType.hashCode()) * 43 + (color == null ? 0 : color.hashCode()) * 29 + id;
     }
 
@@ -57,5 +81,10 @@ public class Unit {
 
         Unit otherUnit = getClass().cast(other);
         return otherUnit.unitType == this.unitType && otherUnit.color == this.color && otherUnit.id == this.id;
+    }
+
+    @Override
+    public String toString() {
+        return stringID;
     }
 }

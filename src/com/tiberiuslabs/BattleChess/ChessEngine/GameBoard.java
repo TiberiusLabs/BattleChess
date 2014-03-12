@@ -1,14 +1,14 @@
 package com.tiberiuslabs.BattleChess.ChessEngine;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.collections.ObservableMapWrapper;
 import com.sun.javafx.collections.ObservableSetWrapper;
-import com.tiberiuslabs.BattleChess.AI.AIEngine;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
-import javafx.beans.value.ObservableBooleanValue;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
@@ -25,16 +25,18 @@ import java.util.*;
  * @author Amandeep Gill
  */
 public class GameBoard implements Board {
+
+    @SuppressWarnings("unchecked")
     private final ObservableMap<Position, Unit> board = new ObservableMapWrapper(new HashMap<>(Init.initBoard()));
     private final Stack<Move> moveStack = new Stack<>();
 
     private final Set<Unit> blackUnits = new HashSet<>();
-    private final ObservableSet<Unit> blackGraveyard = new ObservableSetWrapper<>(new HashSet<Unit>());
+    private final ObservableList<Unit> blackGraveyard = new ObservableListWrapper<>(new ArrayList<Unit>());
     private boolean blackKing;
     private int numBlackUnits;
 
     private final Set<Unit> whiteUnits = new HashSet<>();
-    private final ObservableSet<Unit> whiteGraveyard = new ObservableSetWrapper<>(new HashSet<Unit>());
+    private final ObservableList<Unit> whiteGraveyard = new ObservableListWrapper<>(new ArrayList<Unit>());
     private boolean whiteKing;
     private int numWhiteUnits;
 
@@ -174,6 +176,9 @@ public class GameBoard implements Board {
         board.put(finalPos, attacker);
     }
 
+    /**
+     * Reverses the last move or recruitment that was made
+     */
     @Override
     public void undoMove() {
         if (!moveStack.empty()) {
@@ -254,17 +259,23 @@ public class GameBoard implements Board {
      * is not black
      */
     @Override
-    public ObservableSet<Unit> getGraveyard(Color player) {
+    public ObservableList<Unit> getGraveyard(Color player) {
         return player == Color.BLACK ? blackGraveyard : whiteGraveyard;
     }
 
+    /**
+     * Get the number of cities that the given player currently holds
+     *
+     * @param player the color of the player to check
+     * @return the number of cities that the player has a unit on, the unit must be an "officer" or non-pawn unit
+     */
     @Override
     public int numCitiesHeld(Color player) {
         int cities = 0;
 
         for (Position position : Init.cities) {
             Unit city = board.get(position);
-            if (city != null && city.color == player) {
+            if (city != null && city.color == player && city.unitType != UnitType.PAWN) {
                 cities += 1;
             }
         }

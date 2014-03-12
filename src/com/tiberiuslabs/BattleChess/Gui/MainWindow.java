@@ -6,29 +6,31 @@ import com.tiberiuslabs.BattleChess.Types.Color;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-
-import java.util.List;
 
 public class MainWindow extends Application {
 
     public Canvas boardCanvas;
     public Parent root;
     public Group boardPane;
+    public Button recruitButton;
+    public ListView recruitList;
+
     private GameEngineCallbacks callbacks;
     private GuiBoard board;
+    private RecruitMenu recruitMenu;
 
     private void initGame() {
         callbacks = new GameEngineCallbacks(node -> {
             boardPane.getChildren().add(node);
         });
         callbacks.setup(Color.WHITE, AIDifficulty.EXPERT);
-        board = new GuiBoard(callbacks, boardCanvas);
+        board = new GuiBoard(callbacks);
     }
 
     @Override
@@ -42,6 +44,8 @@ public class MainWindow extends Application {
 
         boardCanvas = (Canvas) root.lookup("#boardCanvas");
         boardPane = (Group) root.lookup("#boardPane");
+        recruitButton = (Button) root.lookup("#recruitButton");
+        recruitList = (ListView) root.lookup("#recruitList");
         initGame();
     }
 

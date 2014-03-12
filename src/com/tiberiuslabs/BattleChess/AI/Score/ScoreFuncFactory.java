@@ -20,7 +20,7 @@ public class ScoreFuncFactory {
      * @return an array of 10 ScoreFunc lambdas
      */
     public static ScoreFunc[] buildScoreFuncs() {
-        ScoreFunc[] scoreFuncs = new ScoreFunc[10];
+        ScoreFunc[] scoreFuncs = new ScoreFunc[12];
 
         scoreFuncs[0] = playerActiveUnitsScore();
         scoreFuncs[1] = opponentActiveUnitScore();
@@ -32,9 +32,70 @@ public class ScoreFuncFactory {
         scoreFuncs[7] = opponentMovementFreedom();
         scoreFuncs[8] = playerCitiesHeld();
         scoreFuncs[9] = opponentCitiesHeld();
-
+        scoreFuncs[10] = playerGraveyardScore();
+        scoreFuncs[11] = opponentGraveyardScore();
 
         return scoreFuncs;
+    }
+
+    private static ScoreFunc opponentGraveyardScore() {
+        return (board, player) -> {
+            int score = 0;
+            for (Unit unit : board.getGraveyard(player)) {
+                switch (unit.unitType) {
+                    case PAWN:
+                        score += 1;
+                        break;
+                    case KNIGHT:
+                        score += 5;
+                        break;
+                    case ROOK:
+                        score += 7;
+                        break;
+                    case BISHOP:
+                        score += 9;
+                        break;
+                    case QUEEN:
+                        score += 20;
+                        break;
+                    case KING:
+                        score += 20;
+                        break;
+                }
+            }
+
+            return score;
+        };
+    }
+
+    private static ScoreFunc playerGraveyardScore() {
+        return (board, player) -> {
+            int score = 0;
+            for (Unit unit : board.getGraveyard(player == Color.BLACK ? Color.WHITE : Color.BLACK)) {
+                switch (unit.unitType) {
+                    case PAWN:
+                        score -= 1;
+                        break;
+                    case KNIGHT:
+                        score -= 5;
+                        break;
+                    case ROOK:
+                        score -= 7;
+                        break;
+                    case BISHOP:
+                        score -= 9;
+                        break;
+                    case QUEEN:
+                        score -= 20;
+                        break;
+                    case KING:
+                        score -= 20;
+                        break;
+                }
+            }
+
+            return score;
+        };
     }
 
     /**
