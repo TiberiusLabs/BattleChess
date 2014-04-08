@@ -30,7 +30,7 @@ public class AIBoard implements Board {
     public AIBoard(Board board) {
         for (int r = 0; r < 11; r += 1) {
             for (int c = 0; c < 11; c += 1) {
-                this.board[r][c] = board.get(new Position(r + 5, c + 5));
+                this.board[r][c] = board.get(new Position(r - 5, c - 5));
             }
         }
         activeUnits.put(Color.BLACK, new HashSet<>((board.getActiveUnits(Color.BLACK))));

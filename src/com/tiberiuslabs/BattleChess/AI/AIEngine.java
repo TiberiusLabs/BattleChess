@@ -8,7 +8,6 @@ import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.Collections.Pair;
 
-import javax.swing.*;
 import java.util.*;
 
 import static com.tiberiuslabs.BattleChess.AI.Score.ScoreFuncFactory.buildScoreFuncs;
@@ -45,7 +44,6 @@ public class AIEngine {
     /**
      * Gets the AI's move.
      *
-     *
      * @param board the current game state, must not be null. Makes a copy to ensure that the game state is not
      *              changed while the AI calculates the best move to make
      * @return a Move instance representing what the AI sees as the best move for it to make
@@ -64,7 +62,7 @@ public class AIEngine {
         }
 
         for (int gen = 0; gen < 5; gen += 1) {
-            SortedSet<Pair<AI, Integer>> aiSet = new TreeSet<>((o1, o2) -> o1.snd.compareTo(o2.snd));
+            SortedSet<Pair<AI, Integer>> aiSet = new TreeSet<>((Pair<AI, Integer> o1, Pair<AI, Integer> o2) -> o1.snd.compareTo(o2.snd));
             for (AI white : ais) {
                 int wins = 0;
                 for (AI black : ais) {
@@ -87,9 +85,7 @@ public class AIEngine {
             }
 
             System.out.println("Generation " + gen + " winners: ");
-            for (AI ai : topTen) {
-                System.out.println(ai);
-            }
+            topTen.forEach(System.out::println);
 
             List<AI> nextGen = new ArrayList<>();
             for (AI white : topTen) {

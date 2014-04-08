@@ -7,6 +7,7 @@ import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
+import com.tiberiuslabs.Collections.Pair;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import sun.net.www.content.text.plain;
@@ -105,12 +106,18 @@ public class AI {
     public Move getMove(Board board) throws NoMoveException {
         AIBoard aiBoard = new AIBoard(board);
         int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
         Set<Move> moves = generateMoves(aiBoard, this.color);
         if (moves.size() < 1) {
             throw new NoMoveException();
         }
-        Move maxMove = moves.iterator().next();
-
+        Move maxMove = moves.parallelStream()
+                .filter(move -> move != null)
+                .map(mapper -> new Pair<>(mapper, alphabeta(new AIBoard(board), 4, alpha, beta, false)))
+                .max((Pair<Move, Integer> p1, Pair<Move, Integer> p2) -> p1.snd.compareTo(p2.snd))
+                .get()
+                .fst;
+        /*
         for (Move move : moves) {
             assert move != null;
             if (maxMove == null) {
@@ -124,10 +131,11 @@ public class AI {
             aiBoard.undoMove();
             int a = max(alpha, alphabeta(aiBoard, 3, alpha, Integer.MAX_VALUE, false));
             if (a > alpha) {
-                alpha = a;
+                // alpha = a;
                 maxMove = move;
             }
         }
+        */
 
         assert maxMove != null;
         return maxMove;

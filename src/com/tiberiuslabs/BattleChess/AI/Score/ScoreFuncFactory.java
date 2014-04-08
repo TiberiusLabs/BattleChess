@@ -41,7 +41,7 @@ public class ScoreFuncFactory {
     private static ScoreFunc opponentGraveyardScore() {
         return (board, player) -> {
             int score = 0;
-            for (Unit unit : board.getGraveyard(player)) {
+            for (Unit unit : board.getGraveyard(player == Color.BLACK ? Color.WHITE : Color.BLACK)) {
                 switch (unit.unitType) {
                     case PAWN:
                         score += 1;
@@ -71,7 +71,7 @@ public class ScoreFuncFactory {
     private static ScoreFunc playerGraveyardScore() {
         return (board, player) -> {
             int score = 0;
-            for (Unit unit : board.getGraveyard(player == Color.BLACK ? Color.WHITE : Color.BLACK)) {
+            for (Unit unit : board.getGraveyard(player)) {
                 switch (unit.unitType) {
                     case PAWN:
                         score -= 1;
