@@ -26,3 +26,9 @@ Wait.. Waht?
 **What to do when the game explodes:** [open an issue on GitHub] [issues]
  - be sure to let me know what went wrong, how you can make it happen again, and the stack trace (if available).
  - also, if you want to contribute, hit me with a pull request!
+
+
+
+[issues]:https://github.com/TiberiusLabs/BattleChess/issues
+[wiki]:http://en.wikipedia.org/wiki/Hexagonal_chess#Gli.C5.84ski.27s_hexagonal_chess
+[Download Now!]:https://github.com/TiberiusLabs/BattleChess/blob/master/battlechess.zip?raw=true
