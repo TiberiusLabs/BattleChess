@@ -2,17 +2,13 @@ package com.tiberiuslabs.BattleChess.GameEngine;
 
 import com.tiberiuslabs.BattleChess.AI.AI;
 import com.tiberiuslabs.BattleChess.AI.AIEngine;
-import com.tiberiuslabs.BattleChess.ChessEngine.Board;
-import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
-import com.tiberiuslabs.BattleChess.ChessEngine.Init;
-import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
+import com.tiberiuslabs.BattleChess.ChessEngine.*;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,38 +71,36 @@ public class GameEngine {
     }
 
     /**
-     * Updates the game state and gets the AI move if it is the AI's turn
+     * Updates the game state and gets the AI makeMove if it is the AI's turn
      */
     public void update() {
         if (currentPlayer == aiEngine.getAIColor()) {
-            GameBoard.Move move = null;
+            Move move = null;
             try {
                 move = aiEngine.getAIMove(board);
             } catch (AI.NoMoveException e) {
                 // call winner function
             }
             if (move != null) {
-                if (!board.set(move.attacker, move.finalPos)) {
-                    board.move(move.startPos, move.finalPos);
-                }
+                board.makeMove(move);
                 currentPlayer = playerColor;
             }
         }
     }
 
     /**
-     * Test to see if the player's move is allowed
+     * Test to see if the player's makeMove is allowed
      *
-     * @param unit     the unit that the player wants to move or recruit
+     * @param unit     the unit that the player wants to makeMove or recruit
      * @param startPos the start position of the unit (use null if recruiting)
      * @param finalPos the final position of the unit
-     * @return true if the move/recruitment is valid, false otherwise
+     * @return true if the makeMove/recruitment is valid, false otherwise
      */
     public boolean testMove(Unit unit, Position startPos, Position finalPos) {
         if (currentPlayer == aiEngine.getAIColor()) {
             update();
         }
-        // return false if the player is attempting to move the AI's unit, or if the final position is not in bounds
+        // return false if the player is attempting to makeMove the AI's unit, or if the final position is not in bounds
         if (unit.color == playerColor && Rules.inBounds(finalPos)) {
             if (startPos != null) {
                 return Rules.inBounds(startPos) && Rules.isValidMove(unit, startPos, finalPos, board);
@@ -118,12 +112,12 @@ public class GameEngine {
     }
 
     /**
-     * Attempt to make the move/recruitment that the player is requesting
+     * Attempt to make the makeMove/recruitment that the player is requesting
      *
-     * @param unit     the unit that the player wants to move or recruit
+     * @param unit     the unit that the player wants to makeMove or recruit
      * @param startPos the start position of the unit (use null if recruiting)
      * @param finalPos the final position of the unit
-     * @return true if the move/recruitment was successful, false otherwise
+     * @return true if the makeMove/recruitment was successful, false otherwise
      */
     public boolean makeMove(Unit unit, Position startPos, Position finalPos) {
         if (testMove(unit, startPos, finalPos)) {
@@ -140,11 +134,11 @@ public class GameEngine {
     }
 
     /**
-     * Attempt to make the move that the player is requesting
+     * Attempt to make the makeMove that the player is requesting
      *
      * @param startPos the start position of the unit (must have a unit at this position)
      * @param finalPos the final position of the unit
-     * @return true if the attempted move was successful
+     * @return true if the attempted makeMove was successful
      */
     public boolean makeMove(Position startPos, Position finalPos) {
         Unit unit = board.get(startPos);
@@ -205,7 +199,7 @@ public class GameEngine {
      * @param player the player to get the graveyard for
      * @return the player's current graveyard
      */
-    public ObservableList<Unit> getGraveyard(Color player) {
+    public Set<Unit> getGraveyard(Color player) {
         return board.getGraveyard(player);
     }
 

@@ -139,10 +139,10 @@ public class Init {
     public static final List<Position> cities = Collections.unmodifiableList(new ArrayList<Position>() {
         {
             add(new Position(0, -5));
+            add(new Position(0, 5));
             add(new Position(-5, 0));
             add(new Position(5, -5));
             add(new Position(5, 0));
-            add(new Position(0, 5));
             add(new Position(-5, 5));
         }
     });

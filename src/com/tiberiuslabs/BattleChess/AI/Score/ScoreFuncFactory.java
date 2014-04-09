@@ -5,6 +5,7 @@ import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,322 +21,102 @@ public class ScoreFuncFactory {
      * @return an array of 10 ScoreFunc lambdas
      */
     public static ScoreFunc[] buildScoreFuncs() {
-        ScoreFunc[] scoreFuncs = new ScoreFunc[12];
+        ScoreFunc[] scoreFuncs = new ScoreFunc[5];
 
-        scoreFuncs[0] = playerActiveUnitsScore();
-        scoreFuncs[1] = opponentActiveUnitScore();
-        scoreFuncs[2] = playerHasKingScore();
-        scoreFuncs[3] = opponentHasKingScore();
-        scoreFuncs[4] = playerThreatenedUnits();
-        scoreFuncs[5] = opponentThreatenedUnits();
-        scoreFuncs[6] = playerMovementFreedom();
-        scoreFuncs[7] = opponentMovementFreedom();
-        scoreFuncs[8] = playerCitiesHeld();
-        scoreFuncs[9] = opponentCitiesHeld();
-        scoreFuncs[10] = playerGraveyardScore();
-        scoreFuncs[11] = opponentGraveyardScore();
+        scoreFuncs[0] = playerMaterialScore();
+        scoreFuncs[1] = opponentMaterialScore();
+        scoreFuncs[2] = playerMovementFreedom();
+        scoreFuncs[3] = playerHoldsCapitol();
+        scoreFuncs[4] = opponentCanRecruit();
 
         return scoreFuncs;
     }
 
-    private static ScoreFunc opponentGraveyardScore() {
-        return (board, player) -> {
-            int score = 0;
-            for (Unit unit : board.getGraveyard(player == Color.BLACK ? Color.WHITE : Color.BLACK)) {
-                switch (unit.unitType) {
-                    case PAWN:
-                        score += 1;
-                        break;
-                    case KNIGHT:
-                        score += 5;
-                        break;
-                    case ROOK:
-                        score += 7;
-                        break;
-                    case BISHOP:
-                        score += 9;
-                        break;
-                    case QUEEN:
-                        score += 20;
-                        break;
-                    case KING:
-                        score += 20;
-                        break;
-                }
-            }
-
-            return score;
-        };
-    }
-
-    private static ScoreFunc playerGraveyardScore() {
-        return (board, player) -> {
-            int score = 0;
-            for (Unit unit : board.getGraveyard(player)) {
-                switch (unit.unitType) {
-                    case PAWN:
-                        score -= 1;
-                        break;
-                    case KNIGHT:
-                        score -= 5;
-                        break;
-                    case ROOK:
-                        score -= 7;
-                        break;
-                    case BISHOP:
-                        score -= 9;
-                        break;
-                    case QUEEN:
-                        score -= 20;
-                        break;
-                    case KING:
-                        score -= 20;
-                        break;
-                }
-            }
-
-            return score;
-        };
-    }
-
-    /**
-     * Construct a ScoreFunc lambda to score the player on their current active units
-     *
-     * @return a score from 0 to 100 depending on the player's active units
-     */
-    public static ScoreFunc playerActiveUnitsScore() {
+    private static ScoreFunc playerMaterialScore() {
         return (board, player) -> {
             int score = 0;
             for (Unit unit : board.getActiveUnits(player)) {
                 switch (unit.unitType) {
                     case PAWN:
-                        score += 1;
+                        score += 100;
                         break;
                     case KNIGHT:
-                        score += 5;
+                        score += 300;
                         break;
                     case ROOK:
-                        score += 7;
+                        score += 500;
                         break;
                     case BISHOP:
-                        score += 9;
+                        score += 500;
                         break;
                     case QUEEN:
-                        score += 20;
+                        score += 900;
                         break;
                     case KING:
-                        score += 20;
+                        score += 10000;
                         break;
                 }
             }
+
             return score;
         };
     }
 
-    /**
-     * Construct a ScoreFunc lambda to penalize the player on their opponent's active units
-     *
-     * @return a number from -100 to 0 depending on the opponents active units
-     */
-    public static ScoreFunc opponentActiveUnitScore() {
+    private static ScoreFunc opponentMaterialScore() {
         return (board, player) -> {
-            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
             int score = 0;
-            for (Unit unit : board.getActiveUnits(opponent)) {
+            for (Unit unit : board.getActiveUnits(player == Color.BLACK ? Color.WHITE : Color.BLACK)) {
                 switch (unit.unitType) {
                     case PAWN:
-                        score -= 1;
+                        score -= 200;
                         break;
                     case KNIGHT:
-                        score -= 5;
+                        score -= 300;
                         break;
                     case ROOK:
-                        score -= 7;
+                        score -= 500;
                         break;
                     case BISHOP:
-                        score -= 9;
+                        score -= 500;
                         break;
                     case QUEEN:
-                        score -= 20;
+                        score -= 900;
                         break;
                     case KING:
-                        score -= 20;
+                        score -= 10000;
                         break;
                 }
             }
-            return score;
-        };
-    }
-
-    /**
-     * Construct a ScoreFunc lambda to score the player on whether they have a king in play
-     *
-     * @return 100 if the player has a king, 0 otherwise
-     */
-    public static ScoreFunc playerHasKingScore() {
-        return (board, player) -> (board.hasKing(player) ? 100 : 0);
-    }
-
-    /**
-     * Construct a ScoreFunc lambda to penalize the player if the opponent still has their king
-     *
-     * @return -100 if the opponent has a king, 0 otherwise
-     */
-    public static ScoreFunc opponentHasKingScore() {
-        return (board, player) -> {
-            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
-            return (board.hasKing(opponent) ? -100 : 0);
-        };
-    }
-
-    /**
-     * Construct a ScoreFunc lambda to score the player on how many opposing units they currently threaten
-     *
-     * @return a score from 0 to 100 depending on the number and value of the threatened unit
-     */
-    public static ScoreFunc playerThreatenedUnits() {
-        return (board, player) -> {
-            int score = 0;
-
-            for (Unit unit : board.getActiveUnits(player)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
-                for (Position position : validMoves) {
-                    Unit defender = board.get(position);
-                    if (defender != null) {
-                        switch (defender.unitType) {
-                            case PAWN:
-                                score += 1;
-                                break;
-                            case KNIGHT:
-                                score += 5;
-                                break;
-                            case ROOK:
-                                score += 7;
-                                break;
-                            case BISHOP:
-                                score += 9;
-                                break;
-                            case QUEEN:
-                                score += 20;
-                                break;
-                            case KING:
-                                score += 20;
-                                break;
-                        }
-                    }
-                }
-            }
 
             return score;
         };
     }
 
-    /**
-     * Construct a ScoreFunc lambda to penalize the player for the number of their own units that are threatened
-     *
-     * @return a score from -100 to 0 depending on the number and value of the player's units that are threatened
-     */
-    public static ScoreFunc opponentThreatenedUnits() {
-        return (board, player) -> {
-            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
-            int score = 0;
-
-            for (Unit unit : board.getActiveUnits(opponent)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
-                for (Position position : validMoves) {
-                    Unit defender = board.get(position);
-                    if (defender != null) {
-                        switch (defender.unitType) {
-                            case PAWN:
-                                score -= 1;
-                                break;
-                            case KNIGHT:
-                                score -= 5;
-                                break;
-                            case ROOK:
-                                score -= 7;
-                                break;
-                            case BISHOP:
-                                score -= 9;
-                                break;
-                            case QUEEN:
-                                score -= 20;
-                                break;
-                            case KING:
-                                score -= 20;
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return score;
-        };
-    }
-
-    /**
-     * Construct a ScoreFunc lambda to score the player on how freely their units can move
-     *
-     * @return a sum of the number of tiles each unit can move or attack to
-     */
     public static ScoreFunc playerMovementFreedom() {
         return (board, player) -> {
-            int score = 0;
-
+            Set<Position> validMoves = new HashSet<>();
             for (Unit unit : board.getActiveUnits(player)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
-                for (Position position : validMoves) {
-                    if (board.get(position) == null) {
-                        score += 5;
-                    }
-                }
+                validMoves.addAll(Rules.getValidMoves(unit, unit.position, board));
             }
 
-            return score;
+            return validMoves.size();
         };
     }
 
-    /**
-     * Construct a ScoreFunc lambda to penalize the player on how freely their opponent's units can move
-     *
-     * @return a sum of the number of tiles each opposing unit can move or attack to
-     */
-    public static ScoreFunc opponentMovementFreedom() {
+    public static ScoreFunc playerHoldsCapitol() {
         return (board, player) -> {
-            Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
-            int score = 0;
-
-            for (Unit unit : board.getActiveUnits(opponent)) {
-                Set<Position> validMoves = Rules.getValidMoves(unit, unit.position, board);
-                for (Position position : validMoves) {
-                    if (board.get(position) == null) {
-                        score += 1;
-                    }
-                }
-            }
-
-            return score;
+            Unit capitol = board.get(Rules.getCapitol(player));
+            return capitol != null && capitol.color == player ? 500 : 0;
         };
     }
 
-    /**
-     * Construct a ScoreFunc to score the player on the number of cities that they hold
-     *
-     * @return a score from 0 to 100 depending on how many of the cities the player holds
-     */
-    public static ScoreFunc playerCitiesHeld() {
-        return (board, player) -> (100 / 6) * board.numCitiesHeld(player);
-    }
-
-    /**
-     * Construct a ScoreFunc to penalize the player on the number of cities their opponent holds
-     *
-     * @return a score from -100 to 0 depending on how many of the cities the opponent holds
-     */
-    public static ScoreFunc opponentCitiesHeld() {
+    public static ScoreFunc opponentCanRecruit() {
         return (board, player) -> {
             Color opponent = player == Color.BLACK ? Color.WHITE : Color.BLACK;
-            return (-100 / 6) * board.numCitiesHeld(opponent);
+            Unit capitol = board.get(Rules.getCapitol(opponent));
+            int numCities = board.numCitiesHeld(opponent);
+
+            return capitol != null && capitol.color == opponent && numCities >= 3 ? -500 : 0;
         };
     }
 }

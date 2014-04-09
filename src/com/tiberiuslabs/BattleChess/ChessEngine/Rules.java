@@ -10,6 +10,7 @@ import com.tiberiuslabs.Collections.Pair;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
@@ -268,6 +269,10 @@ public final class Rules {
         return moves;
     }
 
+    public static Position getCapitol(Color playerColor) {
+        return playerColor == Color.BLACK ? Init.cities.get(0) : Init.cities.get(1);
+    }
+
     /**
      * Checks whether the player can recruit the given unit to the given position. <p/>
      * Requirements for recruitment:
@@ -296,11 +301,11 @@ public final class Rules {
         if (board.hasKing(player) && board.getGraveyard(player).contains(recruit) &&
                 capitol != null && capitol.color == player && board.numCitiesHeld(player) >= 3) {
             for (Position city : Init.cities) {
-                for (Position adjacent : Init.moveAdjacencies.get(city).subList(0, 6)) {
-                    if (adjacent != null && board.get(adjacent) == null) {
-                        positions.add(adjacent);
-                    }
-                }
+                positions.addAll(Init.moveAdjacencies.get(city)
+                        .subList(0, 6).parallelStream()
+                        .filter(adjacent -> adjacent != null && board.get(adjacent) == null)
+                        .map(adjacent -> adjacent)
+                        .collect(Collectors.toList()));
             }
         }
 

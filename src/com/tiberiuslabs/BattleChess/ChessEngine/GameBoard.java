@@ -3,14 +3,12 @@ package com.tiberiuslabs.BattleChess.ChessEngine;
 import com.sun.istack.internal.NotNull;
 import com.sun.javafx.collections.ObservableListWrapper;
 import com.sun.javafx.collections.ObservableMapWrapper;
-import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 
 import java.util.*;
 
@@ -28,15 +26,14 @@ public class GameBoard implements Board {
 
     @SuppressWarnings("unchecked")
     private final ObservableMap<Position, Unit> board = new ObservableMapWrapper(new HashMap<>(Init.initBoard()));
-    private final Stack<Move> moveStack = new Stack<>();
 
     private final Set<Unit> blackUnits = new HashSet<>();
-    private final ObservableList<Unit> blackGraveyard = new ObservableListWrapper<>(new ArrayList<Unit>());
+    private final Set<Unit> blackGraveyard = new HashSet<>();
     private boolean blackKing;
     private int numBlackUnits;
 
     private final Set<Unit> whiteUnits = new HashSet<>();
-    private final ObservableList<Unit> whiteGraveyard = new ObservableListWrapper<>(new ArrayList<Unit>());
+    private final Set<Unit> whiteGraveyard = new HashSet<>();
     private boolean whiteKing;
     private int numWhiteUnits;
 
@@ -135,7 +132,6 @@ public class GameBoard implements Board {
                 numWhiteUnits += 1;
             }
 
-            moveStack.add(new Move(unit, null, null, position));
             return true;
         }
         return false;
@@ -146,7 +142,7 @@ public class GameBoard implements Board {
      * added to the graveyard. Performs no validity or sanity checks.
      *
      * @param startPos the starting position of the unit that is moving
-     * @param finalPos the final position to move the unit to
+     * @param finalPos the final position to makeMove the unit to
      */
     @Override
     public void move(@NotNull Position startPos, @NotNull Position finalPos) {
@@ -155,7 +151,6 @@ public class GameBoard implements Board {
         if (attacker == null) {
             return;
         }
-        moveStack.push(new Move(attacker, startPos, defender, finalPos));
         attacker.position = finalPos;
         if (defender != null) {
             defender.position = null;
@@ -176,46 +171,26 @@ public class GameBoard implements Board {
         board.put(finalPos, attacker);
     }
 
+    @Override
+    public void makeMove(Move move) {
+        switch (move.moveType) {
+            case MOV:
+                move(move.startPos, move.finalPos);
+                break;
+            case ATK:
+                move(move.startPos, move.finalPos);
+                break;
+            case REC:
+                set(move.attacker, move.finalPos);
+                break;
+        }
+    }
+
     /**
-     * Reverses the last move or recruitment that was made
+     * does nothing since the player can't undo their moves
      */
     @Override
     public void undoMove() {
-        if (!moveStack.empty()) {
-            Move lastMove = moveStack.pop();
-            if (lastMove.startPos == null) {
-                if (lastMove.attacker.color == Color.BLACK) {
-                    blackGraveyard.add(lastMove.attacker);
-                    blackUnits.remove(lastMove.attacker);
-                    numBlackUnits -= 1;
-                    blackKing = !(lastMove.attacker.unitType == UnitType.KING);
-                } else {
-                    whiteGraveyard.add(lastMove.attacker);
-                    whiteUnits.remove(lastMove.attacker);
-                    numWhiteUnits -= 1;
-                    whiteKing = !(lastMove.attacker.unitType == UnitType.KING);
-                }
-                board.put(lastMove.finalPos, lastMove.attacker);
-                return;
-            } else if (lastMove.defender != null) {
-                lastMove.defender.position = lastMove.finalPos;
-                if (lastMove.defender.color == Color.BLACK) {
-                    blackGraveyard.remove(lastMove.defender);
-                    blackUnits.add(lastMove.defender);
-                    numBlackUnits += 1;
-                    blackKing = lastMove.defender.unitType == UnitType.KING;
-                } else {
-                    whiteGraveyard.remove(lastMove.defender);
-                    whiteUnits.add(lastMove.defender);
-                    numWhiteUnits += 1;
-                    whiteKing = lastMove.defender.unitType == UnitType.KING;
-                }
-            }
-
-            lastMove.attacker.position = lastMove.startPos;
-            board.put(lastMove.startPos, lastMove.attacker);
-            board.put(lastMove.finalPos, lastMove.defender);
-        }
     }
 
     /**
@@ -259,7 +234,7 @@ public class GameBoard implements Board {
      * is not black
      */
     @Override
-    public ObservableList<Unit> getGraveyard(Color player) {
+    public Set<Unit> getGraveyard(Color player) {
         return player == Color.BLACK ? blackGraveyard : whiteGraveyard;
     }
 

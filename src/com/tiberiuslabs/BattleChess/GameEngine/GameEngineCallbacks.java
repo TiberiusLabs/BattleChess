@@ -121,7 +121,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
                     selectedTile = null;
                     resetHighlights();
                 } else {
-                    // TODO: send 'invalid move' error message to the player
+                    // TODO: send 'invalid makeMove' error message to the player
                 }
             }
         } else if (gameEngine.get(position) != null && gameEngine.get(position).color == playerColor) {
@@ -147,7 +147,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
 
     @Override
     public void setRecruitListener(ListChangeListener<Unit> recruitListener) {
-        gameEngine.getGraveyard(playerColor).addListener(recruitListener);
+        //gameEngine.getGraveyard(playerColor).addListener(recruitListener);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
 
     @Override
     public ObservableList<Unit> getAvailableRecruits() {
-        return gameEngine.getGraveyard(playerColor);
+        return null; //gameEngine.getGraveyard(playerColor);
     }
 
     public interface AddNodeCallback {

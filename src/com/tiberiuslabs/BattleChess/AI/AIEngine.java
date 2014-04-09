@@ -3,6 +3,7 @@ package com.tiberiuslabs.BattleChess.AI;
 import com.tiberiuslabs.BattleChess.AI.Score.ScoreFunc;
 import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.GameBoard;
+import com.tiberiuslabs.BattleChess.ChessEngine.Move;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.AIDifficulty;
 import com.tiberiuslabs.BattleChess.Types.Color;
@@ -11,10 +12,9 @@ import com.tiberiuslabs.Collections.Pair;
 import java.util.*;
 
 import static com.tiberiuslabs.BattleChess.AI.Score.ScoreFuncFactory.buildScoreFuncs;
-import static com.tiberiuslabs.BattleChess.ChessEngine.GameBoard.Move;
 
 /**
- * Sorts through the possible move options and selects the best one
+ * Sorts through the possible makeMove options and selects the best one
  *
  * @author Amandeep Gill
  */
@@ -30,27 +30,6 @@ public class AIEngine {
     public AIEngine(AIDifficulty level, Color color) {
         // currently only generates a random AI
         this.ai = new AI(buildScoreFuncs(), color);
-    }
-
-    /**
-     * Get the player color of the AI
-     *
-     * @return the AI's player color
-     */
-    public Color getAIColor() {
-        return ai.getColor();
-    }
-
-    /**
-     * Gets the AI's move.
-     *
-     * @param board the current game state, must not be null. Makes a copy to ensure that the game state is not
-     *              changed while the AI calculates the best move to make
-     * @return a Move instance representing what the AI sees as the best move for it to make
-     * @see com.tiberiuslabs.BattleChess.ChessEngine.GameBoard.Move
-     */
-    public Move getAIMove(Board board) throws AI.NoMoveException {
-        return ai.getMove(board);
     }
 
     public static void main(String[] args) {
@@ -147,5 +126,26 @@ public class AIEngine {
 
         System.out.println("max moves exceeded");
         return false;
+    }
+
+    /**
+     * Get the player color of the AI
+     *
+     * @return the AI's player color
+     */
+    public Color getAIColor() {
+        return ai.getColor();
+    }
+
+    /**
+     * Gets the AI's makeMove.
+     *
+     * @param board the current game state, must not be null. Makes a copy to ensure that the game state is not
+     *              changed while the AI calculates the best makeMove to make
+     * @return a Move instance representing what the AI sees as the best makeMove for it to make
+     * @see com.tiberiuslabs.BattleChess.ChessEngine.Move
+     */
+    public Move getAIMove(Board board) throws AI.NoMoveException {
+        return ai.getMove(board);
     }
 }

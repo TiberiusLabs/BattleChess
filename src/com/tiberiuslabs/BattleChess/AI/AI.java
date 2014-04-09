@@ -2,20 +2,20 @@ package com.tiberiuslabs.BattleChess.AI;
 
 import com.tiberiuslabs.BattleChess.AI.Score.ScoreFunc;
 import com.tiberiuslabs.BattleChess.ChessEngine.Board;
-import com.tiberiuslabs.BattleChess.ChessEngine.Board;
+import com.tiberiuslabs.BattleChess.ChessEngine.Move;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.Color;
+import com.tiberiuslabs.BattleChess.Types.MoveType;
 import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Pair;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
-import sun.net.www.content.text.plain;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static com.tiberiuslabs.BattleChess.ChessEngine.Board.Move;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -43,10 +43,11 @@ public class AI {
         this.scoreFuncs = scoreFuncs;
         this.color = color;
         this.useFunc = new boolean[numFuncs];
-        this.weights = new int[]{25, 50, 10, 40, 60, 20, 5, 20, 30, 10, 100, 50};
+        this.weights = new int[numFuncs];
 
         for (int i = 0; i < numFuncs; i += 1) {
-            useFunc[i] = !(4 <= i && i <= 7);
+            useFunc[i] = true;
+            weights[i] = 1;
         }
     }
 
@@ -99,7 +100,6 @@ public class AI {
     /**
      * Determine the best move for the AI to make
      *
-     *
      * @param board a copy of the current game state
      * @return a Unit/from/to Triple reflecting the AI's move
      */
@@ -113,29 +113,10 @@ public class AI {
         }
         Move maxMove = moves.parallelStream()
                 .filter(move -> move != null)
-                .map(mapper -> new Pair<>(mapper, alphabeta(new AIBoard(board), 4, alpha, beta, false)))
-                .max((Pair<Move, Integer> p1, Pair<Move, Integer> p2) -> p1.snd.compareTo(p2.snd))
+                .map(mapper -> new Pair<>(mapper, alphabeta(new AIBoard(board), 8, alpha, beta, false)))
+                .collect(Collectors.maxBy((p1, p2) -> p1.snd.compareTo(p2.snd)))
                 .get()
                 .fst;
-        /*
-        for (Move move : moves) {
-            assert move != null;
-            if (maxMove == null) {
-                maxMove = move;
-            }
-            if (move.startPos == null) {
-                aiBoard.set(move.attacker, move.finalPos);
-            } else {
-                aiBoard.move(move.startPos, move.finalPos);
-            }
-            aiBoard.undoMove();
-            int a = max(alpha, alphabeta(aiBoard, 3, alpha, Integer.MAX_VALUE, false));
-            if (a > alpha) {
-                // alpha = a;
-                maxMove = move;
-            }
-        }
-        */
 
         assert maxMove != null;
         return maxMove;
@@ -190,21 +171,32 @@ public class AI {
             // check if we have reached a win state
             // return the max possible value if the AI player has won, min otherwise
             return winner == this.color ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-        } else if (depth == 0) {
+        } else if (depth <= 0) {
             // return the value of the current board state if we have hit the max depth
             return getScore(board);
         } else if (maxPlayer) {
             // return the max value of the child nodes
             for (Move move : generateMoves(board, this.color)) {
                 // change the board state to reflect the current recruitment or move
-                if (move.startPos == null) {
-                    board.set(move.attacker, move.finalPos);
-                } else {
-                    board.move(move.startPos, move.finalPos);
+                board.makeMove(move);
+                // change the depth modifier based on how active the board is
+                int delta;
+                switch (move.moveType) {
+                    case MOV:
+                        delta = 3;
+                        break;
+                    case ATK:
+                        delta = 1;
+                        break;
+                    case REC:
+                        delta = 2;
+                        break;
+                    default:
+                        delta = 1;
                 }
 
                 // get the max of all the child nodes from this board state
-                alpha = max(alpha, alphabeta(board, depth - 1, alpha, beta, false));
+                alpha = max(alpha, alphabeta(board, depth - delta, alpha, beta, false));
 
                 // undo the current recruitment or move in preparation for the next sibling or for
                 // returning to the parent board state
@@ -223,14 +215,24 @@ public class AI {
             Color player = this.color == Color.BLACK ? Color.WHITE : Color.BLACK;
             for (Move move : generateMoves(board, player)) {
                 // change the board state to reflect the current recruitment or move
-                if (move.startPos == null) {
-                    board.set(move.attacker, move.finalPos);
-                } else {
-                    board.move(move.startPos, move.finalPos);
+                board.makeMove(move);
+                // change the depth modifier based on how active the board is
+                int delta;
+                switch (move.moveType) {
+                    case MOV:
+                        delta = 3;
+                        break;
+                    case ATK:
+                        delta = 1;
+                        break;
+                    case REC:
+                        delta = 2;
+                        break;
+                    default:
+                        delta = 1;
                 }
-
                 // get the min of all the child nodes from this board state
-                beta = min(beta, alphabeta(board, depth - 1, alpha, beta, true));
+                beta = min(beta, alphabeta(board, depth - delta, alpha, beta, true));
 
                 // undo the current recruitment of move in preparation for the next sibling or for
                 // returning to the parent board state
@@ -257,30 +259,42 @@ public class AI {
     private Set<Move> generateMoves(Board board, Color player) {
         Set<Move> moves = new HashSet<>();
 
-        for (Unit unit : board.getActiveUnits(player)) {
-            if (unit != null) {
-                Position startPos = unit.position;
-                for (Position finalPos : Rules.getValidMoves(unit, startPos, board)) {
-                    moves.add(new Move(unit, startPos, board.get(finalPos), finalPos));
-                }
-            }
-        }
+        board.getActiveUnits(player)
+                .parallelStream()
+                .filter(attacker -> attacker != null)
+                .forEach(attacker -> {
+                    Position startPos = attacker.position;
+                    moves.addAll(Rules.getValidMoves(attacker, startPos, board)
+                            .parallelStream()
+                            .map(finalPos -> {
+                                Unit defender = board.get(finalPos);
+                                MoveType moveType;
+                                if (defender == null) {
+                                    moveType = MoveType.MOV;
+                                } else {
+                                    moveType = MoveType.ATK;
+                                }
+                                return new Move(attacker, startPos, defender, finalPos, moveType);
+                            })
+                            .collect(Collectors.toList()));
+                });
 
-        for (Unit recruit : board.getGraveyard(player)) {
-            if (recruit != null) {
-                for (Position finalPos : Rules.getValidRecruitments(player, recruit, board)) {
-                    moves.add(new Move(recruit, null, null, finalPos));
-                }
-            }
-        }
+        board.getGraveyard(player)
+                .parallelStream()
+                .filter(recruit -> recruit != null)
+                .forEach(recruit -> {
+                    moves.addAll(Rules.getValidRecruitments(player, recruit, board).parallelStream()
+                            .map(finalPos -> new Move(recruit, null, null, finalPos, MoveType.REC))
+                            .collect(Collectors.toList()));
+                });
 
         return moves;
     }
 
     @Override
     public String toString() {
-        return "AI{" + this.hashCode() +  ": weights=" + Arrays.toString(weights) +
-               " funcs used: " + Arrays.toString(useFunc) + '}';
+        return "AI{" + this.hashCode() + ": weights=" + Arrays.toString(weights) +
+                " funcs used: " + Arrays.toString(useFunc) + '}';
     }
 
     public class NoMoveException extends Exception {

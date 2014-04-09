@@ -1,10 +1,8 @@
 package com.tiberiuslabs.BattleChess.AI;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.javafx.collections.ObservableListWrapper;
-import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.ChessEngine.Board;
 import com.tiberiuslabs.BattleChess.ChessEngine.Init;
+import com.tiberiuslabs.BattleChess.ChessEngine.Move;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Types.Color;
 import com.tiberiuslabs.BattleChess.Types.Position;
@@ -12,7 +10,6 @@ import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.BattleChess.Types.UnitType;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 
 import java.util.*;
 
@@ -23,7 +20,7 @@ public class AIBoard implements Board {
 
     private final Unit[][] board = new Unit[11][11];
     private final Map<Color, Set<Unit>> activeUnits = new HashMap<>();
-    private final Map<Color, List<Unit>> deadUnits = new HashMap<>();
+    private final Map<Color, Set<Unit>> deadUnits = new HashMap<>();
     private final Map<Color, Boolean> kingAlive = new HashMap<>();
     private final Stack<Move> moves = new Stack<>();
 
@@ -35,8 +32,8 @@ public class AIBoard implements Board {
         }
         activeUnits.put(Color.BLACK, new HashSet<>((board.getActiveUnits(Color.BLACK))));
         activeUnits.put(Color.WHITE, new HashSet<>((board.getActiveUnits(Color.WHITE))));
-        deadUnits.put(Color.BLACK, new ArrayList<>(board.getGraveyard(Color.BLACK)));
-        deadUnits.put(Color.WHITE, new ArrayList<>(board.getGraveyard(Color.WHITE)));
+        deadUnits.put(Color.BLACK, new HashSet<>(board.getGraveyard(Color.BLACK)));
+        deadUnits.put(Color.WHITE, new HashSet<>(board.getGraveyard(Color.WHITE)));
         kingAlive.put(Color.BLACK, board.hasKing(Color.BLACK));
         kingAlive.put(Color.WHITE, board.hasKing(Color.WHITE));
     }
@@ -46,37 +43,46 @@ public class AIBoard implements Board {
         return position != null && Rules.inBounds(position) ? board[position.x() + 5][position.y() + 5] : null;
     }
 
+    /**
+     * does nothing since the AI uses the Move class for move generation
+     *
+     * @param startPos ignored
+     * @param finalPos ignored
+     */
     @Override
     public void move(Position startPos, Position finalPos) {
-        Unit attacker = get(startPos);
-        Unit defender = get(finalPos);
-        if (attacker != null) {
-            if (defender != null) {
-                if (defender.unitType == UnitType.KING) {
-                    kingAlive.put(defender.color, false);
-                }
-                activeUnits.get(defender.color).remove(defender);
-                deadUnits.get(defender.color).add(defender);
-            }
-
-            board[finalPos.x() + 5][finalPos.y() + 5] = attacker;
-            board[startPos.x() + 5][startPos.y() + 5] = null;
-            attacker.position = finalPos;
-
-            moves.add(new Move(attacker, startPos, defender, finalPos));
-        }
     }
 
     @Override
-    public boolean set(@NotNull Unit unit, @NotNull Position startPos) {
-        if (deadUnits.get(unit.color).contains(unit) && get(startPos) == null) {
-            board[startPos.x() + 5][startPos.y() + 5] = unit;
-            deadUnits.get(unit.color).remove(unit);
-            activeUnits.get(unit.color).add(unit);
-
-            moves.add(new Move(unit, null, null, startPos));
-            return true;
+    public void makeMove(Move move) {
+        board[move.finalPos.x() + 5][move.finalPos.y() + 5] = move.attacker;
+        switch (move.moveType) {
+            case MOV:
+                board[move.startPos.x() + 5][move.startPos.y() + 5] = null;
+                break;
+            case ATK:
+                board[move.startPos.x() + 5][move.startPos.y() + 5] = null;
+                activeUnits.get(move.defender.color).remove(move.defender);
+                deadUnits.get(move.defender.color).add(move.defender);
+                break;
+            case REC:
+                deadUnits.get(move.attacker.color).remove(move.attacker);
+                activeUnits.get(move.attacker.color).add(move.attacker);
+                break;
         }
+
+        moves.push(move);
+    }
+
+    /**
+     * does nothing since the AI uses the Move class for recruitment
+     *
+     * @param unit     ignored
+     * @param startPos ignored
+     * @return false
+     */
+    @Override
+    public boolean set(Unit unit, Position startPos) {
         return false;
     }
 
@@ -84,20 +90,26 @@ public class AIBoard implements Board {
     public void undoMove() {
         Move lastMove = moves.empty() ? null : moves.pop();
         if (lastMove != null) {
-            if (lastMove.startPos == null) {
-                board[lastMove.finalPos.x() + 5][lastMove.finalPos.y() + 5] = null;
-                activeUnits.get(lastMove.attacker.color).remove(lastMove.attacker);
-                deadUnits.get(lastMove.attacker.color).add(lastMove.attacker);
-            } else {
-                board[lastMove.startPos.x() + 5][lastMove.startPos.y() + 5] = lastMove.attacker;
-                board[lastMove.finalPos.x() + 5][lastMove.finalPos.y() + 5] = lastMove.defender;
-                if (lastMove.defender != null) {
+            switch (lastMove.moveType) {
+                case MOV:
+                    board[lastMove.finalPos.x() + 5][lastMove.finalPos.y() + 5] = null;
+                    activeUnits.get(lastMove.attacker.color).remove(lastMove.attacker);
+                    deadUnits.get(lastMove.attacker.color).add(lastMove.attacker);
+                    break;
+                case ATK:
+                    board[lastMove.startPos.x() + 5][lastMove.startPos.y() + 5] = lastMove.attacker;
+                    board[lastMove.finalPos.x() + 5][lastMove.finalPos.y() + 5] = lastMove.defender;
                     deadUnits.get(lastMove.defender.color).remove(lastMove.defender);
                     activeUnits.get(lastMove.defender.color).add(lastMove.defender);
                     if (lastMove.defender.unitType == UnitType.KING) {
                         kingAlive.put(lastMove.defender.color, true);
                     }
-                }
+                    break;
+                case REC:
+                    board[lastMove.finalPos.x() + 5][lastMove.finalPos.y() + 5] = null;
+                    deadUnits.get(lastMove.attacker.color).add(lastMove.attacker);
+                    activeUnits.get(lastMove.attacker.color).add(lastMove.attacker);
+                    break;
             }
         }
     }
@@ -118,8 +130,8 @@ public class AIBoard implements Board {
     }
 
     @Override
-    public ObservableList<Unit> getGraveyard(Color player) {
-        return new ObservableListWrapper<>(deadUnits.get(player));
+    public Set<Unit> getGraveyard(Color player) {
+        return deadUnits.get(player);
     }
 
     @Override

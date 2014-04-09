@@ -7,7 +7,6 @@ import com.tiberiuslabs.BattleChess.Types.Unit;
 import com.tiberiuslabs.Collections.Triple;
 import javafx.collections.MapChangeListener;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 
 import java.util.*;
 
@@ -18,24 +17,24 @@ import java.util.*;
  */
 public class GuiBoard {
 
-    private Map<Position, Tile> tiles;
+    private Map<Position, BoardTile> tiles;
 
     public GuiBoard(BoardCallback boardCallback) {
         tiles = new HashMap<>();
 
         for (Position position : boardCallback.getTilePositions()) {
-            Tile tile;
+            BoardTile tile;
             Triple<Highlight, Unit, Color> tileInfo = boardCallback.getTileInfo(position);
             int size = 25;
             switch (tileInfo.thd) {
                 case BLACK:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.BLACK);
-                    break;
-                case WHITE:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.WHITE);
+                    tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.DARKBLUE);
                     break;
                 case GREY:
-                    tile = new Tile(position, tileInfo.snd, size, javafx.scene.paint.Color.GRAY);
+                    tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.CORNFLOWERBLUE);
+                    break;
+                case WHITE:
+                    tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.DEEPSKYBLUE);
                     break;
                 default:
                     continue;
@@ -49,7 +48,7 @@ public class GuiBoard {
         boardCallback.addBoardListener(change -> {
             Position position = change.getKey();
             Triple<Highlight, Unit, Color> newTileInfo = change.getValueAdded();
-            Tile tile = tiles.get(position);
+            BoardTile tile = tiles.get(position);
             tile.setHighlight(newTileInfo.fst);
             tile.setUnit(newTileInfo.snd);
             tile.repaint();

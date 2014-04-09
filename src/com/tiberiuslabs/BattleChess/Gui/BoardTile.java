@@ -22,7 +22,7 @@ import static java.lang.Math.*;
  *
  * @author Amandeep Gill
  */
-public class Tile {
+public class BoardTile {
     private final Position position;
     private final Color backgroundColor;
     private final Polygon polygon;
@@ -32,18 +32,18 @@ public class Tile {
     private Unit unit;
 
     /**
-     * Instantiate the Tile with the given size and position
+     * Instantiate the BoardTile with the given size and position
      *
      * @param position        the x,y position to draw the tile on the screen
      * @param unit            the unit at this position, can be null
      * @param size            the length of the hexagon's edges
      * @param backgroundColor the background image of the tile
      */
-    public Tile(Position position, Unit unit, int size, Color backgroundColor) {
+    public BoardTile(Position position, Unit unit, int size, Color backgroundColor) {
         this.position = position;
         this.backgroundColor = backgroundColor;
         this.unit = unit;
-        double x = position.x() * size * 1.5 + 300;
+        double x = position.x() * size * 1.5 + 500;
         double y = position.y() * size * sqrt(3) + position.x() * size * .9 + 300;
 
         highlight = Highlight.NONE;
@@ -66,7 +66,7 @@ public class Tile {
     /**
      * Sets the listener callback for when selections are registered
      *
-     * @param selectionListener the listener callback for when this Tile is selected
+     * @param selectionListener the listener callback for when this BoardTile is selected
      */
     public void addSelectionListener(SelectionListener selectionListener) {
         group.setOnMouseClicked(event -> selectionListener.select(position));
@@ -122,7 +122,7 @@ public class Tile {
     }
 
     /**
-     * Set the highlighting for the Tile
+     * Set the highlighting for the BoardTile
      *
      * @param highlight the enumerated highlight type
      * @see com.tiberiuslabs.BattleChess.Types.Highlight
@@ -134,7 +134,7 @@ public class Tile {
     /**
      * Gets the position of the tile
      *
-     * @return a Position object holding the (x,y) board coordinate of the Tile
+     * @return a Position object holding the (x,y) board coordinate of the BoardTile
      */
     public Position getPosition() {
         return position;
