@@ -113,7 +113,7 @@ public class AI {
         }
         Move maxMove = moves.parallelStream()
                 .filter(move -> move != null)
-                .map(mapper -> new Pair<>(mapper, alphabeta(new AIBoard(board), 8, alpha, beta, false)))
+                .map(mapper -> new Pair<>(mapper, alphabeta(new AIBoard(board), 16, alpha, beta, true)))
                 .collect(Collectors.maxBy((p1, p2) -> p1.snd.compareTo(p2.snd)))
                 .get()
                 .fst;
@@ -183,7 +183,7 @@ public class AI {
                 int delta;
                 switch (move.moveType) {
                     case MOV:
-                        delta = 3;
+                        delta = 4;
                         break;
                     case ATK:
                         delta = 1;
@@ -220,7 +220,7 @@ public class AI {
                 int delta;
                 switch (move.moveType) {
                     case MOV:
-                        delta = 3;
+                        delta = 4;
                         break;
                     case ATK:
                         delta = 1;

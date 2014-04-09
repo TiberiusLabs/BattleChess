@@ -38,7 +38,7 @@ public class ScoreFuncFactory {
             for (Unit unit : board.getActiveUnits(player)) {
                 switch (unit.unitType) {
                     case PAWN:
-                        score += 100;
+                        score += 200;
                         break;
                     case KNIGHT:
                         score += 300;
@@ -58,7 +58,7 @@ public class ScoreFuncFactory {
                 }
             }
 
-            return score;
+            return score - 500;
         };
     }
 
@@ -99,7 +99,7 @@ public class ScoreFuncFactory {
                 validMoves.addAll(Rules.getValidMoves(unit, unit.position, board));
             }
 
-            return validMoves.size();
+            return validMoves.size() > 50 ? 50 : validMoves.size();
         };
     }
 
@@ -116,7 +116,7 @@ public class ScoreFuncFactory {
             Unit capitol = board.get(Rules.getCapitol(opponent));
             int numCities = board.numCitiesHeld(opponent);
 
-            return capitol != null && capitol.color == opponent && numCities >= 3 ? -500 : 0;
+            return capitol != null && capitol.color == opponent && numCities >= 3 ? -200 : 0;
         };
     }
 }

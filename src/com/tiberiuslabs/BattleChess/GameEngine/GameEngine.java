@@ -25,6 +25,7 @@ public class GameEngine {
     private Color playerColor;
     private Color currentPlayer;
     private boolean initialized;
+    private GameEngineCallbacks.WinningEvent winningEvent;
 
     /**
      * Creates an uninitialized version of the game, must be later initialized with reset()
@@ -85,6 +86,17 @@ public class GameEngine {
                 board.makeMove(move);
                 currentPlayer = playerColor;
             }
+        }
+
+        switch (Rules.winner(board)) {
+            case WHITE:
+                winningEvent.haveWinner(playerColor == Color.WHITE);
+                break;
+            case BLACK:
+                winningEvent.haveWinner(playerColor == Color.BLACK);
+                break;
+            default:
+                break;
         }
     }
 
@@ -215,5 +227,9 @@ public class GameEngine {
 
     public Set<Position> getValidRecruitMoves(Unit unit) {
         return Rules.getValidRecruitments(unit.color, unit, board);
+    }
+
+    public void setWinningEvent(GameEngineCallbacks.WinningEvent winningEvent) {
+        this.winningEvent = winningEvent;
     }
 }

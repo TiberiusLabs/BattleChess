@@ -58,6 +58,10 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
         gameEngine.update();
     }
 
+    public void setWinningEvent(WinningEvent winningEvent) {
+        gameEngine.setWinningEvent(winningEvent);
+    }
+
     private void setHighlights() {
         if (selectedTile != null) {
             listenerBoard.put(selectedTile, new Triple<>(Highlight.SELD, gameEngine.get(selectedTile), gameEngine.tileColor(selectedTile)));
@@ -175,5 +179,9 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
 
     public interface AddNodeCallback {
         public void addNode(Node node);
+    }
+
+    public interface WinningEvent {
+        public void haveWinner(boolean playerWins);
     }
 }
