@@ -28,7 +28,7 @@ public class GuiBoard {
             int size = 25;
             switch (tileInfo.thd) {
                 case BLACK:
-                    tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.DARKBLUE);
+                    tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.CADETBLUE);
                     break;
                 case GREY:
                     tile = new BoardTile(position, tileInfo.snd, size, javafx.scene.paint.Color.CORNFLOWERBLUE);
@@ -40,7 +40,7 @@ public class GuiBoard {
                     continue;
             }
             tile.addSelectionListener(boardCallback::makeSelection);
-            boardCallback.addNode(tile.getGroup());
+            boardCallback.addBoardTile(tile.getGroup());
             tile.repaint();
             tiles.put(position, tile);
         }
@@ -64,6 +64,6 @@ public class GuiBoard {
 
         public Triple<Highlight, Unit, Color> getTileInfo(Position position);
 
-        void addNode(Node node);
+        void addBoardTile(Node node);
     }
 }

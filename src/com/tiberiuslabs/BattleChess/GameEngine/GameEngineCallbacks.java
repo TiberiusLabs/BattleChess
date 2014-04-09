@@ -1,15 +1,13 @@
 package com.tiberiuslabs.BattleChess.GameEngine;
 
 import com.sun.javafx.collections.ObservableMapWrapper;
+import com.sun.javafx.collections.ObservableSetWrapper;
 import com.tiberiuslabs.BattleChess.ChessEngine.Rules;
 import com.tiberiuslabs.BattleChess.Gui.GuiBoard;
 import com.tiberiuslabs.BattleChess.Gui.RecruitMenu;
 import com.tiberiuslabs.BattleChess.Types.*;
 import com.tiberiuslabs.Collections.Triple;
-import javafx.collections.ListChangeListener;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.collections.*;
 import javafx.scene.Node;
 
 import java.util.HashMap;
@@ -27,7 +25,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     private GameEngine gameEngine = new GameEngine();
     private GameEngineCallbacks.AddNodeCallback addNodeCallback;
     private ObservableMap<Position, Triple<Highlight, Unit, Color>> listenerBoard;
-    private ObservableList<Unit> availableRecruits;
+    private ObservableSet<Unit> availableRecruits;
     private Position selectedTile;
     private Unit recruit;
     private Color playerColor;
@@ -41,6 +39,7 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
         this.playerColor = playerColor;
         gameEngine.reset(playerColor, aiDifficulty);
 
+        availableRecruits = new ObservableSetWrapper<>(gameEngine.getGraveyard(playerColor));
         Map<Position, Triple<Highlight, Unit, Color>> tempListenerMap = new HashMap<>();
         Map<Position, Unit> boardMap = gameEngine.getBoard();
 
@@ -71,6 +70,11 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
                     listenerBoard.put(pos, new Triple<>(Highlight.THRT, unit, gameEngine.tileColor(pos)));
                 }
             }
+        } else if (recruit != null) {
+            validMoves = gameEngine.getValidRecruitMoves(recruit);
+            for (Position pos : validMoves) {
+                listenerBoard.put(pos, new Triple<>(Highlight.MOVE, null, gameEngine.tileColor(pos)));
+            }
         }
     }
 
@@ -95,6 +99,10 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
             listenerBoard.put(finalPos, new Triple<>(Highlight.NONE, gameEngine.get(finalPos), gameEngine.tileColor(finalPos)));
         }
 
+        if (successful) {
+            availableRecruits.addAll(gameEngine.getGraveyard(playerColor));
+        }
+
         return successful;
     }
 
@@ -107,8 +115,8 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     public void makeSelection(Position position) {
         if (recruit != null && Rules.inBounds(position)) {
             if (move(null, position)) {
+                availableRecruits.remove(recruit);
                 recruit = null;
-                // TODO: cleanup as necessary?
             } else {
                 // TODO: send 'invalid recruit' error message to the player
             }
@@ -141,13 +149,18 @@ public class GameEngineCallbacks implements GuiBoard.BoardCallback, RecruitMenu.
     }
 
     @Override
-    public void addNode(Node node) {
+    public void addBoardTile(Node node) {
         addNodeCallback.addNode(node);
     }
 
     @Override
-    public void setRecruitListener(ListChangeListener<Unit> recruitListener) {
-        //gameEngine.getGraveyard(playerColor).addListener(recruitListener);
+    public void addRecruitNode(Node node) {
+        addNodeCallback.addNode(node);
+    }
+
+    @Override
+    public void setRecruitListener(SetChangeListener<Unit> recruitListener) {
+        availableRecruits.addListener(recruitListener);
     }
 
     @Override

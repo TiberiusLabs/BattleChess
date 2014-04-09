@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Amandeep Gill
  */
 public class GameEngine {
-    private Board board;
+    private GameBoard board;
     private AIEngine aiEngine;
     private Color playerColor;
     private Color currentPlayer;
@@ -211,5 +211,9 @@ public class GameEngine {
      */
     public Unit get(Position position) {
         return board.get(position);
+    }
+
+    public Set<Position> getValidRecruitMoves(Unit unit) {
+        return Rules.getValidRecruitments(unit.color, unit, board);
     }
 }

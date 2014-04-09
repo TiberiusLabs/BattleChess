@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MainWindow extends Application {
@@ -18,7 +19,6 @@ public class MainWindow extends Application {
     public Canvas boardCanvas;
     public Parent root;
     public Group boardPane;
-    public Button recruitButton;
     public ListView recruitList;
 
     private GameEngineCallbacks callbacks;
@@ -31,6 +31,7 @@ public class MainWindow extends Application {
         });
         callbacks.setup(Color.WHITE, AIDifficulty.EXPERT);
         board = new GuiBoard(callbacks);
+        recruitMenu = new RecruitMenu(callbacks);
     }
 
     @Override
@@ -44,8 +45,6 @@ public class MainWindow extends Application {
 
         boardCanvas = (Canvas) root.lookup("#boardCanvas");
         boardPane = (Group) root.lookup("#boardPane");
-        recruitButton = (Button) root.lookup("#recruitButton");
-        recruitList = (ListView) root.lookup("#recruitList");
         initGame();
     }
 

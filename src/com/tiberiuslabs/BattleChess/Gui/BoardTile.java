@@ -5,9 +5,10 @@ import com.tiberiuslabs.BattleChess.Types.Position;
 import com.tiberiuslabs.BattleChess.Types.Unit;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.Text;
 
 import static java.lang.Math.*;
 
@@ -26,8 +27,9 @@ public class BoardTile {
     private final Position position;
     private final Color backgroundColor;
     private final Polygon polygon;
-    private final Text text;
+    private final ImageView unitPortrait;
     private final Group group;
+    private final int imgSize = 40;
     private Highlight highlight;
     private Unit unit;
 
@@ -57,10 +59,10 @@ public class BoardTile {
         }
 
         this.polygon = new Polygon(verts);
-        this.text = new Text();
-        text.setLayoutX(x);
-        text.setLayoutY(y);
-        group = new Group(polygon, text);
+        this.unitPortrait = new ImageView();
+        unitPortrait.setX(x - imgSize/2);
+        unitPortrait.setY(y - imgSize/2);
+        group = new Group(polygon, unitPortrait);
     }
 
     /**
@@ -68,7 +70,7 @@ public class BoardTile {
      *
      * @param selectionListener the listener callback for when this BoardTile is selected
      */
-    public void addSelectionListener(SelectionListener selectionListener) {
+    public void addSelectionListener(BoardSelectionListener selectionListener) {
         group.setOnMouseClicked(event -> selectionListener.select(position));
     }
 
@@ -93,31 +95,13 @@ public class BoardTile {
                 break;
         }
 
-        // TODO: display the unit portrait if it isn't null
         if (unit != null) {
-            text.setFill(unit.color == com.tiberiuslabs.BattleChess.Types.Color.BLACK ? Color.CHOCOLATE : Color.LIGHTGRAY);
-            switch (unit.unitType) {
-                case PAWN:
-                    text.setText("Pa");
-                    break;
-                case KNIGHT:
-                    text.setText("Kn");
-                    break;
-                case ROOK:
-                    text.setText("Ro");
-                    break;
-                case BISHOP:
-                    text.setText("Bi");
-                    break;
-                case QUEEN:
-                    text.setText("Qu");
-                    break;
-                case KING:
-                    text.setText("Ki");
-                    break;
-            }
+            unitPortrait.setImage(new Image(MainWindow.class.
+                    getResourceAsStream("/art/unit/" + unit.getTypeString() + ".png"),
+                    imgSize, imgSize, true, true
+            ));
         } else {
-            text.setText("");
+            unitPortrait.setImage(null);
         }
     }
 
@@ -163,9 +147,9 @@ public class BoardTile {
     }
 
     /**
-     * Interface for the SelectionListener callback
+     * Interface for the BoardSelectionListener callback
      */
-    interface SelectionListener {
+    interface BoardSelectionListener {
         void select(Position position);
     }
 }

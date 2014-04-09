@@ -1,11 +1,14 @@
 package com.tiberiuslabs.BattleChess.Gui;
 
 import com.tiberiuslabs.BattleChess.Types.Unit;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.collections.SetChangeListener;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controls the recruit menu interface
@@ -13,51 +16,67 @@ import javafx.scene.control.SelectionMode;
  * @author Amandeep Gill
  */
 public class RecruitMenu {
-    private ObservableList<String> availableRecruitsList;
-    private ObservableList<Unit> availableRecruits;
-    private ListView<String> listView;
-    private RecruitCallback recruitCallback;
-    private Button recruitButton;
+    private static ImageView background = new ImageView(new Image(
+            MainWindow.class.getResourceAsStream("/art/board/graveyard.png")));
 
-    public RecruitMenu(RecruitCallback recruitCallback, ListView<String> listView, Button recruitButton) {
+    private RecruitCallback recruitCallback;
+    private List<RecruitTile> recruitTiles = new ArrayList<>();
+
+    public RecruitMenu(RecruitCallback recruitCallback) {
+        background.setX(0);
+        background.setY(0);
         this.recruitCallback = recruitCallback;
-        this.listView = listView;
-        this.listView.setItems(availableRecruitsList);
-        this.recruitButton = recruitButton;
-        this.availableRecruits = recruitCallback.getAvailableRecruits();
 
         this.recruitCallback.setRecruitListener(change -> {
             if (change.wasAdded()) {
-                availableRecruits.addAll(change.getList());
-            } else {
-                availableRecruits.removeAll(change.getList());
-            }
-        });
-
-        this.availableRecruits.addListener((ListChangeListener<? super Unit>) change -> {
-            if (change.wasAdded()) {
-                for (Object unit : change.getList()) {
-                    availableRecruitsList.add(unit.toString());
+                for (RecruitTile tile : recruitTiles) {
+                    if (tile.getUnit() == null) {
+                        tile.setUnit(change.getElementAdded());
+                        break;
+                    }
                 }
             } else {
-                for (Object unit : change.getList()) {
-                    availableRecruitsList.remove(unit.toString());
+                for (RecruitTile tile : recruitTiles) {
+                    if (tile.getUnit() != null && tile.getUnit().equals(change.getElementRemoved())) {
+                        tile.setUnit(null);
+                        break;
+                    }
                 }
             }
         });
 
-        this.listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        recruitCallback.addRecruitNode(background);
 
-        this.recruitButton.setOnMouseClicked(event -> {
-            int index = this.listView.getEditingIndex();
-            if (index >= 0) {
-                this.recruitCallback.selectRecruit(this.availableRecruits.get(index));
+        int offset = 65;
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 6; y++) {
+                RecruitTile tile = new RecruitTile(35 + x * offset, 120 + y * offset);
+                recruitTiles.add(tile);
+                tile.setSelectionCallback(recruitCallback::selectRecruit);
+                recruitCallback.addRecruitNode(tile.getGroup());
             }
-        });
+        }
+    }
+
+    private void compactRecruits() {
+        for (int i = 0; i < recruitTiles.size(); i += 1) {
+            if (recruitTiles.get(i).getUnit() == null) {
+                for (int j = i + 1; j < recruitTiles.size(); j += 1) {
+                    if (recruitTiles.get(j).getUnit() != null) {
+                        recruitTiles.get(i).setUnit(recruitTiles.get(j).getUnit());
+                        recruitTiles.get(j).setUnit(null);
+                        i = j;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public interface RecruitCallback {
-        public void setRecruitListener(ListChangeListener<Unit> recruitListener);
+        public void addRecruitNode(Node node);
+
+        public void setRecruitListener(SetChangeListener<Unit> recruitListener);
 
         public void selectRecruit(Unit recruit);
 
